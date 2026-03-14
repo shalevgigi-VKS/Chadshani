@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>חדשני | דשבורד חדשות טכנולוגיה</title>
+  <style>
+    :root {
+      --bg: #07080f;
+      --surface: #0f1018;
+      --surface2: #161824;
+      --border: #1e2130;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --ai: #7c3aed;
+      --ai-glow: rgba(124,58,237,0.15);
+      --chips: #0ea5e9;
+      --chips-glow: rgba(14,165,233,0.15);
+      --market: #10b981;
+      --market-glow: rgba(16,185,129,0.15);
+      --crypto: #f59e0b;
+      --crypto-glow: rgba(245,158,11,0.15);
+      --software: #ec4899;
+      --software-glow: rgba(236,72,153,0.15);
+      --general: #6366f1;
+      --general-glow: rgba(99,102,241,0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(124,58,237,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 10%, rgba(14,165,233,0.05) 0%, transparent 50%);
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7,8,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 1.5rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--ai), var(--chips));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 900; color: #fff;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #e2e8f0, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .logo-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+    #live-clock {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      background: var(--surface2);
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    #last-updated {
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── NAV TABS ── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      gap: 0.25rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .tab {
+      padding: 0.75rem 1.1rem;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      user-select: none;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--text); border-bottom-color: var(--active-color, #7c3aed); }
+    .tab-count {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1px 6px;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .tab.active .tab-count { background: var(--active-color, #7c3aed); color: #fff; border-color: transparent; }
+
+    /* ── MAIN GRID ── */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.75rem 2rem 3rem;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      margin-top: 0.5rem;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-badge {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── CARD ── */
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem 1.3rem;
+      border-right: 4px solid var(--card-color, #7c3aed);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .news-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--card-glow, rgba(124,58,237,0.0));
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .news-card:hover {
+      transform: translateY(-2px);
+      background: var(--surface2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .news-card:hover::before { opacity: 1; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .card-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      background: var(--card-glow-bg, rgba(124,58,237,0.15));
+    }
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.3rem;
+    }
+    .card-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: var(--card-badge-bg, rgba(124,58,237,0.2));
+      color: var(--card-color, #7c3aed);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .card-num {
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 0.6rem;
+    }
+    .card-body {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.65;
+    }
+    .card-body p { margin-bottom: 0.4rem; }
+    .card-body p:last-child { margin-bottom: 0; }
+
+    /* ── HIGHLIGHT CARD (wider) ── */
+    .news-card.highlight {
+      grid-column: span 2;
+    }
+    @media (max-width: 900px) {
+      .news-card.highlight { grid-column: span 1; }
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .empty-text { font-size: 0.9rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-sig {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: 1px;
+      font-family: 'Courier New', monospace;
+    }
+    .footer-info {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .footer-dots {
+      display: flex; gap: 0.4rem; align-items: center;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      header, nav .nav-inner, main { padding-right: 1rem; padding-left: 1rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .logo-sub { display: none; }
+      .header-inner { height: 56px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">ח</div>
+      <div>
+        <div class="logo-text">חדשני</div>
+        <div class="logo-sub">דשבורד חדשות טכנולוגיה</div>
+      </div>
+    </div>
+    <span id="last-updated"></span>
+    <span id="live-clock"></span>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner" id="nav-tabs">
+    <!-- tabs injected by JS -->
+  </div>
+</nav>
+
+<main id="main-content">
+  <!-- cards injected by JS -->
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-sig">S.G</span>
+    <div class="footer-dots">
+      <div class="dot" style="background:#7c3aed; animation-delay:0s"></div>
+      <div class="dot" style="background:#0ea5e9; animation-delay:0.3s"></div>
+      <div class="dot" style="background:#10b981; animation-delay:0.6s"></div>
+      <div class="dot" style="background:#f59e0b; animation-delay:0.9s"></div>
+    </div>
+    <span class="footer-info" id="footer-stats"></span>
+  </div>
+</footer>
+
+<script>
+// ── CATEGORY CONFIG ──
+const CATEGORIES = {
+  'AI': {
+    label: 'בינה מלאכותית', icon: '🤖',
+    color: '#7c3aed', glow: 'rgba(124,58,237,0.15)',
+    badgeBg: 'rgba(124,58,237,0.2)'
+  },
+  'שבבים': {
+    label: 'שבבים וחומרה', icon: '⚡',
+    color: '#0ea5e9', glow: 'rgba(14,165,233,0.15)',
+    badgeBg: 'rgba(14,165,233,0.2)'
+  },
+  'שווקים': {
+    label: 'שוק ההון', icon: '📈',
+    color: '#10b981', glow: 'rgba(16,185,129,0.15)',
+    badgeBg: 'rgba(16,185,129,0.2)'
+  },
+  'קריפטו': {
+    label: 'קריפטו', icon: '₿',
+    color: '#f59e0b', glow: 'rgba(245,158,11,0.15)',
+    badgeBg: 'rgba(245,158,11,0.2)'
+  },
+  'תוכנה': {
+    label: 'תוכנה', icon: '💻',
+    color: '#ec4899', glow: 'rgba(236,72,153,0.15)',
+    badgeBg: 'rgba(236,72,153,0.2)'
+  },
+  'כללי': {
+    label: 'כללי', icon: '🌐',
+    color: '#6366f1', glow: 'rgba(99,102,241,0.15)',
+    badgeBg: 'rgba(99,102,241,0.2)'
+  }
+};
+
+function getCatKey(raw) {
+  for (const key of Object.keys(CATEGORIES)) {
+    if (raw && raw.includes(key)) return key;
+  }
+  return 'כללי';
+}
+
+// ── CLOCK ──
+function updateClock() {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  document.getElementById('live-clock').textContent =
+    `יום ${days[now.getDay()]} | ${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} — ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── RENDER ──
+let currentFilter = 'all';
+
+function renderTabs(newsData) {
+  const counts = { all: newsData.length };
+  for (const item of newsData) {
+    const k = getCatKey(item.category);
+    counts[k] = (counts[k] || 0) + 1;
+  }
+  const nav = document.getElementById('nav-tabs');
+  const tabs = [
+    { key: 'all', label: 'הכל', icon: '◈', color: '#e2e8f0' },
+    ...Object.entries(CATEGORIES).filter(([k]) => counts[k]).map(([k, v]) => ({
+      key: k, label: v.label, icon: v.icon, color: v.color
+    }))
+  ];
+  nav.innerHTML = tabs.map(t => `
+    <div class="tab ${t.key === currentFilter ? 'active' : ''}"
+         style="--active-color: ${t.color}"
+         onclick="filterCards('${t.key}', '${t.color}')">
+      <span>${t.icon}</span>
+      <span>${t.label}</span>
+      ${counts[t.key] ? `<span class="tab-count">${counts[t.key]}</span>` : ''}
+    </div>
+  `).join('');
+}
+
+function filterCards(key, color) {
+  currentFilter = key;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.section-wrapper').forEach(sec => {
+    sec.style.display = (key === 'all' || sec.dataset.cat === key) ? '' : 'none';
+  });
+}
+
+function renderCards(newsData) {
+  const main = document.getElementById('main-content');
+  if (!newsData || newsData.length === 0) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">אין חדשות זמינות כרגע</div></div>`;
+    return;
+  }
+
+  // Group by category
+  const groups = {};
+  newsData.forEach((item, i) => {
+    const k = getCatKey(item.category);
+    if (!groups[k]) groups[k] = [];
+    groups[k].push({ ...item, idx: i + 1 });
+  });
+
+  const catOrder = ['AI', 'שבבים', 'שווקים', 'קריפטו', 'תוכנה', 'כללי'];
+  let html = '';
+
+  for (const cat of catOrder) {
+    if (!groups[cat]) continue;
+    const cfg = CATEGORIES[cat];
+    const items = groups[cat];
+    html += `
+      <div class="section-wrapper" data-cat="${cat}">
+        <div class="section-header">
+          <span style="font-size:1.2rem">${cfg.icon}</span>
+          <span class="section-title">${cfg.label}</span>
+          <div class="section-line"></div>
+          <span class="section-badge" style="background:${cfg.badgeBg};color:${cfg.color}">${items.length} פריטים</span>
+        </div>
+        <div class="cards-grid">
+          ${items.map((item, ci) => renderCard(item, cfg, ci === 0 && items.length > 2)).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  main.innerHTML = html;
+  renderTabs(newsData);
+
+  // Footer stats
+  document.getElementById('footer-stats').textContent = `${newsData.length} פריטים ב-${Object.keys(groups).length} קטגוריות`;
+}
+
+function renderCard(item, cfg, highlight) {
+  const bodyLines = (item.bullets || []).map(b => `<p>• ${b}</p>`).join('');
+  return `
+    <div class="news-card ${highlight ? 'highlight' : ''}"
+         style="--card-color:${cfg.color}; --card-glow:${cfg.glow}; --card-glow-bg:${cfg.badgeBg}">
+      <div class="card-top">
+        <div class="card-icon" style="background:${cfg.badgeBg}">${cfg.icon}</div>
+        <div class="card-meta">
+          <span class="card-badge" style="background:${cfg.badgeBg};color:${cfg.color}">${cfg.label}</span>
+          <span class="card-num">#${item.idx}</span>
+        </div>
+      </div>
+      <div class="card-title">${item.title}</div>
+      <div class="card-body">${bodyLines || `<p>${item.summary || ''}</p>`}</div>
+    </div>
+  `;
+}
+
+// ── LOAD DATA ──
+function loadNews() {
+  const dataEl = document.getElementById('news-data');
+  if (!dataEl) return;
+  try {
+    const news = JSON.parse(dataEl.textContent);
+    const updated = dataEl.dataset.updated || '';
+    if (updated) document.getElementById('last-updated').textContent = `עודכן: ${updated}`;
+    renderCards(news);
+  } catch(e) {
+    console.error('Failed to parse news data:', e);
+    document.getElementById('main-content').innerHTML =
+      `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">שגיאה בטעינת הנתונים</div></div>`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadNews);
+</script>
+
+<!-- NEWS DATA (replaced by generate_website.py) -->
+<script id="news-data" type="application/json" data-updated="PLACEHOLDER_DATETIME">
+PLACEHOLDER_NEWS_JSON
+</script>
+
+</body>
+</html>

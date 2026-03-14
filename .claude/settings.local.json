@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp:*)",
+      "Bash(\"e:/Claude/primer.md\":*)",
+      "Bash(__NEW_LINE_68c139a66eade729__ cat:*)",
+      "Bash(\"e:/Claude/memory.sh\":*)",
+      "Bash(chmod +x \"e:/Claude/memory.sh\")",
+      "Bash(\"e:/Claude/docs/project-purpose.md\":*)",
+      "Bash(__NEW_LINE_5188eb9ba878b37a__ cat:*)",
+      "Bash(\"e:/Claude/docs/project-scope.md\":*)",
+      "Bash(\"e:/Claude/docs/project-outputs.md\":*)",
+      "Bash(\"e:/Claude/docs/current-phase.md\":*)",
+      "Bash(\"e:/Claude/memory/active-context.md\":*)",
+      "Bash(__NEW_LINE_72537cbbf341e7a5__ cat:*)",
+      "Bash(\"e:/Claude/memory/compressed-context.md\":*)",
+      "Bash(\"e:/Claude/memory/decisions-log.md\":*)",
+      "Bash(npm --version)",
+      "Bash(gemini --version)",
+      "Bash(npm install:*)",
+      "Bash(pip --version)",
+      "Bash(whisper --version)",
+      "Bash(pip install:*)",
+      "Bash(python -m whisper --help)",
+      "Bash(python -c \"import whisper; print\\(''whisper version:'', whisper.__version__ if hasattr\\(whisper,''__version__''\\) else ''OK — loaded successfully''\\)\")",
+      "Bash(python -m yt_dlp --version)",
+      "Bash(python -c \":*)",
+      "Bash(sed -i 's/- \\\\[ \\\\] שלב 4: Apify MCP בסיסי/- [~] שלב 4: Apify → הוחלף ב-yt-dlp+whisper pipeline/' \"e:/Claude/docs/current-phase.md\")",
+      "Bash(sed -i 's/- \\\\[ \\\\] שלב 5: Apify לתמלולי יוטיוב/- [~] שלב 5: Apify → הוחלף/' \"e:/Claude/docs/current-phase.md\")",
+      "Bash(sed -i 's/- \\\\[ \\\\] שלב 6: בדיקת pipeline/- [x] שלב 6: pipeline yt-dlp+whisper נבנה/' \"e:/Claude/docs/current-phase.md\")"
+    ]
+  }
+}
