@@ -174,10 +174,6 @@
       font-size: 1.3rem; flex-shrink: 0;
     }
     .card-meta { flex: 1; min-width: 0; }
-    .card-num {
-      font-size: .65rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .08em; margin-bottom: .1rem;
-    }
     .card-title { font-size: 1rem; font-weight: 800; line-height: 1.3; }
 
     .btn-copy {
@@ -240,10 +236,53 @@
       letter-spacing: .02em;
     }
     /* ─── Utility ─── */
-    .card-num { display: none; }
     .chg-up { color: #16a34a; font-weight: 700; }
     .chg-dn { color: #dc2626; font-weight: 700; }
     .content-divider { border: none; border-top: 2px solid var(--border); margin: .9rem 0; }
+
+    /* ════════════════════════════════════════════
+       CONSOLE — SECTIONS 1 & 10
+    ════════════════════════════════════════════ */
+    .console-wrap {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      font-family: 'Courier New', 'Lucida Console', monospace;
+      font-size: .82rem;
+      color: #c9d1d9;
+      line-height: 1.85;
+    }
+    .console-line {
+      display: flex;
+      align-items: flex-start;
+      gap: .55rem;
+      padding: .25rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .console-line:last-child { border-bottom: none; }
+    .console-prompt {
+      color: #3fb950;
+      font-weight: 900;
+      flex-shrink: 0;
+      user-select: none;
+      opacity: .75;
+    }
+    .console-text { flex: 1; }
+    .console-wrap strong { color: #f0f6fc; font-weight: 800; }
+    .console-wrap .chg-up { color: #3fb950; font-weight: 700; }
+    .console-wrap .chg-dn { color: #f85149; font-weight: 700; }
+    .console-wrap .content-divider { border-color: #21262d; margin: .4rem 0; }
+    .console-tag {
+      display: inline-block;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: .04rem .38rem;
+      font-size: .72rem;
+      color: #8b949e;
+      margin-left: .3rem;
+    }
 
     /* ════════════════════════════════════════════
        TICKER LIST — SECTION 9
@@ -508,25 +547,91 @@ PLACEHOLDER_GAUGES_JSON
       if (v > 15)    return { text:'מתון',        bg:'#fef9c3', fg:'#ca8a04' };
                      return { text:'נמוך',         bg:'#d1fae5', fg:'#059669' };
     }
+    /* ── CNN-style gauge (colored zone arcs + needle) ── */
+    function cnnGaugeSVG(val) {
+      const W=200, H=112, R=82, cx=100, cy=108;
+      const zones = [
+        { from:0,  to:25,  color:'#dc2626' },
+        { from:25, to:45,  color:'#ea580c' },
+        { from:45, to:55,  color:'#ca8a04' },
+        { from:55, to:75,  color:'#65a30d' },
+        { from:75, to:100, color:'#16a34a' },
+      ];
+      const pt     = (r,a) => [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+      const toAng  = v => Math.PI + (v/100)*Math.PI;
+      const zonePath = (from, to, color) => {
+        const a0=toAng(from), a1=toAng(to);
+        const [x0,y0]=pt(R,a0), [x1,y1]=pt(R,a1);
+        const la=(a1-a0)>Math.PI?1:0;
+        return `<path d="M${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 ${la} 1 ${x1.toFixed(1)},${y1.toFixed(1)}" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="butt"/>`;
+      };
+      /* gap lines between zones */
+      const gaps = [25,45,55,75].map(v => {
+        const a=toAng(v);
+        const [x1,y1]=pt(R-10,a), [x2,y2]=pt(R+2,a);
+        return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="white" stroke-width="2"/>`;
+      });
+      /* zone label positions */
+      const zLabels = [
+        { v:12.5, text:'FEAR\nEXTREME', size:'.38rem' },
+        { v:35,   text:'FEAR',          size:'.44rem' },
+        { v:50,   text:'NEUTRAL',       size:'.42rem' },
+        { v:65,   text:'GREED',         size:'.44rem' },
+        { v:87.5, text:'GREED\nEXTREME',size:'.38rem' },
+      ];
+      const labelSvg = zLabels.map(z => {
+        const a=toAng(z.v);
+        const [lx,ly]=pt(R-26, a);
+        const lines = z.text.split('\n');
+        const dy = lines.length > 1 ? -5 : 0;
+        return lines.map((line,i) =>
+          `<text x="${lx.toFixed(1)}" y="${(ly+dy+i*8).toFixed(1)}" text-anchor="middle" fill="white" font-size="${z.size}" font-weight="800" font-family="Heebo,sans-serif" opacity=".9">${line}</text>`
+        ).join('');
+      }).join('');
+      /* tick marks */
+      const ticks = Array.from({length:9},(_,i)=>{
+        const ta=toAng((i+1)*10);
+        const [tx1,ty1]=pt(R+6,ta), [tx2,ty2]=pt(R+(i%2===0?12:8),ta);
+        return `<line x1="${tx1.toFixed(1)}" y1="${ty1.toFixed(1)}" x2="${tx2.toFixed(1)}" y2="${ty2.toFixed(1)}" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round"/>`;
+      }).join('');
+      /* needle */
+      const needleAng = toAng(val != null ? Math.max(0,Math.min(100,val)) : 50);
+      const [nX,nY]=pt(R-14,needleAng), [n2X,n2Y]=pt(-8,needleAng);
+      const parts = [
+        /* bg track */ `<path d="M${pt(R,Math.PI)[0].toFixed(1)},${pt(R,Math.PI)[1].toFixed(1)} A${R},${R} 0 0 1 ${pt(R,2*Math.PI)[0].toFixed(1)},${pt(R,2*Math.PI)[1].toFixed(1)}" fill="none" stroke="#e5e7eb" stroke-width="14"/>`,
+        ...zones.map(z=>zonePath(z.from,z.to,z.color)),
+        ...gaps, ticks, labelSvg,
+        `<line x1="${n2X.toFixed(1)}" y1="${n2Y.toFixed(1)}" x2="${nX.toFixed(1)}" y2="${nY.toFixed(1)}" stroke="#374151" stroke-width="2.5" stroke-linecap="round"/>`,
+        `<circle cx="${cx}" cy="${cy}" r="6" fill="#374151" stroke="white" stroke-width="2.5"/>`,
+        `<circle cx="${cx}" cy="${cy}" r="2" fill="white"/>`,
+      ];
+      return `<svg viewBox="0 0 ${W} ${H}" style="overflow:visible;width:100%;height:auto">${parts.join('')}</svg>`;
+    }
+
     function gaugesHTML(gauges) {
       if (!gauges) return '';
-      const items = [
-        { label:'CNN F&G',    val:gauges.fng,        isVix:false },
-        { label:'Crypto F&G', val:gauges.crypto_fng,  isVix:false },
-        { label:'VIX',        val:gauges.vix,         isVix:true  },
-      ];
-      return '<div class="gauges-row">' + items.map(it => {
-        const v   = it.val != null ? Math.round(it.val) : null;
-        const pct = it.isVix ? (v!=null ? Math.min(1,v/50):null) : (v!=null ? v/100:null);
-        const col = arcColor(v, it.isVix);
-        const lbl = it.isVix ? vixInfo(v) : fngInfo(v);
-        return `<div class="gauge-wrap">
-          <div class="gauge-label">${it.label}</div>
-          <div class="gauge-arc-wrap">${arcSVG(pct,col)}</div>
-          <div class="gauge-value-text" style="color:${col}">${v!=null?v:'—'}</div>
-          <span class="gauge-sentiment" style="background:${lbl.bg};color:${lbl.fg}">${lbl.text}</span>
-        </div>`;
-      }).join('') + '</div>';
+      /* VIX — original arc style */
+      const vix = gauges.vix != null ? Math.round(gauges.vix) : null;
+      const vixPct = vix != null ? Math.min(1, vix/50) : null;
+      const vixCol = arcColor(vix, true);
+      const vixLbl = vixInfo(vix);
+      const vixGauge = `<div class="gauge-wrap">
+        <div class="gauge-label">VIX</div>
+        <div class="gauge-arc-wrap">${arcSVG(vixPct, vixCol)}</div>
+        <div class="gauge-value-text" style="color:${vixCol}">${vix!=null?vix:'—'}</div>
+        <span class="gauge-sentiment" style="background:${vixLbl.bg};color:${vixLbl.fg}">${vixLbl.text}</span>
+      </div>`;
+      /* CNN F&G — CNN-style colored zone gauge */
+      const fng = gauges.fng != null ? Math.round(gauges.fng) : null;
+      const fngCol = arcColor(fng, false);
+      const fngLbl = fngInfo(fng);
+      const cnnGauge = `<div class="gauge-wrap">
+        <div class="gauge-label">CNN F&amp;G</div>
+        <div class="gauge-arc-wrap">${cnnGaugeSVG(fng)}</div>
+        <div class="gauge-value-text" style="color:${fngCol}">${fng!=null?fng:'—'}</div>
+        <span class="gauge-sentiment" style="background:${fngLbl.bg};color:${fngLbl.fg}">${fngLbl.text}</span>
+      </div>`;
+      return `<div class="gauges-row" style="grid-template-columns:1fr 1fr">${vixGauge}${cnnGauge}</div>`;
     }
 
     /* ─── Special content renderers ─────────────── */
@@ -565,13 +670,34 @@ PLACEHOLDER_GAUGES_JSON
       return html;
     }
 
+    /* ─── Console renderer (sections 1 & 10) ───── */
+    function buildConsoleContent(content) {
+      /* split on blank lines or sentence endings, keep non-empty chunks */
+      const chunks = content
+        .split(/\n{2,}|(?<=[\.\!\?])\s+(?=[^\s])/)
+        .map(c => c.trim()).filter(Boolean);
+      const prompts = ['▶', '●', '◆', '▶', '●', '◆', '▶', '●', '◆', '▶'];
+      return `<div class="console-wrap">` +
+        chunks.map((chunk, i) => {
+          const sym = prompts[i % prompts.length];
+          return `<div class="console-line">
+            <span class="console-prompt">${sym}</span>
+            <span class="console-text">${md(chunk)}</span>
+          </div>`;
+        }).join('') +
+      `</div>`;
+    }
+
+    const TABLE_SECTIONS = new Set([2, 3, 4, 5, 6, 7, 8]);
+
     /* ─── Card builder ──────────────────────────── */
     function buildCard(sec, cfg, gauges) {
       const g = sec.num===0 ? gaugesHTML(gauges) : '';
       let body;
-      if (sec.num===9)       body = buildTickersContent(sec.content);
-      else if (sec.num===6)  body = buildSoftwareTable(sec.content);
-      else                   body = `<div class="section-content">${md(sec.content)}</div>`;
+      if      (sec.num===9)                  body = buildTickersContent(sec.content);
+      else if (TABLE_SECTIONS.has(sec.num))  body = buildSoftwareTable(sec.content);
+      else if (sec.num===1||sec.num===10)    body = buildConsoleContent(sec.content);
+      else                                   body = `<div class="section-content">${md(sec.content)}</div>`;
       return `
 <article class="section-card" id="section-${sec.num}"
   style="border-top:3px solid ${cfg.border};background:${cfg.bg}">
@@ -625,6 +751,8 @@ PLACEHOLDER_GAUGES_JSON
     /* ─── Util ──────────────────────────────────── */
     function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
     function md(s){
+      /* strip "סעיף X" labels that LLM sometimes injects */
+      s = (s||'').replace(/סעיף\s+\d+[.:)]*\s*/g, '');
       return esc(s)
         .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
         .replace(/\+(\d[\d.]*%)/g,'<span class="chg-up">+$1</span>')
