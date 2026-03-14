@@ -64,6 +64,54 @@ def ensure_timestamp(text: str) -> str:
     return f"{get_timestamp()}\n\n{text}"
 
 
+# ── Live market data (free, no API key) ────────────────────────────────────
+
+def fetch_market_data() -> str:
+    """Fetch real F&G, Crypto F&G and VIX. Returns a formatted string to inject into prompt."""
+    lines = []
+
+    # CNN Fear & Greed
+    try:
+        r = requests.get(
+            "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=10,
+        )
+        d = r.json()["fear_and_greed"]
+        val  = round(d["score"])
+        prev = round(d.get("previous_close", d["score"]))
+        rating = d.get("rating", "")
+        lines.append(f"CNN Fear & Greed Index: {val}/100 ({rating}) | שבוע שעבר: {prev}")
+    except Exception as e:
+        lines.append(f"CNN Fear & Greed Index: לא זמין ({e})")
+
+    # Crypto Fear & Greed
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
+        d = r.json()["data"][0]
+        lines.append(f"Crypto Fear & Greed Index: {d['value']}/100 ({d['value_classification']})")
+    except Exception as e:
+        lines.append(f"Crypto Fear & Greed Index: לא זמין ({e})")
+
+    # VIX via Yahoo Finance
+    try:
+        r = requests.get(
+            "https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX",
+            params={"interval": "1d", "range": "1d"},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=10,
+        )
+        meta = r.json()["chart"]["result"][0]["meta"]
+        vix  = meta.get("regularMarketPrice") or meta.get("previousClose")
+        lines.append(f"VIX (מדד הפחד): {vix}")
+    except Exception as e:
+        lines.append(f"VIX: לא זמין ({e})")
+
+    result = "\n".join(lines)
+    print(f"[MARKET_DATA]\n{result}")
+    return result
+
+
 # ── RSS fetcher ────────────────────────────────────────────────────────────
 
 def fetch_rss() -> list[str]:
@@ -183,6 +231,8 @@ def main() -> int:
 
     base_prompt = PROMPT_FILE.read_text(encoding="utf-8")
 
+    print("[STEP_1] Fetching live market data...")
+    market_data = fetch_market_data()
     print("[STEP_1] Fetching RSS feeds...")
     articles = fetch_rss()
     print(f"[STEP_1_COMPLETE] {len(articles)} articles fetched")
@@ -191,7 +241,10 @@ def main() -> int:
     if len(news_context) > MAX_CONTENT_CHARS:
         news_context = news_context[:MAX_CONTENT_CHARS]
 
-    user_content = f"חדשות עדכניות שנאספו עכשיו:\n\n{news_context}"
+    user_content = (
+        f"נתוני שוק בזמן אמת (חובה להשתמש בערכים המדויקים האלה — אל תמציא):\n{market_data}"
+        f"\n\n---\n\nחדשות עדכניות שנאספו עכשיו:\n\n{news_context}"
+    )
 
     print("[STEP_2] Calling LLM API (Gemini → Groq fallback)...")
     ok, output = call_groq(base_prompt, user_content)

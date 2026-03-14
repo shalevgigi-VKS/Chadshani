@@ -17,11 +17,12 @@
 ═══════════════════════════════════════════
 
 ## 0. מדד הפחד והחמדנות
-בדוק וציין:
-- CNN Fear & Greed Index: ערך (0–100) + תווית (Extreme Fear / Fear / Neutral / Greed / Extreme Greed) + שינוי מהשבוע שעבר
-- Crypto Fear & Greed Index: ערך (0–100) + תווית + שינוי
-- VIX: ערך נוכחי + מגמה (עולה/יורד) + רמת הסיכון שהוא משקף
-- פסקת ניתוח: מה שלושת המדדים האלה אומרים יחד על מצב הרוח בשוק כרגע — האם ישנה סתירה ביניהם? מה המשמעות המעשית?
+השתמש **אך ורק** בנתוני השוק בזמן אמת שסופקו לך בהודעת המשתמש — אל תמציא ערכים.
+ציין:
+- CNN Fear & Greed Index: ערך + תווית + שינוי מהשבוע שעבר
+- Crypto Fear & Greed Index: ערך + תווית
+- VIX: ערך מדויק + מגמה + רמת סיכון
+- פסקת ניתוח: מה שלושת המדדים אומרים יחד — סתירות, משמעות מעשית.
 
 ## 1. תמונת מצב מיידית
 פסקה קצרה וחדה (3–5 משפטים) שמסבירה את הטון הכללי עכשיו: Risk-on או Risk-off? הכוח המרכזי שמניע את השוק היום. המגמות הבולטות ביותר ברגע זה. מה ייזכר מהיום הזה.
@@ -60,37 +61,51 @@
 • מחזורי מסחר: נפחים ב-CEX ו-DEX
 
 ## 5. סקטור השבבים — תשתיות חומרה
-הברזלים שמריצים את הכל:
-• Nvidia (NVDA): מחיר מניה, שינוי, עדכוני מוצרים/ביקוש (H100, H200, B200/Blackwell), הזמנות hyperscalers
-• TSMC (TSM): מחיר, כושר ייצור, עדכוני תהליך (3nm, 2nm), לקוחות
-• Broadcom (AVGO): מחיר, עדכוני ASIC מותאמים-לקוח, תשתיות רשת
-• AMD: מחיר, תחרות עם Nvidia, MI300X
-• יצרניות זיכרון: SK Hynix, Samsung, Micron — HBM3/HBM4, DRAM
-• שרשרת אספקה: CoWoS packaging, OSAT, בקבוקי צוואר
-• דאטה-סנטרים: השקעות capex של hyperscalers (Microsoft, Google, Amazon, Meta), נדל"ן חוות שרתים, תשתיות קירור ואנרגיה
+פורמט מחייב לכל שורת מניה: **TICKER (שם)** | מחיר | שינוי% | פרטים
+
+דוגמה:
+**NVDA (Nvidia)** | 500 | +2.0% | H100, H200 — GPU בשוק
+**TSM (TSMC)** | 100 | +1.0% | CoWoS-1 | 3nm
+**AVGO (Broadcom)** | 500 | +1.0% | ASIC, VMware-ל AI
+**AMD** | 100 | +2.0% | MI300X | מאיים על Nvidia
+**SK Hynix** | — | עלה | HBM3
+**Samsung** | — | עלה | NAND, DRAM
+**MU (Micron)** | — | עלה | HBM, DRAM
+
+לאחר הטבלה — שורות נרטיב על CoWoS packaging, hyperscalers Capex (Amazon, Google, Microsoft).
 
 ## 6. סקטור התוכנה — ענקיות וסייבר
-מעקב קבוע:
-• Google / Alphabet: עדכוני מוצרים, פרסום, ענן (GCP), רגולציה
-• Microsoft: Azure, Office 365, Dynamics, תוצאות עסקיות, רכישות
-• Apple: מוצרים, שירותים, שרשרת אספקה, מדיניות App Store
-• Meta: פלטפורמות, פרסום, Reality Labs, AI
-• Amazon: AWS, e-commerce, לוגיסטיקה
-• Adobe: Creative Cloud, Firefly AI, תחרות
-• Salesforce: CRM, Agentforce AI, תחרות
-• חברות סייבר: CrowdStrike, Palo Alto Networks, SentinelOne, Zscaler — איומים, עדכונים, מגמות
-• תשתיות ענן: AWS vs Azure vs GCP — נתחי שוק, מחירים, שירותים חדשים
+פורמט מחייב לכל ענקית: **TICKER** | **שם** | מחיר | שינוי% | פרטים קצרים
+
+דוגמה:
+**GOOGL** | **Alphabet** | 2,500 | +1.0% | Gemini, Cloud, Workspace
+**MSFT** | **Microsoft** | 300 | +1.0% | Azure AI, Copilot
+**AAPL** | **Apple** | 150 | +1.0% | iPhone 16, Vision Pro
+**META** | **Meta** | 300 | +2.0% | פרסום חזק, Llama
+**AMZN** | **Amazon** | 3,000 | +1.0% | AWS, e-commerce
+**ADBE** | **Adobe** | 500 | +1.0% | Firefly AI, Creative Cloud
+**CRM** | **Salesforce** | 200 | +1.0% | Einstein AI
+
+סייבר (שורות נפרדות אחרי הטבלה):
+**CRWD (CrowdStrike)** | מוביל EDR
+**PANW (Palo Alto Networks)** | SASE
+**S (SentinelOne)** | AI XDR
+**ZS (Zscaler)** | Zero-trust
 
 ## 7. תחום ה-AI — עדכוני מודלים ותעשייה
-• GPT / OpenAI: עדכוני מודל, API, השקות, רגולציה, עסקאות
-• Gemini / Google DeepMind: גרסאות, ביצועים, integrations
-• Claude / Anthropic: גרסאות, capabilities, עסקאות, funding
-• Llama / Meta AI: עדכוני open source, קהילה, fine-tuning
-• Grok / xAI: עדכונים, השוואות
-• מודלים נוספים בולטים: Mistral, Cohere, Perplexity
-• תחרות עסקית: מי מוביל בהכנסות, בנפח שימוש, בחוזים enterprise
-• רגולציה ומדיניות AI: אירופה (AI Act), ארה"ב (executive orders), סין
-• compute ותשתיות: מחסור/שפע בGPU, עלויות inference, efficiency
+פורמט מחייב לכל מודל: **שם (חברה)** | פרט1 | פרט2 | פרט3
+
+דוגמה:
+**GPT-4o (OpenAI)** | multimodal — vision, audio, code | API
+**Gemini 1.5 Pro (Google)** | 1M token context | Workspace integration
+**Claude 3 Opus (Anthropic)** | מוביל בבנצ'מארקים | context 200K | פעיל
+**Llama 3 (Meta)** | open source | fine-tuning
+**Grok 1.5 (xAI)** | vision support
+**Mistral Large** | מחיר נמוך, ביצועים טובים
+**Cohere** | ארגוני, RAG
+**Perplexity AI** | חיפוש | Pro API
+
+לאחר המודלים — שורות על: תחרות OpenAI מול Google מול Anthropic, רגולציה (EU AI Act, Biden EO, סין), תשתיות (מחסור GPU, עלויות inference יורדות).
 
 ## 8. עדכוני כלי AI — רזולוציה יומיומית
 בדיקה מעשית של כלים בשימוש יומי — עבור כל כלי: מה השתנה, למה זה חשוב, וכיצד זה משפיע על עבודה יומיומית.
