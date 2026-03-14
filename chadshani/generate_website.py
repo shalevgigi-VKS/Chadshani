@@ -136,11 +136,12 @@ def git_push(commit_msg: str) -> bool:
 
 def send_telegram(message: str) -> None:
     try:
-        requests.post(
+        resp = requests.post(
             f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
             json={"chat_id": TELEGRAM_CHAT_ID, "text": message},
             timeout=10,
         )
+        print(f"[TELEGRAM_STATUS] {resp.status_code} {resp.text[:300]}")
     except Exception as e:
         print(f"[TELEGRAM_WARN] {e}")
 
