@@ -316,14 +316,15 @@
     /* ════════════════════════════════════════════
        STOCKS TABLE — SECTION 6
     ════════════════════════════════════════════ */
-    .stocks-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .stocks-table { width: 100%; border-collapse: collapse; font-size: .82rem; table-layout: auto; }
     .stocks-table th {
       background: transparent; padding: .4rem .6rem;
-      text-align: right; font-size: .67rem; font-weight: 800;
+      text-align: center; font-size: .67rem; font-weight: 800;
       color: var(--text-muted); text-transform: uppercase;
-      letter-spacing: .06em; border-bottom: none;
+      letter-spacing: .06em; border-bottom: 1px solid var(--border);
     }
-    .stocks-table td { padding: .32rem .6rem; border: none; vertical-align: middle; }
+    .stocks-table td { padding: .32rem .6rem; border: none; vertical-align: middle; text-align: center; }
+    .stocks-table td:first-child { text-align: right; }
     .stocks-table tr:hover td { background: rgba(0,0,0,.02); }
 
     /* ════════════════════════════════════════════
@@ -652,21 +653,37 @@ PLACEHOLDER_GAUGES_JSON
       return html + '</div>';
     }
 
+    /* color +/- values anywhere in text */
+    function colorize(s) {
+      return s.replace(/([-+][0-9]+\.?[0-9]*\s*%?)/g, (m) => {
+        const cls = m.trimStart().startsWith('+') ? 'chg-up' : 'chg-dn';
+        return `<span class="${cls}">${m}</span>`;
+      });
+    }
+
     function buildSoftwareTable(content) {
       const lines = content.split('\n');
-      let tableRows = [], otherHtml = '', inOther = false;
+      let tableRows = [], otherLines = [];
       for (const line of lines) {
-        const t = line.trim(); if (!t) continue;
-        if (/^\|[\s\-|]+\|$/.test(t)) continue; // skip markdown separator rows
-        const m = t.match(/^\*\*([A-Z]+)\s*\(([^)]+)\)\*\*\s*\|\s*([\d,]+)\s*\|\s*([^|]+)\|\s*(.+)$/);
-        if (m && !inOther) {
-          const chgCls = m[4].trim().startsWith('+') ? 'chg-up' : m[4].trim().startsWith('-') ? 'chg-dn' : '';
-          tableRows.push(`<tr><td><span class="ticker-badge">${esc(m[1])}</span></td><td><strong>${esc(m[2])}</strong></td><td>${esc(m[3])}</td><td class="${chgCls}">${esc(m[4].trim())}</td><td>${md(m[5])}</td></tr>`);
-        } else { inOther = true; otherHtml += '<div class="ticker-row" style="flex-wrap:wrap">' + md(t) + '</div>'; }
+        const t = line.trim();
+        if (!t) continue;
+        if (/^\|[\s\-:|]+\|$/.test(t)) continue; // skip separator rows
+        // any pipe-separated row with 2+ pipes → table row
+        const cols = t.split('|').map(c => c.trim()).filter(c => c !== '');
+        if (cols.length >= 2) {
+          const cells = cols.map(c => `<td>${colorize(md(c))}</td>`).join('');
+          tableRows.push(`<tr>${cells}</tr>`);
+        } else {
+          otherLines.push(t);
+        }
       }
       let html = '';
-      if (tableRows.length) html += `<table class="stocks-table"><thead><tr><th>טיקר</th><th>שם</th><th>מחיר</th><th>שינוי</th><th>פרטים</th></tr></thead><tbody>${tableRows.join('')}</tbody></table>`;
-      if (otherHtml) html += `<div class="ticker-list" style="margin-top:.75rem">${otherHtml}</div>`;
+      if (tableRows.length) {
+        html += `<table class="stocks-table"><tbody>${tableRows.join('')}</tbody></table>`;
+      }
+      if (otherLines.length) {
+        html += `<div class="section-content" style="margin-top:.6rem">${colorize(md(otherLines.join('\n')))}</div>`;
+      }
       return html;
     }
 
@@ -696,7 +713,7 @@ PLACEHOLDER_GAUGES_JSON
       let body;
       if      (TABLE_SECTIONS.has(sec.num))  body = buildSoftwareTable(sec.content);
       else if (sec.num===10)                 body = buildConsoleContent(sec.content);
-      else                                   body = `<div class="section-content">${md(sec.content)}</div>`;
+      else                                   body = `<div class="section-content">${colorize(md(sec.content))}</div>`;
       return `
 <article class="section-card" id="section-${sec.num}"
   style="border-top:3px solid ${cfg.border};background:${cfg.bg}">
