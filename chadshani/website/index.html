@@ -1,545 +1,539 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>חדשני | דשבורד חדשות טכנולוגיה</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>חדשני — מעדכן החדשות</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
+    /* ════════════════════════════════════════════
+       RESET & BASE
+    ════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #07080f;
-      --surface: #0f1018;
-      --surface2: #161824;
-      --border: #1e2130;
-      --text: #e2e8f0;
-      --muted: #64748b;
-      --ai: #7c3aed;
-      --ai-glow: rgba(124,58,237,0.15);
-      --chips: #0ea5e9;
-      --chips-glow: rgba(14,165,233,0.15);
-      --market: #10b981;
-      --market-glow: rgba(16,185,129,0.15);
-      --crypto: #f59e0b;
-      --crypto-glow: rgba(245,158,11,0.15);
-      --software: #ec4899;
-      --software-glow: rgba(236,72,153,0.15);
-      --general: #6366f1;
-      --general-glow: rgba(99,102,241,0.15);
+      --bg:          #f4f6f9;
+      --surface:     #ffffff;
+      --border:      #e2e8f0;
+      --text:        #1e293b;
+      --text-muted:  #64748b;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md:   0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
+      --shadow-lg:   0 10px 30px rgba(0,0,0,.10);
+      --radius:      16px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Heebo', sans-serif;
       background: var(--bg);
       color: var(--text);
+      font-size: 15px;
+      line-height: 1.9;
       min-height: 100vh;
-      background-image:
-        radial-gradient(ellipse at 20% 0%, rgba(124,58,237,0.06) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 10%, rgba(14,165,233,0.05) 0%, transparent 50%);
     }
 
-    /* ── HEADER ── */
-    header {
+    /* ════════════════════════════════════════════
+       HEADER
+    ════════════════════════════════════════════ */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(7,8,15,0.85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
     }
     .header-inner {
       max-width: 1400px;
       margin: 0 auto;
+      padding: .85rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 64px;
-      gap: 1.5rem;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .logo-icon {
-      width: 32px; height: 32px;
-      background: linear-gradient(135deg, var(--ai), var(--chips));
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 900; color: #fff;
-      flex-shrink: 0;
-    }
-    .logo-text {
-      font-size: 1.25rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #e2e8f0, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
-    }
-    .logo-sub {
-      font-size: 0.7rem;
-      color: var(--muted);
-      margin-top: 2px;
-      letter-spacing: 0.5px;
-    }
-    #live-clock {
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-variant-numeric: tabular-nums;
-      background: var(--surface2);
-      padding: 0.35rem 0.8rem;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    #last-updated {
-      font-size: 0.75rem;
-      color: var(--muted);
-      white-space: nowrap;
+      gap: 1rem;
     }
 
-    /* ── NAV TABS ── */
-    nav {
+    /* Logo */
+    .logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+    .logo-icon {
+      width: 44px; height: 44px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 3px 12px rgba(245,158,11,.40);
+      flex-shrink: 0;
+    }
+    .logo-text { line-height: 1.15; }
+    .logo-title { font-size: 1.3rem; font-weight: 900; color: var(--text); letter-spacing: -.4px; }
+    .logo-sub   { font-size: .72rem; font-weight: 500; color: var(--text-muted); }
+
+    .ts-badge {
+      background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;
+      border-radius: 8px; padding: .3rem .85rem;
+      font-size: .78rem; font-weight: 600; white-space: nowrap;
+    }
+    .btn-export {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff; border: none; border-radius: 9px;
+      padding: .48rem 1.1rem;
+      font-family: 'Heebo', sans-serif; font-size: .82rem; font-weight: 700;
+      cursor: pointer; transition: opacity .15s; white-space: nowrap;
+    }
+    .btn-export:hover { opacity: .88; }
+
+    /* ════════════════════════════════════════════
+       PAGE LAYOUT
+    ════════════════════════════════════════════ */
+    .page-layout {
+      display: grid;
+      grid-template-columns: 215px 1fr;
+      max-width: 1400px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* ─── Sidebar ─────────────────────────────── */
+    .sidebar { position: sticky; top: 75px; }
+    .sidebar-inner {
       background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .7rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-title {
+      font-size: .68rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .07em;
+      padding: .35rem .5rem .55rem;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .5rem .6rem; border-radius: 9px;
+      text-decoration: none; color: var(--text-muted);
+      font-size: .81rem; font-weight: 500;
+      transition: background .12s, color .12s;
+      cursor: pointer; line-height: 1.3;
+    }
+    .nav-item:hover { background: #f8fafc; color: var(--text); }
+    .nav-item.active { color: var(--text); font-weight: 700; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ─── Main grid ───────────────────────────── */
+    .news-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; }
+    .col-main, .col-side { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    /* ════════════════════════════════════════════
+       SECTION CARDS
+    ════════════════════════════════════════════ */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .section-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+
+    .card-header {
+      display: flex; align-items: center; gap: .75rem;
+      padding: 1rem 1.25rem .8rem;
       border-bottom: 1px solid var(--border);
     }
-    .nav-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      gap: 0.25rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-inner::-webkit-scrollbar { display: none; }
-    .tab {
-      padding: 0.75rem 1.1rem;
-      font-size: 0.83rem;
-      font-weight: 600;
-      color: var(--muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      user-select: none;
-    }
-    .tab:hover { color: var(--text); }
-    .tab.active { color: var(--text); border-bottom-color: var(--active-color, #7c3aed); }
-    .tab-count {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1px 6px;
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-    .tab.active .tab-count { background: var(--active-color, #7c3aed); color: #fff; border-color: transparent; }
-
-    /* ── MAIN GRID ── */
-    main {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1.75rem 2rem 3rem;
-    }
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-      margin-top: 0.5rem;
-    }
-    .section-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .section-line {
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .section-badge {
-      font-size: 0.7rem;
-      padding: 3px 8px;
-      border-radius: 10px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    /* ── CARD ── */
-    .news-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.2rem 1.3rem;
-      border-right: 4px solid var(--card-color, #7c3aed);
-      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-      cursor: default;
-      position: relative;
-      overflow: hidden;
-    }
-    .news-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--card-glow, rgba(124,58,237,0.0));
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-    }
-    .news-card:hover {
-      transform: translateY(-2px);
-      background: var(--surface2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    }
-    .news-card:hover::before { opacity: 1; }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-    }
     .card-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
+      width: 42px; height: 42px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-      background: var(--card-glow-bg, rgba(124,58,237,0.15));
+      font-size: 1.3rem; flex-shrink: 0;
     }
-    .card-meta {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.3rem;
-    }
-    .card-badge {
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 8px;
-      background: var(--card-badge-bg, rgba(124,58,237,0.2));
-      color: var(--card-color, #7c3aed);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
+    .card-meta { flex: 1; min-width: 0; }
     .card-num {
-      font-size: 0.65rem;
-      color: var(--muted);
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: .1rem;
+    }
+    .card-title { font-size: 1rem; font-weight: 800; line-height: 1.3; }
+
+    .btn-copy {
+      background: #f1f5f9; border: 1px solid var(--border);
+      border-radius: 7px; padding: .28rem .6rem;
+      font-family: 'Heebo', sans-serif; font-size: .72rem; font-weight: 600;
+      color: var(--text-muted); cursor: pointer;
+      transition: background .12s; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-copy:hover { background: #e2e8f0; }
+    .btn-copy.copied { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+
+    .card-body { padding: 1rem 1.25rem 1.2rem; }
+    .section-content {
+      font-size: .875rem; line-height: 1.9; color: #374151;
+      white-space: pre-wrap; word-break: break-word;
     }
 
-    .card-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.4;
-      margin-bottom: 0.6rem;
+    /* ════════════════════════════════════════════
+       GAUGES — SECTION 0
+    ════════════════════════════════════════════ */
+    .gauges-row {
+      display: flex; gap: .85rem; margin-bottom: 1.1rem; flex-wrap: wrap;
     }
-    .card-body {
-      font-size: 0.82rem;
-      color: #94a3b8;
-      line-height: 1.65;
+    .gauge-wrap {
+      flex: 1; min-width: 110px;
+      background: #fafafa; border: 1px solid #f0f0f0;
+      border-radius: 12px; padding: .7rem .65rem .6rem; text-align: center;
     }
-    .card-body p { margin-bottom: 0.4rem; }
-    .card-body p:last-child { margin-bottom: 0; }
+    .gauge-label {
+      font-size: .65rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4rem;
+    }
+    .gauge-arc-wrap {
+      width: 100px; height: 55px; margin: 0 auto .35rem; overflow: visible;
+    }
+    .gauge-value-text { font-size: 1.45rem; font-weight: 900; line-height: 1; }
+    .gauge-sentiment {
+      font-size: .68rem; font-weight: 700;
+      border-radius: 5px; padding: .14rem .42rem;
+      display: inline-block; margin-top: .22rem;
+    }
 
-    /* ── HIGHLIGHT CARD (wider) ── */
-    .news-card.highlight {
-      grid-column: span 2;
+    /* ════════════════════════════════════════════
+       EMPTY STATE
+    ════════════════════════════════════════════ */
+    .empty-state {
+      text-align: center; padding: 5rem 2rem; color: var(--text-muted);
     }
-    @media (max-width: 900px) {
-      .news-card.highlight { grid-column: span 1; }
-    }
+    .empty-state .big-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .empty-state h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: .5rem; }
 
-    /* ── EMPTY STATE ── */
-    .empty {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--muted);
-    }
-    .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
-    .empty-text { font-size: 0.9rem; }
-
-    /* ── FOOTER ── */
-    footer {
+    /* ════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════ */
+    .site-footer {
       border-top: 1px solid var(--border);
-      padding: 1.25rem 2rem;
-      text-align: center;
+      text-align: center; padding: 1.5rem;
+      font-size: .78rem; color: var(--text-muted);
+      background: var(--surface); margin-top: 2rem;
     }
-    .footer-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .footer-sig {
-      font-size: 0.75rem;
-      font-weight: 800;
-      color: var(--muted);
-      letter-spacing: 1px;
-      font-family: 'Courier New', monospace;
-    }
-    .footer-info {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-    .footer-dots {
-      display: flex; gap: 0.4rem; align-items: center;
-    }
-    .dot {
-      width: 6px; height: 6px; border-radius: 50%;
+    .pulse-dot {
+      display: inline-block; width: 7px; height: 7px;
+      border-radius: 50%; background: #22c55e;
       animation: pulse 2s infinite;
+      vertical-align: middle; margin-left: .35rem;
     }
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(.85); }
     }
 
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    /* ════════════════════════════════════════════
+       TOAST
+    ════════════════════════════════════════════ */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e293b; color: #fff;
+      padding: .6rem 1.2rem; border-radius: 10px;
+      font-size: .82rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); z-index: 9999;
+      transition: transform .25s ease; pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      header, nav .nav-inner, main { padding-right: 1rem; padding-left: 1rem; }
-      .cards-grid { grid-template-columns: 1fr; }
-      .logo-sub { display: none; }
-      .header-inner { height: 56px; }
+    /* ════════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .sidebar-inner { display: flex; flex-wrap: wrap; gap: .4rem; padding: .5rem; }
+      .sidebar-title { width: 100%; }
+    }
+    @media (max-width: 780px) {
+      .news-grid { grid-template-columns: 1fr; }
+      .header-inner { padding: .65rem 1rem; flex-wrap: wrap; }
+      .page-layout { padding: 0 .75rem; margin-top: 1rem; }
+      .gauges-row { flex-direction: column; }
+    }
+
+    /* ════════════════════════════════════════════
+       PRINT
+    ════════════════════════════════════════════ */
+    @media print {
+      .site-header, .sidebar, .btn-copy, .btn-export { display: none !important; }
+      .page-layout, .news-grid { grid-template-columns: 1fr !important; }
+      .section-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="logo">
-      <div class="logo-icon">ח</div>
-      <div>
-        <div class="logo-text">חדשני</div>
-        <div class="logo-sub">דשבורד חדשות טכנולוגיה</div>
-      </div>
-    </div>
-    <span id="last-updated"></span>
-    <span id="live-clock"></span>
-  </div>
-</header>
-
-<nav>
-  <div class="nav-inner" id="nav-tabs">
-    <!-- tabs injected by JS -->
-  </div>
-</nav>
-
-<main id="main-content">
-  <!-- cards injected by JS -->
-</main>
-
-<footer>
-  <div class="footer-inner">
-    <span class="footer-sig">S.G</span>
-    <div class="footer-dots">
-      <div class="dot" style="background:#7c3aed; animation-delay:0s"></div>
-      <div class="dot" style="background:#0ea5e9; animation-delay:0.3s"></div>
-      <div class="dot" style="background:#10b981; animation-delay:0.6s"></div>
-      <div class="dot" style="background:#f59e0b; animation-delay:0.9s"></div>
-    </div>
-    <span class="footer-info" id="footer-stats"></span>
-  </div>
-</footer>
-
-<script>
-// ── CATEGORY CONFIG ──
-const CATEGORIES = {
-  'AI': {
-    label: 'בינה מלאכותית', icon: '🤖',
-    color: '#7c3aed', glow: 'rgba(124,58,237,0.15)',
-    badgeBg: 'rgba(124,58,237,0.2)'
-  },
-  'שבבים': {
-    label: 'שבבים וחומרה', icon: '⚡',
-    color: '#0ea5e9', glow: 'rgba(14,165,233,0.15)',
-    badgeBg: 'rgba(14,165,233,0.2)'
-  },
-  'שווקים': {
-    label: 'שוק ההון', icon: '📈',
-    color: '#10b981', glow: 'rgba(16,185,129,0.15)',
-    badgeBg: 'rgba(16,185,129,0.2)'
-  },
-  'קריפטו': {
-    label: 'קריפטו', icon: '₿',
-    color: '#f59e0b', glow: 'rgba(245,158,11,0.15)',
-    badgeBg: 'rgba(245,158,11,0.2)'
-  },
-  'תוכנה': {
-    label: 'תוכנה', icon: '💻',
-    color: '#ec4899', glow: 'rgba(236,72,153,0.15)',
-    badgeBg: 'rgba(236,72,153,0.2)'
-  },
-  'כללי': {
-    label: 'כללי', icon: '🌐',
-    color: '#6366f1', glow: 'rgba(99,102,241,0.15)',
-    badgeBg: 'rgba(99,102,241,0.2)'
-  }
-};
-
-function getCatKey(raw) {
-  for (const key of Object.keys(CATEGORIES)) {
-    if (raw && raw.includes(key)) return key;
-  }
-  return 'כללי';
-}
-
-// ── CLOCK ──
-function updateClock() {
-  const now = new Date();
-  const pad = n => String(n).padStart(2, '0');
-  const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-  document.getElementById('live-clock').textContent =
-    `יום ${days[now.getDay()]} | ${pad(now.getDate())}.${pad(now.getMonth()+1)}.${now.getFullYear()} — ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// ── RENDER ──
-let currentFilter = 'all';
-
-function renderTabs(newsData) {
-  const counts = { all: newsData.length };
-  for (const item of newsData) {
-    const k = getCatKey(item.category);
-    counts[k] = (counts[k] || 0) + 1;
-  }
-  const nav = document.getElementById('nav-tabs');
-  const tabs = [
-    { key: 'all', label: 'הכל', icon: '◈', color: '#e2e8f0' },
-    ...Object.entries(CATEGORIES).filter(([k]) => counts[k]).map(([k, v]) => ({
-      key: k, label: v.label, icon: v.icon, color: v.color
-    }))
-  ];
-  nav.innerHTML = tabs.map(t => `
-    <div class="tab ${t.key === currentFilter ? 'active' : ''}"
-         style="--active-color: ${t.color}"
-         onclick="filterCards('${t.key}', '${t.color}')">
-      <span>${t.icon}</span>
-      <span>${t.label}</span>
-      ${counts[t.key] ? `<span class="tab-count">${counts[t.key]}</span>` : ''}
-    </div>
-  `).join('');
-}
-
-function filterCards(key, color) {
-  currentFilter = key;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  document.querySelectorAll('.section-wrapper').forEach(sec => {
-    sec.style.display = (key === 'all' || sec.dataset.cat === key) ? '' : 'none';
-  });
-}
-
-function renderCards(newsData) {
-  const main = document.getElementById('main-content');
-  if (!newsData || newsData.length === 0) {
-    main.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">אין חדשות זמינות כרגע</div></div>`;
-    return;
-  }
-
-  // Group by category
-  const groups = {};
-  newsData.forEach((item, i) => {
-    const k = getCatKey(item.category);
-    if (!groups[k]) groups[k] = [];
-    groups[k].push({ ...item, idx: i + 1 });
-  });
-
-  const catOrder = ['AI', 'שבבים', 'שווקים', 'קריפטו', 'תוכנה', 'כללי'];
-  let html = '';
-
-  for (const cat of catOrder) {
-    if (!groups[cat]) continue;
-    const cfg = CATEGORIES[cat];
-    const items = groups[cat];
-    html += `
-      <div class="section-wrapper" data-cat="${cat}">
-        <div class="section-header">
-          <span style="font-size:1.2rem">${cfg.icon}</span>
-          <span class="section-title">${cfg.label}</span>
-          <div class="section-line"></div>
-          <span class="section-badge" style="background:${cfg.badgeBg};color:${cfg.color}">${items.length} פריטים</span>
+  <!-- ══════════════ HEADER ══════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="#">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text">
+          <div class="logo-title">חדשני</div>
+          <div class="logo-sub">מעדכן החדשות</div>
         </div>
-        <div class="cards-grid">
-          ${items.map((item, ci) => renderCard(item, cfg, ci === 0 && items.length > 2)).join('')}
+      </a>
+      <span class="ts-badge" id="ts-badge">טוען...</span>
+      <button class="btn-export" onclick="exportAll()">ייצא הכל ✂</button>
+    </div>
+  </header>
+
+  <!-- ══════════════ LAYOUT ══════════════════════ -->
+  <div class="page-layout">
+
+    <nav class="sidebar">
+      <div class="sidebar-inner" id="sidebar-inner">
+        <div class="sidebar-title">ניווט מהיר</div>
+      </div>
+    </nav>
+
+    <main>
+      <div class="empty-state" id="empty-state">
+        <div class="big-icon">📡</div>
+        <h2>טוען דסק חדשות...</h2>
+        <p>הנתונים יופיעו בקרוב</p>
+      </div>
+      <div id="news-cols" style="display:none">
+        <div class="news-grid">
+          <div class="col-main" id="col-main"></div>
+          <div class="col-side" id="col-side"></div>
         </div>
       </div>
-    `;
-  }
+    </main>
 
-  main.innerHTML = html;
-  renderTabs(newsData);
+  </div>
 
-  // Footer stats
-  document.getElementById('footer-stats').textContent = `${newsData.length} פריטים ב-${Object.keys(groups).length} קטגוריות`;
-}
+  <!-- ══════════════ FOOTER ══════════════════════ -->
+  <footer class="site-footer">
+    <span class="pulse-dot"></span>
+    חדשני — מעדכן חדשות מודיעיני אוטונומי | מופעל על-ידי Gemini AI + Google Search
+  </footer>
 
-function renderCard(item, cfg, highlight) {
-  const bodyLines = (item.bullets || []).map(b => `<p>• ${b}</p>`).join('');
-  return `
-    <div class="news-card ${highlight ? 'highlight' : ''}"
-         style="--card-color:${cfg.color}; --card-glow:${cfg.glow}; --card-glow-bg:${cfg.badgeBg}">
-      <div class="card-top">
-        <div class="card-icon" style="background:${cfg.badgeBg}">${cfg.icon}</div>
-        <div class="card-meta">
-          <span class="card-badge" style="background:${cfg.badgeBg};color:${cfg.color}">${cfg.label}</span>
-          <span class="card-num">#${item.idx}</span>
-        </div>
-      </div>
-      <div class="card-title">${item.title}</div>
-      <div class="card-body">${bodyLines || `<p>${item.summary || ''}</p>`}</div>
-    </div>
-  `;
-}
+  <div class="toast" id="toast"></div>
 
-// ── LOAD DATA ──
-function loadNews() {
-  const dataEl = document.getElementById('news-data');
-  if (!dataEl) return;
-  try {
-    const news = JSON.parse(dataEl.textContent);
-    const updated = dataEl.dataset.updated || '';
-    if (updated) document.getElementById('last-updated').textContent = `עודכן: ${updated}`;
-    renderCards(news);
-  } catch(e) {
-    console.error('Failed to parse news data:', e);
-    document.getElementById('main-content').innerHTML =
-      `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">שגיאה בטעינת הנתונים</div></div>`;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', loadNews);
-</script>
-
-<!-- NEWS DATA (replaced by generate_website.py) -->
-<script id="news-data" type="application/json" data-updated="PLACEHOLDER_DATETIME">
+  <!-- ══════════════ DATA ════════════════════════ -->
+  <script id="news-data" type="application/json" data-updated="PLACEHOLDER_DATETIME">
 PLACEHOLDER_NEWS_JSON
-</script>
+  </script>
+  <script id="gauges-data" type="application/json">
+PLACEHOLDER_GAUGES_JSON
+  </script>
 
+  <!-- ══════════════ APP ═════════════════════════ -->
+  <script>
+    /* ─── Section metadata ──────────────────────── */
+    const SECS = [
+      { num:0, icon:'📊', label:'מדד פחד וחמדנות',  col:'side',
+        bg:'#fffbeb', border:'#fcd34d', color:'#d97706', tc:'#92400e', lb:'#fef3c7' },
+      { num:1, icon:'🌐', label:'תמונת מצב מיידית', col:'main',
+        bg:'#f0fdf4', border:'#86efac', color:'#16a34a', tc:'#14532d', lb:'#dcfce7' },
+      { num:2, icon:'📈', label:'שוק ההון הכללי',   col:'main',
+        bg:'#eff6ff', border:'#93c5fd', color:'#2563eb', tc:'#1e3a8a', lb:'#dbeafe' },
+      { num:3, icon:'🗺', label:'מפת הסקטורים',     col:'side',
+        bg:'#faf5ff', border:'#c4b5fd', color:'#7c3aed', tc:'#4c1d95', lb:'#ede9fe' },
+      { num:4, icon:'₿',  label:'שוק הקריפטו',      col:'main',
+        bg:'#fff7ed', border:'#fdba74', color:'#ea580c', tc:'#7c2d12', lb:'#ffedd5' },
+      { num:5, icon:'⚡', label:'סקטור השבבים',     col:'main',
+        bg:'#f0f9ff', border:'#7dd3fc', color:'#0284c7', tc:'#0c4a6e', lb:'#e0f2fe' },
+      { num:6, icon:'💻', label:'סקטור התוכנה',     col:'side',
+        bg:'#fdf4ff', border:'#e879f9', color:'#c026d3', tc:'#701a75', lb:'#fae8ff' },
+      { num:7, icon:'🤖', label:'תחום ה-AI',         col:'main',
+        bg:'#f5f3ff', border:'#a78bfa', color:'#7c3aed', tc:'#4c1d95', lb:'#ede9fe' },
+      { num:8, icon:'🛠', label:'עדכוני כלי AI',     col:'side',
+        bg:'#f0fdfa', border:'#5eead4', color:'#0d9488', tc:'#134e4a', lb:'#ccfbf1' },
+      { num:9, icon:'⚠️', label:'סיכום וסיכונים',   col:'side',
+        bg:'#fff1f2', border:'#fda4af', color:'#e11d48', tc:'#881337', lb:'#ffe4e6' },
+    ];
+
+    /* ─── Gauge helpers ─────────────────────────── */
+    function fngInfo(val) {
+      if (val == null) return { text:'N/A', bg:'#e2e8f0', fg:'#64748b' };
+      if (val <= 24)   return { text:'פחד קיצוני',     bg:'#fee2e2', fg:'#dc2626' };
+      if (val <= 44)   return { text:'פחד',             bg:'#fed7aa', fg:'#ea580c' };
+      if (val <= 54)   return { text:'ניטרלי',          bg:'#fef9c3', fg:'#ca8a04' };
+      if (val <= 74)   return { text:'חמדנות',          bg:'#d1fae5', fg:'#059669' };
+                       return { text:'חמדנות קיצונית', bg:'#bbf7d0', fg:'#16a34a' };
+    }
+
+    function arcColor(val, isVix) {
+      if (val == null) return '#cbd5e1';
+      if (isVix) return val > 25 ? '#ef4444' : val > 15 ? '#f59e0b' : '#22c55e';
+      if (val <= 24) return '#ef4444';
+      if (val <= 44) return '#f97316';
+      if (val <= 54) return '#eab308';
+      if (val <= 74) return '#84cc16';
+      return '#22c55e';
+    }
+
+    function arcSVG(pct, color) {
+      const W=110,H=60,R=46,cx=55,cy=60;
+      const a0=Math.PI, a1=2*Math.PI;
+      const p = pct != null ? Math.max(0,Math.min(1,pct)) : 0;
+      const a = a0 + p*(a1-a0);
+      const px=(ang)=>cx+R*Math.cos(ang), py=(ang)=>cy+R*Math.sin(ang);
+      const [x0,y0]=[px(a0),py(a0)], [x1,y1]=[px(a1),py(a1)], [xF,yF]=[px(a),py(a)];
+      const la = p > .5 ? 1 : 0;
+      const fill = p>0 ? `<path d="M${x0} ${y0} A${R} ${R} 0 ${la} 1 ${xF} ${yF}"
+        fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round"/>` : '';
+      return `<svg viewBox="0 0 ${W} ${H}" style="overflow:visible;width:100%;height:auto">
+        <path d="M${x0} ${y0} A${R} ${R} 0 1 1 ${x1} ${y1}"
+          fill="none" stroke="#e2e8f0" stroke-width="9" stroke-linecap="round"/>
+        ${fill}
+      </svg>`;
+    }
+
+    function gaugesHTML(gauges) {
+      if (!gauges) return '';
+      const items = [
+        { label:'CNN F&G',   val:gauges.fng,        isVix:false },
+        { label:'Crypto F&G',val:gauges.crypto_fng,  isVix:false },
+        { label:'VIX',       val:gauges.vix,         isVix:true  },
+      ];
+      return '<div class="gauges-row">' + items.map(it => {
+        const v   = it.val != null ? Math.round(it.val) : null;
+        const pct = it.isVix ? (v!=null ? Math.min(1,v/50) : null) : (v!=null ? v/100 : null);
+        const col = arcColor(v, it.isVix);
+        const lbl = it.isVix
+          ? { text: v!=null?(v>25?'סיכון גבוה':v>15?'מתון':'נמוך'):'N/A',
+              bg: v!=null?(v>25?'#fee2e2':v>15?'#fef9c3':'#d1fae5'):'#e2e8f0',
+              fg: v!=null?(v>25?'#dc2626':v>15?'#ca8a04':'#059669'):'#64748b' }
+          : fngInfo(v);
+        return `<div class="gauge-wrap">
+          <div class="gauge-label">${it.label}</div>
+          <div class="gauge-arc-wrap">${arcSVG(pct,col)}</div>
+          <div class="gauge-value-text" style="color:${col}">${v!=null?v:'—'}</div>
+          <span class="gauge-sentiment" style="background:${lbl.bg};color:${lbl.fg}">${lbl.text}</span>
+        </div>`;
+      }).join('') + '</div>';
+    }
+
+    /* ─── Card builder ──────────────────────────── */
+    function buildCard(sec, cfg, gauges) {
+      const g = sec.num===0 ? gaugesHTML(gauges) : '';
+      return `
+<article class="section-card" id="section-${sec.num}"
+  style="border-top:3px solid ${cfg.border};background:${cfg.bg}">
+  <div class="card-header">
+    <div class="card-icon" style="background:${cfg.lb};color:${cfg.color}">${cfg.icon}</div>
+    <div class="card-meta">
+      <div class="card-num" style="color:${cfg.color}">סעיף ${sec.num}</div>
+      <div class="card-title" style="color:${cfg.tc}">${sec.title||cfg.label}</div>
+    </div>
+    <button class="btn-copy" onclick="copySection(${sec.num},this)">העתק</button>
+  </div>
+  <div class="card-body">
+    ${g}
+    <div class="section-content">${esc(sec.content)}</div>
+  </div>
+</article>`;
+    }
+
+    /* ─── Sidebar ───────────────────────────────── */
+    function buildNav(sections) {
+      const sb = document.getElementById('sidebar-inner');
+      sections.forEach(sec => {
+        const cfg = SECS.find(c=>c.num===sec.num); if(!cfg) return;
+        const a = document.createElement('a');
+        a.className='nav-item'; a.href=`#section-${sec.num}`; a.dataset.num=sec.num;
+        a.innerHTML=`<span class="nav-dot" style="background:${cfg.border}"></span>${cfg.icon} ${cfg.label}`;
+        a.dataset.lb = cfg.lb; a.dataset.tc = cfg.tc;
+        sb.appendChild(a);
+      });
+    }
+
+    /* ─── Scroll spy ────────────────────────────── */
+    function initSpy() {
+      const cards = document.querySelectorAll('.section-card');
+      const items = document.querySelectorAll('.nav-item');
+      if (!cards.length) return;
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const num = e.target.id.replace('section-','');
+          items.forEach(x => {
+            const on = x.dataset.num === num;
+            x.classList.toggle('active', on);
+            x.style.background = on ? (x.dataset.lb || '#f8fafc') : '';
+            x.style.color      = on ? (x.dataset.tc || '#1e293b') : '';
+          });
+        });
+      }, { rootMargin: '-25% 0px -65% 0px' });
+      cards.forEach(c => obs.observe(c));
+    }
+
+    /* ─── Util ──────────────────────────────────── */
+    function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function showToast(msg){
+      const t=document.getElementById('toast');
+      t.textContent=msg; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'),2200);
+    }
+
+    function copySection(num,btn){
+      const card=document.getElementById(`section-${num}`); if(!card)return;
+      const title  = card.querySelector('.card-title')?.textContent||'';
+      const content= card.querySelector('.section-content')?.textContent||'';
+      navigator.clipboard.writeText(`${title}\n\n${content}`).then(()=>{
+        btn.textContent='✓ הועתק'; btn.classList.add('copied');
+        setTimeout(()=>{btn.textContent='העתק';btn.classList.remove('copied');},2000);
+        showToast('הסעיף הועתק ללוח');
+      });
+    }
+
+    function exportAll(){
+      const ts   = document.getElementById('ts-badge')?.textContent||'';
+      const parts= [`חדשני — מעדכן החדשות\n${ts}\n${'═'.repeat(50)}`];
+      document.querySelectorAll('.section-card').forEach(card=>{
+        const title  = card.querySelector('.card-title')?.textContent||'';
+        const content= card.querySelector('.section-content')?.textContent||'';
+        parts.push(`\n${title}\n${'-'.repeat(30)}\n${content}`);
+      });
+      navigator.clipboard.writeText(parts.join('\n')).then(()=>showToast('כל הדסק הועתק ✓'));
+    }
+
+    /* ─── Init ──────────────────────────────────── */
+    function init(){
+      const dataEl  = document.getElementById('news-data');
+      const gaugeEl = document.getElementById('gauges-data');
+      let sections=[], gauges={};
+      try{ sections=JSON.parse(dataEl?.textContent||'[]'); }catch(e){}
+      try{ gauges  =JSON.parse(gaugeEl?.textContent||'{}');}catch(e){}
+
+      const ts = dataEl?.dataset.updated||'';
+      document.getElementById('ts-badge').textContent = ts?`עודכן: ${ts}`:'טרם עודכן';
+      document.title = ts?`חדשני | ${ts}`:'חדשני — מעדכן החדשות';
+
+      if(!sections.length) return;
+
+      document.getElementById('empty-state').style.display='none';
+      document.getElementById('news-cols').style.display='block';
+
+      const colMain=document.getElementById('col-main');
+      const colSide=document.getElementById('col-side');
+
+      sections.forEach(sec=>{
+        const cfg=SECS.find(c=>c.num===sec.num); if(!cfg)return;
+        const target = cfg.col==='main' ? colMain : colSide;
+        target.insertAdjacentHTML('beforeend', buildCard(sec,cfg,gauges));
+      });
+
+      buildNav(sections);
+      initSpy();
+    }
+
+    document.addEventListener('DOMContentLoaded',init);
+  </script>
 </body>
 </html>

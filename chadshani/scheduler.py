@@ -1,34 +1,58 @@
 """
-scheduler.py — runs generate_website.py on a fixed schedule + listens for Telegram trigger.
-Run this from an external terminal (not inside a Claude Code session).
+scheduler.py — runs the 2-stage news pipeline on a fixed schedule + Telegram trigger.
+Run from an external terminal (not inside a Claude Code session).
 
 Usage:
     python scheduler.py
 """
 import logging
+import os
 import subprocess
 import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import requests
 
-# ── CONFIG ─────────────────────────────────────────────────────────────────
-TELEGRAM_BOT_TOKEN = "8630512351:AAEgoHo7u22HVXS20xKc-7Q8uWzMYmqDD38"
-TELEGRAM_CHAT_ID   = "-1003840479051"
+# ── Minimal .env loader ────────────────────────────────────────────────────
 
-# Times (HH:MM) to auto-run each day
-SCHEDULED_TIMES = ["08:00", "12:00", "18:00", "22:00"]
+ROOT     = Path(__file__).parent
+ENV_FILE = ROOT / ".env"
+TZ_IL    = ZoneInfo("Asia/Jerusalem")
+
+
+def load_env(path: Path) -> None:
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, _, v = line.partition("=")
+            os.environ.setdefault(k.strip(), v.strip())
+
+
+load_env(ENV_FILE)
+
+# ── CONFIG ─────────────────────────────────────────────────────────────────
+
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID   = os.environ.get("TELEGRAM_CHAT_ID", "")
+
+# Israel time (HH:MM) — machine clock must be set to Asia/Jerusalem
+SCHEDULED_TIMES = ["07:00", "14:30", "21:00"]
 
 # Telegram keywords that trigger an immediate run
-TRIGGER_WORDS = ["עדכן", "חדשות", "update", "news"]
+TRIGGER_WORDS = ["עדכן", "עדכון", "תעדכן אותי", "חדשות", "update", "news"]
 
-POLL_INTERVAL  = 30   # seconds between Telegram polls
+POLL_INTERVAL        = 30   # seconds between Telegram polls
+MIN_TRIGGER_INTERVAL = 300  # 5-minute cooldown between manual triggers
+
 # ──────────────────────────────────────────────────────────────────────────
 
-ROOT           = Path(__file__).parent
-GENERATE       = ROOT / "generate_website.py"
+GENERATE_NEWS    = ROOT / "generate_news.py"
+GENERATE_WEBSITE = ROOT / "generate_website.py"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,18 +66,39 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-def run_pipeline():
-    log.info("[PIPELINE_START]")
-    result = subprocess.run(
-        [sys.executable, str(GENERATE)],
-        capture_output=True, text=True, encoding="utf-8"
-    )
-    if result.stdout:
-        log.info(result.stdout.strip())
-    if result.stderr:
-        log.warning(result.stderr.strip())
-    log.info("[PIPELINE_END] exit=%d", result.returncode)
+# ── Pipeline ───────────────────────────────────────────────────────────────
 
+def run_pipeline() -> None:
+    log.info("[PIPELINE_START]")
+
+    # Stage 1: generate news via Gemini
+    r1 = subprocess.run(
+        [sys.executable, str(GENERATE_NEWS)],
+        capture_output=True, text=True, encoding="utf-8", timeout=240,
+    )
+    if r1.stdout:
+        log.info(r1.stdout.strip())
+    if r1.stderr:
+        log.warning(r1.stderr.strip())
+
+    if r1.returncode != 0:
+        log.error("[PIPELINE_ABORT] generate_news.py failed (exit %d)", r1.returncode)
+        return
+
+    # Stage 2: build website + send Telegram
+    r2 = subprocess.run(
+        [sys.executable, str(GENERATE_WEBSITE)],
+        capture_output=True, text=True, encoding="utf-8", timeout=120,
+    )
+    if r2.stdout:
+        log.info(r2.stdout.strip())
+    if r2.stderr:
+        log.warning(r2.stderr.strip())
+
+    log.info("[PIPELINE_END] exit=%d", r2.returncode)
+
+
+# ── Telegram polling ───────────────────────────────────────────────────────
 
 def get_updates(offset: int) -> tuple[list, int]:
     try:
@@ -78,14 +123,21 @@ def is_trigger(text: str) -> bool:
     return any(w in t for w in TRIGGER_WORDS)
 
 
-def main():
-    log.info("scheduler started — schedule: %s", ", ".join(SCHEDULED_TIMES))
+# ── Main loop ──────────────────────────────────────────────────────────────
+
+def main() -> None:
+    if not TELEGRAM_BOT_TOKEN:
+        log.error("TELEGRAM_BOT_TOKEN not set — check .env file")
+        sys.exit(1)
+
+    log.info("scheduler started — schedule: %s (Israel time)", ", ".join(SCHEDULED_TIMES))
     offset = 0
-    last_run_minute = ""
+    last_run_minute   = ""
+    last_trigger_time = 0.0
 
     while True:
-        now = datetime.now()
-        current_minute = now.strftime("%H:%M")
+        now_il         = datetime.now(TZ_IL)
+        current_minute = now_il.strftime("%H:%M")
 
         # ── Scheduled run ──
         if current_minute in SCHEDULED_TIMES and current_minute != last_run_minute:
@@ -96,12 +148,18 @@ def main():
         # ── Telegram trigger ──
         updates, offset = get_updates(offset)
         for upd in updates:
-            msg = upd.get("message") or upd.get("channel_post") or {}
-            text = msg.get("text", "")
+            msg     = upd.get("message") or upd.get("channel_post") or {}
+            text    = msg.get("text", "")
             chat_id = str(msg.get("chat", {}).get("id", ""))
+
             if chat_id == TELEGRAM_CHAT_ID and is_trigger(text):
-                log.info("[TRIGGER] '%s'", text.strip())
-                run_pipeline()
+                elapsed = time.time() - last_trigger_time
+                if elapsed < MIN_TRIGGER_INTERVAL:
+                    log.info("[TRIGGER_COOLDOWN] %.0fs remaining", MIN_TRIGGER_INTERVAL - elapsed)
+                else:
+                    log.info("[TRIGGER] '%s'", text.strip())
+                    last_trigger_time = time.time()
+                    run_pipeline()
                 break
 
         time.sleep(POLL_INTERVAL)

@@ -1,0 +1,6 @@
+.env
+temp_news.txt
+*.log
+__pycache__/
+*.pyc
+output/

@@ -1,5 +1,6 @@
 """
-generate_website.py — reads temp_news.txt, builds website/index.html, pushes to GitHub Pages, sends URL to Telegram.
+generate_website.py — reads temp_news.txt, builds website/index.html,
+pushes to GitHub Pages, sends Telegram notification.
 """
 import json
 import os
@@ -7,93 +8,117 @@ import re
 import subprocess
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import requests
 
-# ── CONFIG ── edit these before first run ──────────────────────────────────
-TELEGRAM_BOT_TOKEN = "8630512351:AAEgoHo7u22HVXS20xKc-7Q8uWzMYmqDD38"
-TELEGRAM_CHAT_ID   = "-1003840479051"
-GITHUB_USER        = "YOUR_GITHUB_USER"   # e.g. "shalev"
-GITHUB_REPO        = "chadshani"          # repo name with Pages enabled
+# ── Minimal .env loader ────────────────────────────────────────────────────
+
+ROOT     = Path(__file__).parent
+ENV_FILE = ROOT / ".env"
+TZ_IL    = ZoneInfo("Asia/Jerusalem")
+
+
+def load_env(path: Path) -> None:
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, _, v = line.partition("=")
+            os.environ.setdefault(k.strip(), v.strip())
+
+
+load_env(ENV_FILE)
+
+# ── CONFIG ──────────────────────────────────────────────────────────────────
+
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID   = os.environ.get("TELEGRAM_CHAT_ID", "")
+GITHUB_USER        = os.environ.get("GITHUB_USER", "YOUR_GITHUB_USER")
+GITHUB_REPO        = os.environ.get("GITHUB_REPO", "chadshani")
+
 # ──────────────────────────────────────────────────────────────────────────
 
-ROOT         = Path(__file__).parent
-TEMP_NEWS    = ROOT / "temp_news.txt"
-TEMPLATE     = ROOT / "website" / "index.html"
-OUTPUT_HTML  = ROOT / "website" / "index.html"
-PAGES_URL    = f"https://{GITHUB_USER}.github.io/{GITHUB_REPO}/"
+TEMP_NEWS   = ROOT / "temp_news.txt"
+OUTPUT_HTML = ROOT / "website" / "index.html"
+PAGES_URL   = f"https://{GITHUB_USER}.github.io/{GITHUB_REPO}/"
 
-CATEGORY_MAP = {
-    "AI": "AI", "בינה מלאכותית": "AI", "מודל": "AI", "LLM": "AI",
-    "שבב": "שבבים", "חומרה": "שבבים", "NVIDIA": "שבבים", "GPU": "שבבים",
-    "שוק": "שווקים", "מניה": "שווקים", "בורסה": "שווקים", "נאסד": "שווקים",
-    "קריפטו": "קריפטו", "ביטקוין": "קריפטו", "BTC": "קריפטו", "ETH": "קריפטו",
-    "תוכנה": "תוכנה", "קוד": "תוכנה", "פיתוח": "תוכנה", "GitHub": "תוכנה",
-}
+SECTION_PATTERN = re.compile(r"^##\s+(\d+)\.\s+(.+)$", re.MULTILINE)
+TS_PATTERN      = re.compile(r"(\d{2}\.\d{2}\.\d{4}\s*\|\s*\d{2}:\d{2})")
 
-def detect_category(section_header: str) -> str:
-    for keyword, cat in CATEGORY_MAP.items():
-        if keyword.lower() in section_header.lower():
-            return cat
-    return "כללי"
+# Fear & Greed extraction (looks for "CNN: 42" or "42/100" or standalone number near keyword)
+FNG_PATTERN     = re.compile(
+    r"(?:CNN[^:]*:|Fear\s*&\s*Greed[^:]*:)\s*(\d{1,3})",
+    re.IGNORECASE,
+)
+CRYPTO_FNG_PATTERN = re.compile(
+    r"(?:Crypto[^:]*:|קריפטו[^:]*:)\s*(\d{1,3})",
+    re.IGNORECASE,
+)
+VIX_PATTERN = re.compile(r"VIX[^:]*:\s*([\d.]+)", re.IGNORECASE)
 
-def parse_news(text: str) -> list[dict]:
-    """Parse temp_news.txt sections into structured news items."""
-    items = []
-    sections = re.split(r'\n(?=##\s)', text.strip())
 
-    for section in sections:
-        lines = [l.strip() for l in section.strip().splitlines() if l.strip()]
-        if not lines:
-            continue
+# ── Parsers ────────────────────────────────────────────────────────────────
 
-        # Section header → category
-        header = lines[0].lstrip('#').strip()
-        category = detect_category(header)
+def extract_timestamp(text: str) -> str:
+    m = TS_PATTERN.search(text)
+    return m.group(1).strip() if m else datetime.now(TZ_IL).strftime("%d.%m.%Y %H:%M")
 
-        # Subsections: lines starting with ### or bold **title**
-        subsections = []
-        cur_title = header
-        cur_bullets = []
 
-        for line in lines[1:]:
-            if line.startswith('###') or line.startswith('**'):
-                if cur_bullets or cur_title != header:
-                    subsections.append((cur_title, cur_bullets))
-                cur_title = line.lstrip('#').strip().strip('*')
-                cur_bullets = []
-            elif line.startswith('-') or line.startswith('•'):
-                cur_bullets.append(line.lstrip('-•').strip())
-            elif line and not line.startswith('#'):
-                cur_bullets.append(line)
+def parse_sections(text: str) -> list[dict]:
+    """
+    Returns list of dicts: {num, title, content}
+    Sections 0–9 map to the 10-section news desk format.
+    """
+    matches = list(SECTION_PATTERN.finditer(text))
+    sections = []
+    for i, m in enumerate(matches):
+        start = m.end()
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        content = text[start:end].strip()
+        sections.append({
+            "num":     int(m.group(1)),
+            "title":   m.group(2).strip(),
+            "content": content,
+        })
+    return sections
 
-        if cur_title or cur_bullets:
-            subsections.append((cur_title, cur_bullets))
 
-        if not subsections:
-            continue
+def extract_gauge_values(section0_content: str) -> dict:
+    """Extract numeric Fear & Greed + VIX values from section 0 text."""
+    values = {"fng": None, "crypto_fng": None, "vix": None}
+    m = FNG_PATTERN.search(section0_content)
+    if m:
+        values["fng"] = int(m.group(1))
+    m2 = CRYPTO_FNG_PATTERN.search(section0_content)
+    if m2:
+        values["crypto_fng"] = int(m2.group(1))
+    m3 = VIX_PATTERN.search(section0_content)
+    if m3:
+        try:
+            values["vix"] = float(m3.group(1))
+        except ValueError:
+            pass
+    return values
 
-        for title, bullets in subsections:
-            if not title or title == header:
-                continue
-            summary = bullets[0] if bullets else ""
-            items.append({
-                "category": category,
-                "title": title,
-                "summary": summary,
-                "bullets": bullets[:4],
-            })
 
-    return items
+# ── HTML builder ───────────────────────────────────────────────────────────
 
-def build_html(news_items: list[dict], updated_str: str) -> str:
-    template = TEMPLATE.read_text(encoding="utf-8")
-    news_json = json.dumps(news_items, ensure_ascii=False, indent=2)
-    html = template.replace("PLACEHOLDER_NEWS_JSON", news_json)
-    html = html.replace("PLACEHOLDER_DATETIME", updated_str)
+def build_html(sections: list[dict], timestamp: str, gauges: dict) -> str:
+    sections_json = json.dumps(sections, ensure_ascii=False, indent=2)
+    gauges_json   = json.dumps(gauges, ensure_ascii=False)
+
+    template = OUTPUT_HTML.read_text(encoding="utf-8")
+    html = template.replace("PLACEHOLDER_NEWS_JSON", sections_json)
+    html = html.replace("PLACEHOLDER_DATETIME", timestamp)
+    html = html.replace("PLACEHOLDER_GAUGES_JSON", gauges_json)
     return html
 
-def git_push(commit_msg: str):
+
+# ── Git push ───────────────────────────────────────────────────────────────
+
+def git_push(commit_msg: str) -> bool:
     cmds = [
         ["git", "-C", str(ROOT), "add", "website/index.html"],
         ["git", "-C", str(ROOT), "commit", "-m", commit_msg],
@@ -106,14 +131,23 @@ def git_push(commit_msg: str):
             return False
     return True
 
-def send_telegram(message: str):
-    requests.post(
-        f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
-        json={"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "HTML"},
-        timeout=10,
-    )
 
-def main():
+# ── Telegram ───────────────────────────────────────────────────────────────
+
+def send_telegram(message: str) -> None:
+    try:
+        requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+            json={"chat_id": TELEGRAM_CHAT_ID, "text": message},
+            timeout=10,
+        )
+    except Exception as e:
+        print(f"[TELEGRAM_WARN] {e}")
+
+
+# ── Main ───────────────────────────────────────────────────────────────────
+
+def main() -> None:
     if not TEMP_NEWS.exists():
         print("[ERROR] temp_news.txt not found")
         return
@@ -123,39 +157,49 @@ def main():
         print("[ERROR] temp_news.txt is empty")
         return
 
-    now = datetime.now()
-    updated_str = now.strftime("%d.%m.%Y %H:%M")
+    timestamp = extract_timestamp(text)
+    now_il    = datetime.now(TZ_IL)
 
-    print("[STEP_1] Parsing news...")
-    news_items = parse_news(text)
-    print(f"[STEP_1_COMPLETE] {len(news_items)} items parsed")
+    print("[STEP_1] Parsing sections...")
+    sections = parse_sections(text)
+    print(f"[STEP_1_COMPLETE] {len(sections)} sections parsed")
+
+    # Extract gauge values from section 0 (if present)
+    gauges = {}
+    sec0 = next((s for s in sections if s["num"] == 0), None)
+    if sec0:
+        gauges = extract_gauge_values(sec0["content"])
+        print(f"[GAUGES] {gauges}")
 
     print("[STEP_2] Building HTML...")
-    html = build_html(news_items, updated_str)
+    html = build_html(sections, timestamp, gauges)
     OUTPUT_HTML.write_text(html, encoding="utf-8")
     print("[STEP_2_COMPLETE]")
 
     print("[STEP_3] Pushing to GitHub Pages...")
-    commit_msg = f"update {now.strftime('%Y-%m-%d %H:%M')}"
-    ok = git_push(commit_msg)
-    if ok:
-        print("[STEP_3_COMPLETE]")
+    skip_push = os.environ.get("SKIP_GIT_PUSH", "").lower() in ("true", "1", "yes")
+    if skip_push:
+        print("[STEP_3_SKIP] SKIP_GIT_PUSH set — GitHub Actions will handle push")
+        ok = True
     else:
-        print("[STEP_3_WARN] Git push failed — sending local path instead")
+        commit_msg = f"update {now_il.strftime('%Y-%m-%d %H:%M')}"
+        ok = git_push(commit_msg)
+        if ok:
+            print("[STEP_3_COMPLETE]")
+        else:
+            print("[STEP_3_WARN] Git push failed — sending local path")
 
     print("[STEP_4] Sending Telegram...")
+    date_str = now_il.strftime("%d.%m.%Y")
+    time_str = now_il.strftime("%H:%M")
     url = PAGES_URL if ok else str(OUTPUT_HTML)
-    msg = (
-        f"📊 <b>חדשני עודכן</b> — {updated_str}\n"
-        f"🔗 <a href=\"{url}\">{url}</a>\n"
-        f"📌 {len(news_items)} פריטים"
-    )
+    msg = f"עדכון החדשות מוכן נכון ל{date_str} {time_str}\n{url}"
     send_telegram(msg)
     print("[STEP_4_COMPLETE]")
 
-    # Cleanup
     TEMP_NEWS.unlink(missing_ok=True)
     print("[PIPELINE_COMPLETE]")
+
 
 if __name__ == "__main__":
     main()
