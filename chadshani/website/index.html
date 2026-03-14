@@ -318,13 +318,12 @@
     ════════════════════════════════════════════ */
     .stocks-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
     .stocks-table th {
-      background: rgba(0,0,0,.03); padding: .4rem .6rem;
+      background: transparent; padding: .4rem .6rem;
       text-align: right; font-size: .67rem; font-weight: 800;
       color: var(--text-muted); text-transform: uppercase;
-      letter-spacing: .06em; border-bottom: 2px solid var(--border);
+      letter-spacing: .06em; border-bottom: none;
     }
-    .stocks-table td { padding: .38rem .6rem; border-bottom: 1px solid rgba(0,0,0,.05); vertical-align: middle; }
-    .stocks-table tr:last-child td { border-bottom: none; }
+    .stocks-table td { padding: .32rem .6rem; border: none; vertical-align: middle; }
     .stocks-table tr:hover td { background: rgba(0,0,0,.02); }
 
     /* ════════════════════════════════════════════
@@ -689,14 +688,13 @@ PLACEHOLDER_GAUGES_JSON
       `</div>`;
     }
 
-    const TABLE_SECTIONS = new Set([2, 3, 4, 5, 6, 7, 8]);
+    const TABLE_SECTIONS = new Set([2, 3, 4, 5, 6, 7, 8, 9]);
 
     /* ─── Card builder ──────────────────────────── */
     function buildCard(sec, cfg, gauges) {
       const g = sec.num===0 ? gaugesHTML(gauges) : '';
       let body;
-      if      (sec.num===9)                  body = buildTickersContent(sec.content);
-      else if (TABLE_SECTIONS.has(sec.num))  body = buildSoftwareTable(sec.content);
+      if      (TABLE_SECTIONS.has(sec.num))  body = buildSoftwareTable(sec.content);
       else if (sec.num===10)                 body = buildConsoleContent(sec.content);
       else                                   body = `<div class="section-content">${md(sec.content)}</div>`;
       return `
