@@ -22,3 +22,4 @@
 | 2026-03-14 22:15 | `8235fdd` | fix: use gemini-1.5-flash (stable) and reduce Groq payload to 6k chars | chadshani/generate_news.py |
 | 2026-03-14 22:19 | `e39a276` | fix: commit before pull --rebase to avoid unstaged changes error | .github/workflows/chadshani.yml |
 | 2026-03-14 22:31 | `54357ba` | fix: enforce exact format for sector map and tickers in prompt | chadshani/chadshani_prompt.txt |
+| 2026-03-14 22:43 | `e50f90f` | feat: real-time F&G + VIX data, enforce screenshot-matching formats | chadshani/chadshani_prompt.txt,chadshani/generate_news.py |
