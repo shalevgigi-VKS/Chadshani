@@ -658,6 +658,7 @@ PLACEHOLDER_GAUGES_JSON
       let tableRows = [], otherHtml = '', inOther = false;
       for (const line of lines) {
         const t = line.trim(); if (!t) continue;
+        if (/^\|[\s\-|]+\|$/.test(t)) continue; // skip markdown separator rows
         const m = t.match(/^\*\*([A-Z]+)\s*\(([^)]+)\)\*\*\s*\|\s*([\d,]+)\s*\|\s*([^|]+)\|\s*(.+)$/);
         if (m && !inOther) {
           const chgCls = m[4].trim().startsWith('+') ? 'chg-up' : m[4].trim().startsWith('-') ? 'chg-dn' : '';
