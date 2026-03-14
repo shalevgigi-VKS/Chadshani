@@ -12,6 +12,8 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import time
+
 import feedparser
 import requests
 
@@ -21,8 +23,8 @@ PROMPT_FILE = ROOT / "chadshani_prompt.txt"
 TEMP_NEWS   = ROOT / "temp_news.txt"
 TZ_IL       = ZoneInfo("Asia/Jerusalem")
 MIN_LENGTH  = 500
-MAX_ARTICLES     = 6
-MAX_CONTENT_CHARS = 55000
+MAX_ARTICLES     = 4
+MAX_CONTENT_CHARS = 18000
 
 RSS_SOURCES = [
     ("Reuters Business",  "https://feeds.reuters.com/reuters/businessNews"),
@@ -88,38 +90,64 @@ def call_groq(system_prompt: str, user_content: str) -> tuple[bool, str]:
         print(msg, file=sys.stderr)
         return False, msg
 
-    try:
-        resp = requests.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type":  "application/json",
-            },
-            json={
-                "model":       "llama-3.3-70b-versatile",
-                "messages":    [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user",   "content": user_content},
-                ],
-                "temperature": 0.3,
-                "max_tokens":  8000,
-            },
-            timeout=120,
-        )
-        resp.raise_for_status()
-        text = resp.json()["choices"][0]["message"]["content"]
+    MODELS = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+    MAX_RETRIES = 4
 
-        if len(text) < MIN_LENGTH:
-            msg = f"[ERROR] Groq output too short ({len(text)} chars)"
-            print(msg, file=sys.stderr)
-            return False, msg
+    for model in MODELS:
+        for attempt in range(MAX_RETRIES):
+            try:
+                resp = requests.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {api_key}",
+                        "Content-Type":  "application/json",
+                    },
+                    json={
+                        "model":       model,
+                        "messages":    [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user",   "content": user_content},
+                        ],
+                        "temperature": 0.3,
+                        "max_tokens":  8000,
+                    },
+                    timeout=120,
+                )
 
-        return True, text
+                if resp.status_code == 429:
+                    retry_after = int(resp.headers.get("retry-after", 60))
+                    print(f"[WARN] 429 rate limit on {model}, waiting {retry_after}s (attempt {attempt+1}/{MAX_RETRIES})")
+                    time.sleep(retry_after)
+                    continue
 
-    except Exception as e:
-        msg = f"[ERROR] Groq API error: {e}"
-        print(msg, file=sys.stderr)
-        return False, msg
+                resp.raise_for_status()
+                text = resp.json()["choices"][0]["message"]["content"]
+
+                if len(text) < MIN_LENGTH:
+                    msg = f"[ERROR] Groq output too short ({len(text)} chars)"
+                    print(msg, file=sys.stderr)
+                    return False, msg
+
+                if model != "llama-3.3-70b-versatile":
+                    print(f"[INFO] Used fallback model: {model}")
+                return True, text
+
+            except requests.exceptions.HTTPError as e:
+                if resp.status_code == 429:
+                    continue  # already handled above
+                msg = f"[ERROR] Groq API error: {e}"
+                print(msg, file=sys.stderr)
+                return False, msg
+            except Exception as e:
+                msg = f"[ERROR] Groq API error: {e}"
+                print(msg, file=sys.stderr)
+                return False, msg
+
+        print(f"[WARN] All retries exhausted for {model}, trying next model...")
+
+    msg = "[ERROR] All Groq models/retries exhausted"
+    print(msg, file=sys.stderr)
+    return False, msg
 
 
 # ── Main ───────────────────────────────────────────────────────────────────
