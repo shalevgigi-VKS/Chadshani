@@ -1,51 +1,60 @@
 name: חדשני — עדכון חדשות
 
 on:
+  # מופעל אוטומטית כשה-Apps Script דוחף JSON חדש
+  push:
+    paths:
+      - 'chadshani/data/latest.json'
+
+  # הפעלה ידנית מ-GitHub Actions
   workflow_dispatch:
-    inputs:
-      confirm:
-        description: 'הקלד RESUME כדי להפעיל'
-        required: true
+
+permissions:
+  contents: write
 
 jobs:
-  update-news:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
         with:
           ref: master
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
-        run: pip install requests feedparser
+        run: pip install --quiet requests
 
-      - name: Verify version
-        run: git log --oneline -1 && grep -m1 "generativelanguage" chadshani/generate_news.py
+      # שלב 1: חלץ content מה-JSON → temp_news.txt
+      - name: Extract content from JSON
+        run: |
+          python -c "
+          import json, pathlib
+          data = json.loads(pathlib.Path('chadshani/data/latest.json').read_text(encoding='utf-8'))
+          pathlib.Path('chadshani/temp_news.txt').write_text(data['content'], encoding='utf-8')
+          print('[OK] temp_news.txt נוצר —', len(data['content']), 'תווים')
+          "
 
-      - name: Generate news
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        run: python chadshani/generate_news.py
-
+      # שלב 2: בנה את ה-HTML ושלח טלגרם
       - name: Build website
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GITHUB_USER: ${{ github.repository_owner }}
-          GITHUB_REPO: ${{ github.event.repository.name }}
-          SKIP_GIT_PUSH: "true"
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_USER:        ${{ github.repository_owner }}
+          GITHUB_REPO:        ${{ github.event.repository.name }}
+          SKIP_GIT_PUSH:      "true"
         run: python chadshani/generate_website.py
 
-      - name: Commit and push website
+      # שלב 3: commit + push ל-GitHub Pages
+      - name: Commit and push
         run: |
-          git config user.name "חדשני Bot"
+          git config user.name  "חדשני Bot"
           git config user.email "chadshani@users.noreply.github.com"
           git add docs/index.html
           git diff --staged --quiet || git commit -m "update $(date -u +'%Y-%m-%d %H:%M')"

@@ -4,415 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>חדשני — מעדכן החדשות</title>
+
+  <!-- Google Fonts — Heebo (Hebrew-optimised) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    /* ════════════════════════════════════════════
-       RESET & BASE
-    ════════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg:          #f4f6f9;
-      --surface:     #ffffff;
-      --border:      #e2e8f0;
-      --text:        #1e293b;
-      --text-muted:  #64748b;
-      --shadow-sm:   0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
-      --shadow-md:   0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.05);
-      --shadow-lg:   0 10px 30px rgba(0,0,0,.10);
-      --radius:      16px;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Heebo', sans-serif;
-      background: linear-gradient(160deg, #eef2f7 0%, #f4f6f9 40%, #eff3f8 100%);
-      background-attachment: fixed;
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.9;
-      min-height: 100vh;
-    }
-
-    /* ════════════════════════════════════════════
-       HEADER
-    ════════════════════════════════════════════ */
-    .site-header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .header-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: .85rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    /* Logo */
-    .logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
-    .logo-icon {
-      width: 44px; height: 44px;
-      border-radius: 13px;
-      background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #8b5cf6 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-      box-shadow: 0 3px 12px rgba(245,158,11,.40);
-      flex-shrink: 0;
-    }
-    .logo-text { line-height: 1.15; }
-    .logo-title { font-size: 1.3rem; font-weight: 900; color: var(--text); letter-spacing: -.4px; }
-    .logo-sub   { font-size: .72rem; font-weight: 500; color: var(--text-muted); }
-
-    .live-clock {
-      font-family: 'Courier New', 'Lucida Console', monospace;
-      font-size: 1.08rem; font-weight: 700; letter-spacing: .1em;
-      color: #ef4444;
-      background: rgba(239,68,68,.07);
-      border: 1px solid rgba(239,68,68,.25);
-      border-radius: 8px; padding: .28rem .75rem;
-      text-shadow: 0 0 10px rgba(239,68,68,.45), 0 0 20px rgba(239,68,68,.18);
-      white-space: nowrap;
-      animation: clockPulse 1s ease-in-out infinite;
-    }
-    @keyframes clockPulse {
-      0%, 100% { text-shadow: 0 0 10px rgba(239,68,68,.45), 0 0 20px rgba(239,68,68,.18); }
-      50%       { text-shadow: 0 0 14px rgba(239,68,68,.7),  0 0 28px rgba(239,68,68,.3);  }
-    }
-    .ts-badge {
-      background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;
-      border-radius: 8px; padding: .3rem .85rem;
-      font-size: .78rem; font-weight: 600; white-space: nowrap;
-    }
-    .btn-export {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      color: #fff; border: none; border-radius: 9px;
-      padding: .48rem 1.1rem;
-      font-family: 'Heebo', sans-serif; font-size: .82rem; font-weight: 700;
-      cursor: pointer; transition: opacity .15s; white-space: nowrap;
-    }
-    .btn-export:hover { opacity: .88; }
-
-    /* ════════════════════════════════════════════
-       PAGE LAYOUT
-    ════════════════════════════════════════════ */
-    .page-layout {
-      display: grid;
-      grid-template-columns: 215px 1fr;
-      max-width: 1400px;
-      margin: 1.5rem auto 3rem;
-      padding: 0 1.5rem;
-      gap: 1.5rem;
-      align-items: start;
-    }
-
-    /* ─── Sidebar ─────────────────────────────── */
-    .sidebar { position: sticky; top: 75px; }
-    .sidebar-inner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: .7rem;
-      box-shadow: var(--shadow-sm);
-    }
-    .sidebar-title {
-      font-size: .68rem; font-weight: 700; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: .07em;
-      padding: .35rem .5rem .55rem;
-    }
-    .nav-item {
-      display: flex; align-items: center; gap: .5rem;
-      padding: .5rem .6rem; border-radius: 9px;
-      text-decoration: none; color: var(--text-muted);
-      font-size: .81rem; font-weight: 500;
-      transition: background .12s, color .12s;
-      cursor: pointer; line-height: 1.3;
-    }
-    .nav-item:hover { background: #f8fafc; color: var(--text); }
-    .nav-item.active { color: var(--text); font-weight: 700; }
-    .nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-    /* ─── Main grid — single column ──────────── */
-    .news-grid { display: flex; flex-direction: column; gap: 1.25rem; }
-    .col-main  { display: flex; flex-direction: column; gap: 1.25rem; }
-
-    /* ════════════════════════════════════════════
-       SECTION CARDS
-    ════════════════════════════════════════════ */
-    .section-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.8);
-      overflow: hidden;
-      transition: box-shadow .25s, transform .25s;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-    .section-card:hover {
-      box-shadow: 0 16px 40px rgba(0,0,0,.11), 0 4px 10px rgba(0,0,0,.06);
-      transform: perspective(1200px) translateY(-3px) rotateX(1deg);
-    }
-
-    .card-header {
-      display: flex; align-items: center; gap: .75rem;
-      padding: 1rem 1.25rem .8rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .card-icon {
-      width: 42px; height: 42px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; flex-shrink: 0;
-    }
-    .card-meta { flex: 1; min-width: 0; }
-    .card-title { font-size: 1rem; font-weight: 800; line-height: 1.3; }
-
-    .btn-copy {
-      background: #f1f5f9; border: 1px solid var(--border);
-      border-radius: 7px; padding: .28rem .6rem;
-      font-family: 'Heebo', sans-serif; font-size: .72rem; font-weight: 600;
-      color: var(--text-muted); cursor: pointer;
-      transition: background .12s; white-space: nowrap; flex-shrink: 0;
-    }
-    .btn-copy:hover { background: #e2e8f0; }
-    .btn-copy.copied { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
-
-    .card-body { padding: 1rem 1.25rem 1.2rem; }
-    .section-content {
-      font-size: .875rem; line-height: 1.68; color: #374151;
-      white-space: pre-wrap; word-break: break-word;
-    }
-
-    /* ════════════════════════════════════════════
-       GAUGES — SECTION 0
-    ════════════════════════════════════════════ */
-    .gauges-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: .9rem;
-      margin-bottom: 1.25rem;
-    }
-    .gauge-wrap {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1rem .8rem .9rem;
-      text-align: center;
-      box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,.9);
-      transition: transform .25s, box-shadow .25s;
-    }
-    .gauge-wrap:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-    .gauge-label {
-      font-size: .63rem; font-weight: 800;
-      color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: .1em;
-      margin-bottom: .65rem;
-    }
-    .gauge-arc-wrap {
-      width: 160px; height: 90px;
-      margin: 0 auto .45rem;
-      overflow: visible;
-    }
-    .gauge-value-text {
-      font-size: 2rem; font-weight: 900; line-height: 1;
-      letter-spacing: -.03em;
-    }
-    .gauge-sentiment {
-      font-size: .67rem; font-weight: 700;
-      border-radius: 6px; padding: .18rem .5rem;
-      display: inline-block; margin-top: .3rem;
-      letter-spacing: .02em;
-    }
-    /* ─── Utility ─── */
-    .chg-up { color: #16a34a; font-weight: 700; }
-    .chg-dn { color: #dc2626; font-weight: 700; }
-    .content-divider { border: none; border-top: 2px solid var(--border); margin: .9rem 0; }
-
-    /* ════════════════════════════════════════════
-       CONSOLE — SECTIONS 1 & 10
-    ════════════════════════════════════════════ */
-    .console-wrap {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      font-family: 'Courier New', 'Lucida Console', monospace;
-      font-size: .82rem;
-      color: #c9d1d9;
-      line-height: 1.85;
-    }
-    .console-line {
-      display: flex;
-      align-items: flex-start;
-      gap: .55rem;
-      padding: .25rem 0;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-    }
-    .console-line:last-child { border-bottom: none; }
-    .console-prompt {
-      color: #3fb950;
-      font-weight: 900;
-      flex-shrink: 0;
-      user-select: none;
-      opacity: .75;
-    }
-    .console-text { flex: 1; }
-    .console-wrap strong { color: #f0f6fc; font-weight: 800; }
-    .console-wrap .chg-up { color: #3fb950; font-weight: 700; }
-    .console-wrap .chg-dn { color: #f85149; font-weight: 700; }
-    .console-wrap .content-divider { border-color: #21262d; margin: .4rem 0; }
-    .console-tag {
-      display: inline-block;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 4px;
-      padding: .04rem .38rem;
-      font-size: .72rem;
-      color: #8b949e;
-      margin-left: .3rem;
-    }
-
-    /* ════════════════════════════════════════════
-       TICKER LIST — SECTION 9
-    ════════════════════════════════════════════ */
-    .ticker-list { display: flex; flex-direction: column; }
-    .ticker-row {
-      display: flex; align-items: center; gap: .55rem;
-      padding: .38rem .4rem; border-radius: 8px;
-      transition: background .1s; flex-wrap: wrap; line-height: 1.45;
-    }
-    .ticker-row:hover { background: rgba(0,0,0,.03); }
-    .ticker-badge {
-      font-family: 'Courier New', monospace;
-      font-size: .68rem; font-weight: 900;
-      background: #1e293b; color: #f8fafc;
-      border-radius: 5px; padding: .1rem .42rem;
-      letter-spacing: .06em; flex-shrink: 0; min-width: 52px; text-align: center;
-    }
-    .ticker-name { font-weight: 700; color: var(--text); font-size: .84rem; flex-shrink: 0; min-width: 110px; }
-    .ticker-sep  { color: var(--text-muted); flex-shrink: 0; font-size: .82rem; }
-    .ticker-desc { color: var(--text-muted); font-size: .81rem; }
-    .ticker-header {
-      font-size: .7rem; font-weight: 800; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: .08em;
-      padding: .7rem .4rem .2rem; border-top: 1px solid var(--border); margin-top: .3rem;
-    }
-    .ticker-header:first-child { border-top: none; margin-top: 0; padding-top: .1rem; }
-    .ticker-spacer { height: .25rem; }
-    .ticker-other  { font-size: .83rem; color: var(--text-muted); padding: .2rem .4rem; line-height: 1.6; }
-
-    /* ════════════════════════════════════════════
-       STOCKS TABLE — SECTION 6
-    ════════════════════════════════════════════ */
-    .stocks-table { width: 100%; border-collapse: collapse; font-size: .82rem; table-layout: auto; }
-    .stocks-table th {
-      background: transparent; padding: .4rem .6rem;
-      text-align: center; font-size: .67rem; font-weight: 800;
-      color: var(--text-muted); text-transform: uppercase;
-      letter-spacing: .06em; border-bottom: 1px solid var(--border);
-    }
-    .stocks-table td { padding: .32rem .6rem; border: none; vertical-align: middle; text-align: center; }
-    .stocks-table td:first-child { text-align: right; }
-    .stocks-table tr:hover td { background: rgba(0,0,0,.02); }
-
-    /* ════════════════════════════════════════════
-       EMPTY STATE
-    ════════════════════════════════════════════ */
-    .empty-state {
-      text-align: center; padding: 5rem 2rem; color: var(--text-muted);
-    }
-    .empty-state .big-icon { font-size: 3.5rem; margin-bottom: 1rem; }
-    .empty-state h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: .5rem; }
-
-    /* ════════════════════════════════════════════
-       FOOTER
-    ════════════════════════════════════════════ */
-    .site-footer {
-      border-top: 1px solid var(--border);
-      text-align: center; padding: 1.5rem;
-      font-size: .78rem; color: var(--text-muted);
-      background: var(--surface); margin-top: 2rem;
-    }
-    .pulse-dot {
-      display: inline-block; width: 7px; height: 7px;
-      border-radius: 50%; background: #22c55e;
-      animation: pulse 2s infinite;
-      vertical-align: middle; margin-left: .35rem;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .5; transform: scale(.85); }
-    }
-
-    /* ════════════════════════════════════════════
-       TOAST
-    ════════════════════════════════════════════ */
-    .toast {
-      position: fixed; bottom: 1.5rem; left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #1e293b; color: #fff;
-      padding: .6rem 1.2rem; border-radius: 10px;
-      font-size: .82rem; font-weight: 600;
-      box-shadow: var(--shadow-lg); z-index: 9999;
-      transition: transform .25s ease; pointer-events: none;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* ════════════════════════════════════════════
-       RESPONSIVE
-    ════════════════════════════════════════════ */
-    @media (max-width: 1100px) {
-      .page-layout { grid-template-columns: 1fr; }
-      .sidebar { position: static; }
-      .sidebar-inner { display: flex; flex-wrap: wrap; gap: .4rem; padding: .5rem; }
-      .sidebar-title { width: 100%; }
-    }
-    @media (max-width: 780px) {
-      .header-inner {
-        flex-direction: column; align-items: center;
-        text-align: center; gap: .5rem; padding: .75rem 1rem;
-      }
-      .live-clock { order: 1; }
-      .logo       { order: 2; }
-      .ts-badge   { order: 3; }
-      .btn-export { display: none; }
-      .page-layout { padding: 0 .75rem; margin-top: 1rem; }
-      .gauges-row  { grid-template-columns: 1fr; }
-      .sidebar-inner { text-align: center; }
-      .nav-item { justify-content: center; }
-      .ticker-name { min-width: 80px; }
-    }
-
-    /* Bold + change colors */
-    .section-content strong { font-weight: 800; color: var(--text); }
-
-    /* ════════════════════════════════════════════
-       PRINT
-    ════════════════════════════════════════════ */
-    @media print {
-      .site-header, .sidebar, .btn-copy, .btn-export { display: none !important; }
-      .page-layout, .news-grid { grid-template-columns: 1fr !important; }
-      .section-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- ══════════════ HEADER ══════════════════════ -->
+  <!-- ══════════════ HEADER ════════════════════════════════ -->
   <header class="site-header">
     <div class="header-inner">
+
+      <!-- Logo -->
       <a class="logo" href="#">
         <div class="logo-icon">⚡</div>
         <div class="logo-text">
@@ -420,431 +26,116 @@
           <div class="logo-sub">מעדכן החדשות</div>
         </div>
       </a>
-      <span class="live-clock" id="live-clock">00:00:00</span>
+
+      <!-- Live clock + Hebrew date -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:.15rem">
+        <span class="live-clock" id="live-clock">00:00:00</span>
+        <span class="live-date"  id="live-date"></span>
+      </div>
+
+      <!-- Last updated badge (set by script.js from embedded JSON or Looker) -->
       <span class="ts-badge" id="ts-badge">טוען...</span>
+
       <button class="btn-export" onclick="exportAll()">ייצא הכל ✂</button>
     </div>
   </header>
 
-  <!-- ══════════════ LAYOUT ══════════════════════ -->
-  <div class="page-layout">
+  <!-- ══════════════ PAGE WRAPPER ══════════════════════════ -->
+  <div class="page-wrapper">
 
-    <nav class="sidebar">
-      <div class="sidebar-inner" id="sidebar-inner">
-        <div class="sidebar-title">ניווט מהיר</div>
-      </div>
-    </nav>
+    <!-- ── Carousel section ──────────────────────────────── -->
+    <section class="carousel-section" aria-label="תמונות הסבר תהליך">
+      <div class="carousel-wrapper">
 
-    <main>
-      <div class="empty-state" id="empty-state">
-        <div class="big-icon">📡</div>
-        <h2>טוען דסק חדשות...</h2>
-        <p>הנתונים יופיעו בקרוב</p>
+        <!-- Slides are injected by script.js into this track -->
+        <div class="carousel-track" role="region" aria-live="polite"></div>
+
+        <!-- Navigation arrows (RTL: prev = right side, next = left side) -->
+        <button class="carousel-btn prev" aria-label="תמונה קודמת">&#8250;</button>
+        <button class="carousel-btn next" aria-label="תמונה הבאה">&#8249;</button>
+
+        <!-- Indicator dots -->
+        <div class="carousel-dots" role="tablist" aria-label="בחירת תמונה"></div>
+
       </div>
-      <div id="news-cols" style="display:none">
-        <div class="news-grid">
-          <div class="col-main" id="col-main"></div>
+    </section>
+
+    <!-- ── Looker Studio widget ───────────────────────────── -->
+    <section class="looker-section" aria-label="נתוני שוק בזמן אמת">
+      <div class="looker-card">
+        <div class="looker-header">
+          <div class="looker-icon">📊</div>
+          <div>
+            <div class="looker-title">נתוני שוק — Looker Studio</div>
+            <div class="looker-subtitle" id="looker-updated">טוען נתונים...</div>
+          </div>
+          <button class="btn-refresh" id="btn-refresh-looker" aria-label="רענן נתונים">רענן ↺</button>
+        </div>
+        <!-- Looker body: skeleton → data cards / error card -->
+        <div class="looker-body" id="looker-body">
+          <!-- Populated by fetchLookerData() in script.js -->
         </div>
       </div>
-    </main>
+    </section>
 
-  </div>
+    <!-- ── Two-column layout: Sidebar + Main ─────────────── -->
+    <div class="page-layout">
 
-  <!-- ══════════════ FOOTER ══════════════════════ -->
+      <!-- Sidebar navigation (scroll spy) -->
+      <nav class="sidebar" aria-label="ניווט סעיפים">
+        <div class="sidebar-inner" id="sidebar-inner">
+          <div class="sidebar-title">ניווט מהיר</div>
+          <!-- Nav items injected by buildNav() in script.js -->
+        </div>
+      </nav>
+
+      <!-- Main content area -->
+      <main>
+
+        <!-- Empty / loading state (hidden once data loads) -->
+        <div class="empty-state" id="empty-state">
+          <div class="big-icon">📡</div>
+          <h2>טוען דסק חדשות...</h2>
+          <p>הנתונים יופיעו בקרוב</p>
+        </div>
+
+        <!-- News cards (shown once data is parsed) -->
+        <div id="news-cols" style="display:none">
+          <div class="col-main" id="col-main">
+            <!-- Section cards injected by initNewsCards() in script.js -->
+          </div>
+        </div>
+
+      </main>
+    </div><!-- /.page-layout -->
+
+  </div><!-- /.page-wrapper -->
+
+  <!-- ══════════════ FOOTER ════════════════════════════════ -->
   <footer class="site-footer">
     <span class="pulse-dot"></span>
     חדשני — מעדכן חדשות מודיעיני אוטונומי | מופעל על-ידי Gemini AI + Google Search
   </footer>
 
-  <div class="toast" id="toast"></div>
+  <!-- Toast notification (copy / export feedback) -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <!-- ══════════════ DATA ════════════════════════ -->
+  <!-- ══════════════ EMBEDDED DATA (injected by generate_website.py) ══ -->
+  <!--
+    generate_website.py replaces the PLACEHOLDER tokens below
+    with real JSON before deploying to GitHub Pages.
+    Do NOT edit the data- attribute or the JSON content manually.
+  -->
   <script id="news-data" type="application/json" data-updated="PLACEHOLDER_DATETIME">
 PLACEHOLDER_NEWS_JSON
   </script>
+
   <script id="gauges-data" type="application/json">
 PLACEHOLDER_GAUGES_JSON
   </script>
 
-  <!-- ══════════════ APP ═════════════════════════ -->
-  <script>
-    /* ─── Section metadata ──────────────────────── */
-    const SECS = [
-      { num:0,  icon:'📊', label:'מדד פחד וחמדנות',  col:'main',
-        bg:'#fffbeb', border:'#fcd34d', color:'#d97706', tc:'#92400e', lb:'#fef3c7' },
-      { num:1,  icon:'🌐', label:'תמונת מצב מיידית', col:'main',
-        bg:'#f0fdf4', border:'#86efac', color:'#16a34a', tc:'#14532d', lb:'#dcfce7' },
-      { num:2,  icon:'📈', label:'שוק ההון הכללי',   col:'main',
-        bg:'#eff6ff', border:'#93c5fd', color:'#2563eb', tc:'#1e3a8a', lb:'#dbeafe' },
-      { num:3,  icon:'🗺', label:'מפת הסקטורים',     col:'main',
-        bg:'#faf5ff', border:'#c4b5fd', color:'#7c3aed', tc:'#4c1d95', lb:'#ede9fe' },
-      { num:4,  icon:'₿',  label:'שוק הקריפטו',      col:'main',
-        bg:'#fff7ed', border:'#fdba74', color:'#ea580c', tc:'#7c2d12', lb:'#ffedd5' },
-      { num:5,  icon:'⚡', label:'סקטור השבבים',     col:'main',
-        bg:'#f0f9ff', border:'#7dd3fc', color:'#0284c7', tc:'#0c4a6e', lb:'#e0f2fe' },
-      { num:6,  icon:'💻', label:'סקטור התוכנה',     col:'main',
-        bg:'#fdf4ff', border:'#e879f9', color:'#c026d3', tc:'#701a75', lb:'#fae8ff' },
-      { num:7,  icon:'🤖', label:'תחום ה-AI',         col:'main',
-        bg:'#f5f3ff', border:'#a78bfa', color:'#7c3aed', tc:'#4c1d95', lb:'#ede9fe' },
-      { num:8,  icon:'🛠', label:'עדכוני כלי AI',     col:'main',
-        bg:'#f0fdfa', border:'#5eead4', color:'#0d9488', tc:'#134e4a', lb:'#ccfbf1' },
-      { num:9,  icon:'📌', label:'טיקרים למעקב',     col:'main',
-        bg:'#fff1f2', border:'#fda4af', color:'#e11d48', tc:'#881337', lb:'#ffe4e6' },
-      { num:10, icon:'🧭', label:'סיכום כללי',        col:'main',
-        bg:'#f8fafc', border:'#94a3b8', color:'#475569', tc:'#0f172a', lb:'#e2e8f0' },
-    ];
+  <!-- ══════════════ APP SCRIPT ═════════════════════════════ -->
+  <script src="script.js"></script>
 
-    /* ─── Gauge helpers ─────────────────────────── */
-    function fngInfo(val) {
-      if (val == null) return { text:'N/A', bg:'#e2e8f0', fg:'#64748b' };
-      if (val <= 24)   return { text:'פחד קיצוני',     bg:'#fee2e2', fg:'#dc2626' };
-      if (val <= 44)   return { text:'פחד',             bg:'#fed7aa', fg:'#ea580c' };
-      if (val <= 54)   return { text:'ניטרלי',          bg:'#fef9c3', fg:'#ca8a04' };
-      if (val <= 74)   return { text:'חמדנות',          bg:'#d1fae5', fg:'#059669' };
-                       return { text:'חמדנות קיצונית', bg:'#bbf7d0', fg:'#16a34a' };
-    }
-
-    function arcColor(val, isVix) {
-      if (val == null) return '#cbd5e1';
-      if (isVix) return val > 25 ? '#ef4444' : val > 15 ? '#f59e0b' : '#22c55e';
-      if (val <= 24) return '#ef4444';
-      if (val <= 44) return '#f97316';
-      if (val <= 54) return '#eab308';
-      if (val <= 74) return '#84cc16';
-      return '#22c55e';
-    }
-
-    function arcSVG(pct, color) {
-      const W=200,H=112,R=82,cx=100,cy=108;
-      const a0=Math.PI, a1=2*Math.PI;
-      const p  = pct != null ? Math.max(0,Math.min(1,pct)) : 0;
-      const a  = a0 + p*(a1-a0);
-      const pt = (r,ang) => [cx+r*Math.cos(ang), cy+r*Math.sin(ang)];
-      const [x0,y0]=pt(R,a0), [x1,y1]=pt(R,a1), [xF,yF]=pt(R,a);
-      const la = p>.5?1:0;
-      const ticks = Array.from({length:9},(_,i)=>{
-        const ta=a0+((i+1)/10)*(a1-a0);
-        const [tx1,ty1]=pt(R+5,ta), [tx2,ty2]=pt(R+(i===4?15:10),ta);
-        return `<line x1="${tx1.toFixed(1)}" y1="${ty1.toFixed(1)}" x2="${tx2.toFixed(1)}" y2="${ty2.toFixed(1)}" stroke="#d1d5db" stroke-width="${i===4?2:1.5}" stroke-linecap="round"/>`;
-      }).join('');
-      const [nX,nY]=pt(R-15,a), [n2X,n2Y]=pt(-8,a);
-      const fillArc = p>0 ? `
-        <path d="M${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 ${la} 1 ${xF.toFixed(1)} ${yF.toFixed(1)}" fill="none" stroke="${color}" stroke-width="11" stroke-linecap="round" opacity=".18"/>
-        <path d="M${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 ${la} 1 ${xF.toFixed(1)} ${yF.toFixed(1)}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round"/>` : '';
-      return `<svg viewBox="0 0 ${W} ${H}" style="overflow:visible;width:100%;height:auto">
-        <path d="M${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 1 1 ${x1.toFixed(1)} ${y1.toFixed(1)}" fill="none" stroke="#e5e7eb" stroke-width="8" stroke-linecap="round"/>
-        ${fillArc}
-        ${ticks}
-        <line x1="${n2X.toFixed(1)}" y1="${n2Y.toFixed(1)}" x2="${nX.toFixed(1)}" y2="${nY.toFixed(1)}" stroke="#374151" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="${cx}" cy="${cy}" r="6" fill="${color}" stroke="white" stroke-width="2.5"/>
-        <circle cx="${cx}" cy="${cy}" r="2" fill="white"/>
-      </svg>`;
-    }
-
-    function vixInfo(v) {
-      if (v == null) return { text:'N/A',        bg:'#e2e8f0', fg:'#64748b' };
-      if (v > 25)    return { text:'סיכון גבוה', bg:'#fee2e2', fg:'#dc2626' };
-      if (v > 15)    return { text:'מתון',        bg:'#fef9c3', fg:'#ca8a04' };
-                     return { text:'נמוך',         bg:'#d1fae5', fg:'#059669' };
-    }
-    /* ── CNN-style gauge (colored zone arcs + needle) ── */
-    function cnnGaugeSVG(val) {
-      const W=200, H=112, R=82, cx=100, cy=108;
-      const zones = [
-        { from:0,  to:25,  color:'#dc2626' },
-        { from:25, to:45,  color:'#ea580c' },
-        { from:45, to:55,  color:'#ca8a04' },
-        { from:55, to:75,  color:'#65a30d' },
-        { from:75, to:100, color:'#16a34a' },
-      ];
-      const pt     = (r,a) => [cx + r*Math.cos(a), cy + r*Math.sin(a)];
-      const toAng  = v => Math.PI + (v/100)*Math.PI;
-      const zonePath = (from, to, color) => {
-        const a0=toAng(from), a1=toAng(to);
-        const [x0,y0]=pt(R,a0), [x1,y1]=pt(R,a1);
-        const la=(a1-a0)>Math.PI?1:0;
-        return `<path d="M${x0.toFixed(1)},${y0.toFixed(1)} A${R},${R} 0 ${la} 1 ${x1.toFixed(1)},${y1.toFixed(1)}" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="butt"/>`;
-      };
-      /* gap lines between zones */
-      const gaps = [25,45,55,75].map(v => {
-        const a=toAng(v);
-        const [x1,y1]=pt(R-10,a), [x2,y2]=pt(R+2,a);
-        return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="white" stroke-width="2"/>`;
-      });
-      /* zone label positions */
-      const zLabels = [
-        { v:12.5, text:'FEAR\nEXTREME', size:'.38rem' },
-        { v:35,   text:'FEAR',          size:'.44rem' },
-        { v:50,   text:'NEUTRAL',       size:'.42rem' },
-        { v:65,   text:'GREED',         size:'.44rem' },
-        { v:87.5, text:'GREED\nEXTREME',size:'.38rem' },
-      ];
-      const labelSvg = zLabels.map(z => {
-        const a=toAng(z.v);
-        const [lx,ly]=pt(R-26, a);
-        const lines = z.text.split('\n');
-        const dy = lines.length > 1 ? -5 : 0;
-        return lines.map((line,i) =>
-          `<text x="${lx.toFixed(1)}" y="${(ly+dy+i*8).toFixed(1)}" text-anchor="middle" fill="white" font-size="${z.size}" font-weight="800" font-family="Heebo,sans-serif" opacity=".9">${line}</text>`
-        ).join('');
-      }).join('');
-      /* tick marks */
-      const ticks = Array.from({length:9},(_,i)=>{
-        const ta=toAng((i+1)*10);
-        const [tx1,ty1]=pt(R+6,ta), [tx2,ty2]=pt(R+(i%2===0?12:8),ta);
-        return `<line x1="${tx1.toFixed(1)}" y1="${ty1.toFixed(1)}" x2="${tx2.toFixed(1)}" y2="${ty2.toFixed(1)}" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round"/>`;
-      }).join('');
-      /* needle */
-      const needleAng = toAng(val != null ? Math.max(0,Math.min(100,val)) : 50);
-      const [nX,nY]=pt(R-14,needleAng), [n2X,n2Y]=pt(-8,needleAng);
-      const parts = [
-        /* bg track */ `<path d="M${pt(R,Math.PI)[0].toFixed(1)},${pt(R,Math.PI)[1].toFixed(1)} A${R},${R} 0 0 1 ${pt(R,2*Math.PI)[0].toFixed(1)},${pt(R,2*Math.PI)[1].toFixed(1)}" fill="none" stroke="#e5e7eb" stroke-width="14"/>`,
-        ...zones.map(z=>zonePath(z.from,z.to,z.color)),
-        ...gaps, ticks, labelSvg,
-        `<line x1="${n2X.toFixed(1)}" y1="${n2Y.toFixed(1)}" x2="${nX.toFixed(1)}" y2="${nY.toFixed(1)}" stroke="#374151" stroke-width="2.5" stroke-linecap="round"/>`,
-        `<circle cx="${cx}" cy="${cy}" r="6" fill="#374151" stroke="white" stroke-width="2.5"/>`,
-        `<circle cx="${cx}" cy="${cy}" r="2" fill="white"/>`,
-      ];
-      return `<svg viewBox="0 0 ${W} ${H}" style="overflow:visible;width:100%;height:auto">${parts.join('')}</svg>`;
-    }
-
-    function gaugesHTML(gauges) {
-      if (!gauges) return '';
-      /* VIX — original arc style */
-      const vix = gauges.vix != null ? Math.round(gauges.vix) : null;
-      const vixPct = vix != null ? Math.min(1, vix/50) : null;
-      const vixCol = arcColor(vix, true);
-      const vixLbl = vixInfo(vix);
-      const vixGauge = `<div class="gauge-wrap">
-        <div class="gauge-label">VIX</div>
-        <div class="gauge-arc-wrap">${arcSVG(vixPct, vixCol)}</div>
-        <div class="gauge-value-text" style="color:${vixCol}">${vix!=null?vix:'—'}</div>
-        <span class="gauge-sentiment" style="background:${vixLbl.bg};color:${vixLbl.fg}">${vixLbl.text}</span>
-      </div>`;
-      /* CNN F&G — CNN-style colored zone gauge */
-      const fng = gauges.fng != null ? Math.round(gauges.fng) : null;
-      const fngCol = arcColor(fng, false);
-      const fngLbl = fngInfo(fng);
-      const cnnGauge = `<div class="gauge-wrap">
-        <div class="gauge-label">CNN F&amp;G</div>
-        <div class="gauge-arc-wrap">${cnnGaugeSVG(fng)}</div>
-        <div class="gauge-value-text" style="color:${fngCol}">${fng!=null?fng:'—'}</div>
-        <span class="gauge-sentiment" style="background:${fngLbl.bg};color:${fngLbl.fg}">${fngLbl.text}</span>
-      </div>`;
-      return `<div class="gauges-row" style="grid-template-columns:1fr 1fr">${vixGauge}${cnnGauge}</div>`;
-    }
-
-    /* ─── Special content renderers ─────────────── */
-    function buildTickersContent(content) {
-      const lines = content.split('\n');
-      let html = '<div class="ticker-list">';
-      for (const line of lines) {
-        const t = line.trim();
-        if (!t) { html += '<div class="ticker-spacer"></div>'; continue; }
-        const m = t.match(/^\*\*([A-Z0-9.]+)\*\*\s*[—\-–]\s*(.+?)\s*[—\-–]\s*(.+)$/);
-        if (m) {
-          html += `<div class="ticker-row"><span class="ticker-badge">${esc(m[1])}</span><span class="ticker-name">${esc(m[2])}</span><span class="ticker-sep">—</span><span class="ticker-desc">${md(m[3])}</span></div>`;
-        } else if (t.startsWith('**') && (t.endsWith('**') || t.endsWith(':**'))) {
-          html += `<div class="ticker-header">${md(t)}</div>`;
-        } else {
-          html += `<div class="ticker-other">${md(t)}</div>`;
-        }
-      }
-      return html + '</div>';
-    }
-
-    /* color +/- values anywhere in text */
-    function colorize(s) {
-      return s.replace(/([-+][0-9]+\.?[0-9]*\s*%?)/g, (m) => {
-        const cls = m.trimStart().startsWith('+') ? 'chg-up' : 'chg-dn';
-        return `<span class="${cls}">${m}</span>`;
-      });
-    }
-
-    function buildSoftwareTable(content) {
-      const lines = content.split('\n');
-      let tableRows = [], otherLines = [];
-      for (const line of lines) {
-        const t = line.trim();
-        if (!t) continue;
-        if (/^\|[\s\-:|]+\|$/.test(t)) continue; // skip separator rows
-        // any pipe-separated row with 2+ pipes → table row
-        const cols = t.split('|').map(c => c.trim()).filter(c => c !== '');
-        if (cols.length >= 2) {
-          const cells = cols.map(c => `<td>${colorize(md(c))}</td>`).join('');
-          tableRows.push(`<tr>${cells}</tr>`);
-        } else {
-          otherLines.push(t);
-        }
-      }
-      let html = '';
-      if (tableRows.length) {
-        html += `<table class="stocks-table"><tbody>${tableRows.join('')}</tbody></table>`;
-      }
-      if (otherLines.length) {
-        html += `<div class="section-content" style="margin-top:.6rem">${colorize(md(otherLines.join('\n')))}</div>`;
-      }
-      return html;
-    }
-
-    /* ─── Console renderer (sections 1 & 10) ───── */
-    function buildConsoleContent(content) {
-      /* split on blank lines or sentence endings, keep non-empty chunks */
-      const chunks = content
-        .split(/\n{2,}|(?<=[\.\!\?])\s+(?=[^\s])/)
-        .map(c => c.trim()).filter(Boolean);
-      const prompts = ['▶', '●', '◆', '▶', '●', '◆', '▶', '●', '◆', '▶'];
-      return `<div class="console-wrap">` +
-        chunks.map((chunk, i) => {
-          const sym = prompts[i % prompts.length];
-          return `<div class="console-line">
-            <span class="console-prompt">${sym}</span>
-            <span class="console-text">${md(chunk)}</span>
-          </div>`;
-        }).join('') +
-      `</div>`;
-    }
-
-    const TABLE_SECTIONS = new Set([2, 3, 4, 5, 6, 7, 8, 9]);
-
-    /* ─── Card builder ──────────────────────────── */
-    function buildCard(sec, cfg, gauges) {
-      const g = sec.num===0 ? gaugesHTML(gauges) : '';
-      let body;
-      if      (TABLE_SECTIONS.has(sec.num))  body = buildSoftwareTable(sec.content);
-      else if (sec.num===10)                 body = buildConsoleContent(sec.content);
-      else                                   body = `<div class="section-content">${colorize(md(sec.content))}</div>`;
-      return `
-<article class="section-card" id="section-${sec.num}"
-  style="border-top:3px solid ${cfg.border};background:${cfg.bg}">
-  <div class="card-header">
-    <div class="card-icon" style="background:${cfg.lb};color:${cfg.color}">${cfg.icon}</div>
-    <div class="card-meta">
-      <div class="card-title" style="color:${cfg.tc}">${sec.title||cfg.label}</div>
-    </div>
-    <button class="btn-copy" onclick="copySection(${sec.num},this)">העתק</button>
-  </div>
-  <div class="card-body">
-    ${g}
-    ${body}
-  </div>
-</article>`;
-    }
-
-    /* ─── Sidebar ───────────────────────────────── */
-    function buildNav(sections) {
-      const sb = document.getElementById('sidebar-inner');
-      sections.forEach(sec => {
-        const cfg = SECS.find(c=>c.num===sec.num); if(!cfg) return;
-        const a = document.createElement('a');
-        a.className='nav-item'; a.href=`#section-${sec.num}`; a.dataset.num=sec.num;
-        a.innerHTML=`<span class="nav-dot" style="background:${cfg.border}"></span>${cfg.icon} ${cfg.label}`;
-        a.dataset.lb = cfg.lb; a.dataset.tc = cfg.tc;
-        sb.appendChild(a);
-      });
-    }
-
-    /* ─── Scroll spy ────────────────────────────── */
-    function initSpy() {
-      const cards = document.querySelectorAll('.section-card');
-      const items = document.querySelectorAll('.nav-item');
-      if (!cards.length) return;
-      const obs = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (!e.isIntersecting) return;
-          const num = e.target.id.replace('section-','');
-          items.forEach(x => {
-            const on = x.dataset.num === num;
-            x.classList.toggle('active', on);
-            x.style.background = on ? (x.dataset.lb || '#f8fafc') : '';
-            x.style.color      = on ? (x.dataset.tc || '#1e293b') : '';
-          });
-        });
-      }, { rootMargin: '-25% 0px -65% 0px' });
-      cards.forEach(c => obs.observe(c));
-    }
-
-    /* ─── Util ──────────────────────────────────── */
-    function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function md(s){
-      /* strip "סעיף X" labels that LLM sometimes injects */
-      s = (s||'').replace(/סעיף\s+\d+[.:)]*\s*/g, '');
-      return esc(s)
-        .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-        .replace(/\+(\d[\d.]*%)/g,'<span class="chg-up">+$1</span>')
-        .replace(/(?<![A-Za-z\d])-(\d[\d.]*%)/g,'<span class="chg-dn">-$1</span>')
-        .replace(/^---$/mg,'<hr class="content-divider">');
-    }
-
-    function showToast(msg){
-      const t=document.getElementById('toast');
-      t.textContent=msg; t.classList.add('show');
-      setTimeout(()=>t.classList.remove('show'),2200);
-    }
-
-    function copySection(num,btn){
-      const card=document.getElementById(`section-${num}`); if(!card)return;
-      const title  = card.querySelector('.card-title')?.textContent||'';
-      const content= card.querySelector('.section-content')?.textContent||'';
-      navigator.clipboard.writeText(`${title}\n\n${content}`).then(()=>{
-        btn.textContent='✓ הועתק'; btn.classList.add('copied');
-        setTimeout(()=>{btn.textContent='העתק';btn.classList.remove('copied');},2000);
-        showToast('הסעיף הועתק ללוח');
-      });
-    }
-
-    function exportAll(){
-      const ts   = document.getElementById('ts-badge')?.textContent||'';
-      const parts= [`חדשני — מעדכן החדשות\n${ts}\n${'═'.repeat(50)}`];
-      document.querySelectorAll('.section-card').forEach(card=>{
-        const title  = card.querySelector('.card-title')?.textContent||'';
-        const content= card.querySelector('.section-content')?.textContent||'';
-        parts.push(`\n${title}\n${'-'.repeat(30)}\n${content}`);
-      });
-      navigator.clipboard.writeText(parts.join('\n')).then(()=>showToast('כל הדסק הועתק ✓'));
-    }
-
-    /* ─── Init ──────────────────────────────────── */
-    function init(){
-      const dataEl  = document.getElementById('news-data');
-      const gaugeEl = document.getElementById('gauges-data');
-      let sections=[], gauges={};
-      try{ sections=JSON.parse(dataEl?.textContent||'[]'); }catch(e){}
-      try{ gauges  =JSON.parse(gaugeEl?.textContent||'{}');}catch(e){}
-
-      const ts = dataEl?.dataset.updated||'';
-      document.getElementById('ts-badge').textContent = ts?`עודכן: ${ts}`:'טרם עודכן';
-      document.title = ts?`חדשני | ${ts}`:'חדשני — מעדכן החדשות';
-
-      if(!sections.length) return;
-
-      document.getElementById('empty-state').style.display='none';
-      document.getElementById('news-cols').style.display='block';
-
-      const colMain=document.getElementById('col-main');
-
-      sections.forEach(sec=>{
-        const cfg=SECS.find(c=>c.num===sec.num); if(!cfg)return;
-        colMain.insertAdjacentHTML('beforeend', buildCard(sec,cfg,gauges));
-      });
-
-      buildNav(sections);
-      initSpy();
-    }
-
-    /* ─── Live clock ────────────────────────────── */
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2,'0');
-      const m = String(now.getMinutes()).padStart(2,'0');
-      const s = String(now.getSeconds()).padStart(2,'0');
-      const el = document.getElementById('live-clock');
-      if (el) el.textContent = `${h}:${m}:${s}`;
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    document.addEventListener('DOMContentLoaded',init);
-  </script>
 </body>
 </html>
