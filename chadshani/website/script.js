@@ -41,6 +41,8 @@ const CAROUSEL_IMAGES = [
   { src: './karusela/1.png', alt: 'תמונה 1' },
   { src: './karusela/2.png', alt: 'תמונה 2' },
   { src: './karusela/3.png', alt: 'תמונה 3' },
+  { src: './karusela/4.png', alt: 'תמונה 4' },
+  { src: './karusela/5.png', alt: 'תמונה 5' },
 ];
 
 class Carousel {
@@ -64,6 +66,7 @@ class Carousel {
       el.src     = img.src;
       el.alt     = img.alt;
       el.loading = i === 0 ? 'eager' : 'lazy';
+      el.onerror = () => { slide.style.display = 'none'; };
       slide.appendChild(el);
       track.appendChild(slide);
       return slide;

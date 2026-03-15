@@ -587,7 +587,7 @@ body::before {
   .header-inner { flex-wrap: wrap; gap: .65rem; }
   .header-time  { flex-direction: row; gap: 1rem; }
   .live-clock   { font-size: 1.05rem; }
-  .ts-badge     { display: none; }
+  .ts-badge     { font-size: .62rem; padding: .2rem .55rem; }
 
   .carousel-wrapper,
   .carousel-track { max-height: 220px; height: 220px; }
