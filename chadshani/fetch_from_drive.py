@@ -33,7 +33,7 @@ TEMP_NEWS = ROOT / "temp_news.txt"
 
 # Loaded from environment (set by GitHub Actions)
 SERVICE_ACCOUNT_JSON = os.environ.get("GDRIVE_SERVICE_ACCOUNT_JSON", "")
-FOLDER_ID            = os.environ.get("GDRIVE_FOLDER_ID", "1rxnEbEk6SUZUKAmTLHj2nkNUzfTleimW")
+FOLDER_ID            = os.environ.get("GDRIVE_FOLDER_ID", "")
 
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 
