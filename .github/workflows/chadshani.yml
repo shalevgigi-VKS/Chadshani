@@ -54,9 +54,12 @@ jobs:
       # שלב 3: commit + push ל-GitHub Pages
       - name: Commit and push
         run: |
+          cp chadshani/website/style.css docs/style.css
+          cp chadshani/website/script.js docs/script.js
+          cp -r chadshani/website/karusela docs/karusela 2>/dev/null || true
           git config user.name  "חדשני Bot"
           git config user.email "chadshani@users.noreply.github.com"
-          git add docs/index.html
+          git add docs/
           git diff --staged --quiet || git commit -m "update $(date -u +'%Y-%m-%d %H:%M')"
           git pull --rebase origin master
           git push
