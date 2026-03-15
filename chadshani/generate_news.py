@@ -67,37 +67,21 @@ def ensure_timestamp(text: str) -> str:
 
 # ── Live market data (free, no API key) ────────────────────────────────────
 
+def estimate_fng_from_vix(vix) -> tuple:
+    if vix is None:
+        return None, ""
+    val = max(5, min(95, int(100 - (vix - 10) * 2.5)))
+    rating = ("Extreme Greed" if val >= 75 else "Greed" if val >= 55
+              else "Neutral" if val >= 45 else "Fear" if val >= 25 else "Extreme Fear")
+    return val, f"{rating} (מוערך מ-VIX)"
+
+
 def fetch_market_data() -> str:
     """Fetch real F&G, Crypto F&G and VIX. Saves gauges_live.json + returns formatted string."""
     lines = []
     gauges: dict = {"fng": None, "crypto_fng": None, "vix": None}
 
-    # CNN Fear & Greed
-    try:
-        r = requests.get(
-            "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
-            headers={"User-Agent": "Mozilla/5.0"},
-            timeout=10,
-        )
-        d = r.json()["fear_and_greed"]
-        val  = round(d["score"])
-        prev = round(d.get("previous_close", d["score"]))
-        rating = d.get("rating", "")
-        gauges["fng"] = val
-        lines.append(f"CNN Fear & Greed Index: {val}/100 ({rating}) | שבוע שעבר: {prev}")
-    except Exception as e:
-        lines.append(f"CNN Fear & Greed Index: לא זמין ({e})")
-
-    # Crypto Fear & Greed
-    try:
-        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
-        d = r.json()["data"][0]
-        gauges["crypto_fng"] = int(d["value"])
-        lines.append(f"Crypto Fear & Greed Index: {d['value']}/100 ({d['value_classification']})")
-    except Exception as e:
-        lines.append(f"Crypto Fear & Greed Index: לא זמין ({e})")
-
-    # VIX via Yahoo Finance
+    # VIX first — needed as fallback for CNN F&G
     try:
         r = requests.get(
             "https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX",
@@ -111,6 +95,43 @@ def fetch_market_data() -> str:
         lines.append(f"VIX (מדד הפחד): {vix}")
     except Exception as e:
         lines.append(f"VIX: לא זמין ({e})")
+
+    # CNN Fear & Greed — try multiple endpoints, fallback to VIX estimate
+    CNN_ENDPOINTS = [
+        "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
+        "https://markets.money.cnn.com/data/fear-and-greed/graphdata",
+    ]
+    fng_ok = False
+    for cnn_url in CNN_ENDPOINTS:
+        try:
+            r = requests.get(cnn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+            d = r.json()["fear_and_greed"]
+            val    = round(d["score"])
+            prev   = round(d.get("previous_close", d["score"]))
+            rating = d.get("rating", "")
+            gauges["fng"] = val
+            lines.append(f"CNN Fear & Greed Index: {val}/100 ({rating}) | שבוע שעבר: {prev}")
+            fng_ok = True
+            break
+        except Exception:
+            continue
+    if not fng_ok:
+        est_val, est_label = estimate_fng_from_vix(gauges.get("vix"))
+        if est_val is not None:
+            gauges["fng"] = est_val
+            gauges["fng_estimated"] = True
+            lines.append(f"CNN Fear & Greed Index: ~{est_val}/100 ({est_label})")
+        else:
+            lines.append("CNN Fear & Greed Index: לא זמין")
+
+    # Crypto Fear & Greed
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
+        d = r.json()["data"][0]
+        gauges["crypto_fng"] = int(d["value"])
+        lines.append(f"Crypto Fear & Greed Index: {d['value']}/100 ({d['value_classification']})")
+    except Exception as e:
+        lines.append(f"Crypto Fear & Greed Index: לא זמין ({e})")
 
     # Save raw gauge values directly (bypasses LLM text parsing)
     data_dir = ROOT / "data"
@@ -256,6 +277,105 @@ def call_groq(system_prompt: str, user_content: str) -> tuple[bool, str]:
         return False, msg
 
 
+# ── Live sector + crypto data ──────────────────────────────────────────────
+
+SECTOR_TICKERS = ['XLK','XLV','XLF','XLE','XLY','XLP','XLU','XLI','XLB','XLRE','XLC']
+
+STOCK_TICKERS = {
+    # chips (section 5)
+    "NVDA": "NVIDIA", "TSM": "TSMC", "AMD": "AMD",
+    "AVGO": "Broadcom", "MU": "Micron", "ASML": "ASML",
+    # software/cloud (section 6)
+    "MSFT": "Microsoft", "GOOGL": "Alphabet", "META": "Meta",
+    "AMZN": "Amazon", "CRM": "Salesforce", "NOW": "ServiceNow",
+}
+
+COINGECKO_IDS = {
+    "BTC":  "bitcoin",
+    "ETH":  "ethereum",
+    "SOL":  "solana",
+    "LINK": "chainlink",
+    "XRP":  "ripple",
+    "TAO":  "bittensor",
+    "KAS":  "kaspa",
+    "LAVA": "lava-network",
+}
+
+
+def fetch_sector_data() -> str:
+    """Fetch real-time % change for 11 S&P sector ETFs via Yahoo Finance."""
+    lines = []
+    for t in SECTOR_TICKERS:
+        try:
+            r = requests.get(
+                f"https://query1.finance.yahoo.com/v8/finance/chart/{t}",
+                params={"interval": "1d", "range": "2d"},
+                headers={"User-Agent": "Mozilla/5.0"},
+                timeout=10,
+            )
+            meta  = r.json()["chart"]["result"][0]["meta"]
+            price = meta.get("regularMarketPrice") or 0
+            prev  = meta.get("chartPreviousClose") or price
+            pct   = round((price - prev) / prev * 100, 2) if prev else 0
+            lines.append(f"{t}: {pct:+.2f}%")
+        except Exception as e:
+            lines.append(f"{t}: לא זמין ({e})")
+    result = "\n".join(lines)
+    print(f"[SECTOR_DATA]\n{result}")
+    return result
+
+
+def fetch_stock_prices() -> str:
+    """Fetch live prices + daily % change for 12 stocks via Yahoo Finance."""
+    lines = []
+    for ticker in STOCK_TICKERS:
+        try:
+            r = requests.get(
+                f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}",
+                params={"interval": "1d", "range": "2d"},
+                headers={"User-Agent": "Mozilla/5.0"},
+                timeout=10,
+            )
+            meta  = r.json()["chart"]["result"][0]["meta"]
+            price = meta.get("regularMarketPrice") or 0
+            prev  = meta.get("chartPreviousClose") or price
+            pct   = round((price - prev) / prev * 100, 2) if prev else 0
+            lines.append(f"{ticker}: ${price:,.2f} | {pct:+.2f}%")
+        except Exception as e:
+            lines.append(f"{ticker}: לא זמין ({e})")
+    result = "\n".join(lines)
+    print(f"[STOCK_DATA]\n{result}")
+    return result
+
+
+def fetch_crypto_prices() -> str:
+    """Fetch live prices + 24h change for 8 crypto coins via CoinGecko (no key)."""
+    ids = ",".join(COINGECKO_IDS.values())
+    try:
+        r = requests.get(
+            "https://api.coingecko.com/api/v3/simple/price",
+            params={"ids": ids, "vs_currencies": "usd", "include_24hr_change": "true"},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=15,
+        )
+        data = r.json()
+        lines = []
+        for ticker, cg_id in COINGECKO_IDS.items():
+            d     = data.get(cg_id, {})
+            price = d.get("usd", 0)
+            chg   = d.get("usd_24h_change", 0) or 0
+            if price:
+                lines.append(f"{ticker}: ${price:,.2f} | {chg:+.2f}% 24h")
+            else:
+                lines.append(f"{ticker}: לא זמין")
+        result = "\n".join(lines)
+        print(f"[CRYPTO_DATA]\n{result}")
+        return result
+    except Exception as e:
+        print(f"[CRYPTO_WARN] {e}")
+        return f"מחירי קריפטו: לא זמינים ({e})"
+
+
 # ── Main ───────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -268,7 +388,10 @@ def main() -> int:
     base_prompt = PROMPT_FILE.read_text(encoding="utf-8")
 
     print("[STEP_1] Fetching live market data...")
-    market_data = fetch_market_data()
+    market_data  = fetch_market_data()
+    sector_data  = fetch_sector_data()
+    stock_data   = fetch_stock_prices()
+    crypto_data  = fetch_crypto_prices()
     print("[STEP_1] Fetching RSS feeds...")
     articles = fetch_rss()
     print(f"[STEP_1_COMPLETE] {len(articles)} articles fetched")
@@ -279,6 +402,9 @@ def main() -> int:
 
     user_content = (
         f"נתוני שוק בזמן אמת (חובה להשתמש בערכים המדויקים האלה — אל תמציא):\n{market_data}"
+        f"\n\nשינויי סקטורים (ETF % שינוי יומי — סעיף 3):\n{sector_data}"
+        f"\n\nמחירי קריפטו עדכניים (סעיף 4 — השתמש בערכים אלה בלבד):\n{crypto_data}"
+        f"\n\nמחירי מניות עדכניים לסעיפים 5-6 (חובה להשתמש בערכים אלה בלבד — אל תמציא):\n{stock_data}"
         f"\n\n---\n\nחדשות עדכניות שנאספו עכשיו:\n\n{news_context}"
     )
 
