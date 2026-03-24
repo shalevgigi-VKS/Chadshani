@@ -139,9 +139,11 @@ JSON_PROMPT = """
 }
 
 כללים קריטיים:
-- השתמש ONLY בנתונים מספריים שמצאת בחיפוש. אם לא מצאת — כתוב "לא זמין".
+- שדות price ו-change_24h: מחירים ושינויים יסופקו מ-yfinance לאחר מכן — כתוב "לא זמין" כ-placeholder בלבד.
+- שדות note, so_what, body, analysis, update, thesis, risks, opportunities, action, flow: חייבים להכיל טקסט אנליטי ממשי — אסור לכתוב "לא זמין".
+- section_3_capital_flow amounts: הערך ב-$XB פורמט — אמוד לפי סנטימנט הסקטור (לא חייב להיות מדויק, רק ריאלי).
+- section_3_sectors flow: "Inflow" / "Outflow" / "נייטרלי" בלבד.
 - generated_at: timestamp ISO עכשווי בדיוק עם Z בסיום.
-- section_3_capital_flow: amounts חייבים להיות ריאליים עם $XB format. direction: "in" או "out" בלבד.
 - section_8_watchlist: בחר 10 טיקרים רלוונטיים לשבוע הקרוב לפי החדשות שמצאת.
 - החזר JSON בלבד. אין טקסט לפני או אחרי.
 """
