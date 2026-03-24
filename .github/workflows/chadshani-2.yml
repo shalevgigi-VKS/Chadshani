@@ -24,7 +24,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Gemini SDK
-        run: pip install --quiet google-generativeai
+        run: pip install --quiet google-genai
 
       - name: Generate latest.json
         env:
