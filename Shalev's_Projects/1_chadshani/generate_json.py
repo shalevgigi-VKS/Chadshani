@@ -6,6 +6,7 @@ Outputs data/latest.json in the exact schema the website expects.
 
 import os
 import json
+import re
 import sys
 from datetime import datetime
 from google import genai
@@ -184,6 +185,8 @@ def generate():
         if raw.startswith("json"):
             raw = raw[4:]
     raw = raw.strip()
+    # Remove invalid control characters (keep \t \n \r)
+    raw = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', raw)
 
     # Validate JSON
     try:
