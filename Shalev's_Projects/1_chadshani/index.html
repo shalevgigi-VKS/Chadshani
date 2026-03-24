@@ -571,6 +571,14 @@ function renderAll(d) {
         const btc = d.section_4_crypto.find(c => c.ticker === 'BTC');
         if (btc) document.getElementById('mkt-btc').textContent = btc.price;
     }
+
+    // Market index cards from markets field
+    if (d.markets) {
+        const m = d.markets;
+        if (m.sp500)     document.getElementById('mkt-sp').textContent    = m.sp500.price;
+        if (m.nasdaq)    document.getElementById('mkt-ndx').textContent   = m.nasdaq.price;
+        if (m.yield_10y) document.getElementById('mkt-yield').textContent = m.yield_10y.value;
+    }
 }
 
 // ===== TICKER =====

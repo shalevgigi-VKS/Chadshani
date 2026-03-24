@@ -153,6 +153,9 @@ MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
 # Crypto ticker mapping: JSON ticker → yfinance symbol
 CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
 
+# Market indices: yfinance symbol → JSON key
+MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y"}
+
 
 def fetch_prices(symbols):
     """Fetch last price and daily change% for a list of yfinance symbols.
@@ -238,8 +241,20 @@ def patch_prices(data):
             item["price"] = fmt_price(p, is_crypto=True)
             item["change_24h"] = fmt_change(c)
 
-    patched = sum(1 for s in (stock_prices, crypto_prices) for _ in s)
-    print(f"[PRICES] patched {len(stock_prices)} stocks + {len(crypto_prices)} crypto symbols")
+    # Fetch and add market indices (S&P, Nasdaq, 10Y yield)
+    market_prices = fetch_prices(set(MARKET_SYMBOLS.keys()))
+    markets = {}
+    for yf_sym, key in MARKET_SYMBOLS.items():
+        if yf_sym in market_prices:
+            p, c = market_prices[yf_sym]
+            if key == "yield_10y":
+                markets[key] = {"value": f"{p:.2f}%", "change": fmt_change(c)}
+            else:
+                markets[key] = {"price": fmt_price(p), "change": fmt_change(c)}
+    if markets:
+        data["markets"] = markets
+
+    print(f"[PRICES] patched {len(stock_prices)} stocks + {len(crypto_prices)} crypto + {len(market_prices)} indices")
     return data
 
 def generate():
