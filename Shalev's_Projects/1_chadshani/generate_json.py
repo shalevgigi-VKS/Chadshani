@@ -144,17 +144,38 @@ JSON_PROMPT = """
 - החזר JSON בלבד. אין טקסט לפני או אחרי.
 """
 
+MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
+
 def generate():
-    response = client.models.generate_content(
-        model="gemini-2.5-pro",
-        contents=JSON_PROMPT,
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            temperature=0.3,
-            max_output_tokens=8192,
-            tools=[types.Tool(google_search=types.GoogleSearch())],
-        ),
-    )
+    import time
+    last_err = None
+    for model in MODELS:
+        for attempt in range(3):
+            try:
+                print(f"[TRY] model={model} attempt={attempt+1}")
+                response = client.models.generate_content(
+                    model=model,
+                    contents=JSON_PROMPT,
+                    config=types.GenerateContentConfig(
+                        system_instruction=SYSTEM_PROMPT,
+                        temperature=0.3,
+                        max_output_tokens=8192,
+                        tools=[types.Tool(google_search=types.GoogleSearch())],
+                    ),
+                )
+                break  # success
+            except Exception as e:
+                last_err = e
+                print(f"[WARN] {e}")
+                if attempt < 2:
+                    time.sleep(15)
+        else:
+            print(f"[SKIP] {model} failed after 3 attempts")
+            continue
+        break  # model worked
+    else:
+        print(f"ERROR: All models failed. Last: {last_err}")
+        sys.exit(1)
 
     raw = response.text.strip()
     # Strip markdown code fences if model added them
