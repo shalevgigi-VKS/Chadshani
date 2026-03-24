@@ -1,0 +1,150 @@
+"""
+Chadshani 2.0 — News Generator
+Uses Gemini API (free tier) with Google Search grounding.
+Outputs data/latest.json in the exact schema the website expects.
+"""
+
+import os
+import json
+import sys
+from datetime import datetime
+import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
+
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("ERROR: GEMINI_API_KEY not set")
+    sys.exit(1)
+
+genai.configure(api_key=GEMINI_API_KEY)
+
+SYSTEM_PROMPT = """אתה "חדשני" — דסק חדשות מודיעיני פיננסי-טכנולוגי בכיר.
+שפה: עברית בלבד. חריגים: טיקרים, שמות חברות, שמות מוצרים רשמיים.
+סגנון: אנליטי, צפוף, מעמיק. אין להמציא מידע מספרי.
+"""
+
+JSON_PROMPT = """
+חפש את החדשות העדכניות ביותר ב-24 השעות האחרונות והפק תשובה JSON בלבד (ללא markdown, ללא ```).
+
+הפורמט המדויק הנדרש:
+{
+  "generated_at": "[ISO timestamp]",
+  "section_1_situation": {
+    "headline": "משפט אחד — תמונת מצב מרכזית של השוק היום",
+    "analysis": "פסקה קצרה — Risk-on/Risk-off, כוח מניע, סנטימנט",
+    "cards": [
+      {"label": "מיקוד הוני", "value": "..."},
+      {"label": "גורמי חיכוך", "value": "..."},
+      {"label": "סביבת מסחר", "value": "..."}
+    ],
+    "alert": {
+      "title": "התרעת מעקב קריטית",
+      "value": "[סכום/ערך מרכזי]",
+      "description": "[תיאור קצר של האירוע]",
+      "impact": "HIGH / MEDIUM / LOW VOLATILITY"
+    }
+  },
+  "section_2_news": [
+    {"title": "כותרת חדשה 1", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
+    {"title": "כותרת חדשה 2", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
+    {"title": "כותרת חדשה 3", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"}
+  ],
+  "section_3_sectors": [
+    {"etf": "XLK", "name": "טכנולוגיה", "change": "+X.X%", "flow": "Inflow/Outflow/נייטרלי", "note": "סיבה"},
+    {"etf": "XLV", "name": "בריאות", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLU", "name": "תשתיות", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLF", "name": "פיננסים", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLE", "name": "אנרגיה", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLY", "name": "צריכה מחזורית", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLI", "name": "תעשייה", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLB", "name": "חומרי גלם", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLRE", "name": "נדל\"ן", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLP", "name": "צריכה בסיסית", "change": "+X.X%", "flow": "...", "note": "..."},
+    {"etf": "XLC", "name": "תקשורת", "change": "+X.X%", "flow": "...", "note": "..."}
+  ],
+  "section_4_crypto": [
+    {"ticker": "BTC", "price": "$...", "change_24h": "+X.X%", "note": "..."},
+    {"ticker": "ETH", "price": "$...", "change_24h": "+X.X%", "note": "..."},
+    {"ticker": "SOL", "price": "$...", "change_24h": "+X.X%", "note": "..."},
+    {"ticker": "BNB", "price": "$...", "change_24h": "+X.X%", "note": "..."}
+  ],
+  "section_5_semis": [
+    {"ticker": "NVDA", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "TSM", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "AMD", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "AVGO", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "MU", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "ASML", "price": "$...", "change": "+X.X%", "note": "..."}
+  ],
+  "section_6_software": [
+    {"ticker": "MSFT", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "GOOGL", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "META", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "AMZN", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "CRM", "price": "$...", "change": "+X.X%", "note": "..."},
+    {"ticker": "NOW", "price": "$...", "change": "+X.X%", "note": "..."}
+  ],
+  "section_7_ai": [
+    {"company": "OpenAI", "product": "...", "update": "...", "status": "GA/Beta"},
+    {"company": "Google/Gemini", "product": "...", "update": "...", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude", "product": "...", "update": "...", "status": "GA/Beta"},
+    {"company": "Meta/Llama", "product": "...", "update": "...", "status": "GA/Beta"},
+    {"company": "xAI/Grok", "product": "...", "update": "...", "status": "GA/Beta"},
+    {"company": "Mistral", "product": "...", "update": "...", "status": "GA/Beta"}
+  ],
+  "section_8_conclusion": {
+    "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
+    "risks": "סיכונים עיקריים — פסקה מנותחת",
+    "opportunities": "הזדמנויות ספציפיות לשבוע הקרוב",
+    "action": "משפט מסכם — מה הפעולה הנכונה עכשיו"
+  }
+}
+
+כללים קריטיים:
+- השתמש ONLY בנתונים מספריים שמצאת בחיפוש. אם לא מצאת — כתוב "לא זמין".
+- generated_at: timestamp ISO עכשווי בדיוק.
+- החזר JSON בלבד. אין טקסט לפני או אחרי.
+"""
+
+def generate():
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-flash",
+        system_instruction=SYSTEM_PROMPT,
+        tools=["google_search_retrieval"],
+    )
+
+    response = model.generate_content(
+        JSON_PROMPT,
+        generation_config=genai.GenerationConfig(
+            temperature=0.3,
+            max_output_tokens=8192,
+        ),
+        safety_settings={
+            HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+        }
+    )
+
+    raw = response.text.strip()
+    # Strip markdown code fences if model added them
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    raw = raw.strip()
+
+    # Validate JSON
+    data = json.loads(raw)
+
+    # Always set generated_at to now
+    data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
+
+    output_path = os.path.join(os.path.dirname(__file__), "data", "latest.json")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+    print(f"[OK] latest.json written — {data['generated_at']}")
+
+if __name__ == "__main__":
+    generate()

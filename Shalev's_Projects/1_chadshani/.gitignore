@@ -4,3 +4,4 @@ temp_news.txt
 __pycache__/
 *.pyc
 output/
+.vercel

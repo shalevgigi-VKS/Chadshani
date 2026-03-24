@@ -1,0 +1,46 @@
+name: Chadshani 2.0 — Daily Auto-Update
+
+on:
+  schedule:
+    - cron: '0 5 * * *'    # 07:00 Israel time (UTC+2 winter)
+  workflow_dispatch:        # Manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Gemini SDK
+        run: pip install --quiet google-generativeai
+
+      - name: Generate latest.json
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          cd "Shalev's_Projects/1_chadshani"
+          python generate_json.py
+
+      - name: Commit and push JSON
+        run: |
+          git config user.name  "Chadshani Bot"
+          git config user.email "chadshani@users.noreply.github.com"
+          git add "Shalev's_Projects/1_chadshani/data/latest.json"
+          git diff --staged --quiet && echo "No changes" || (
+            git commit -m "update $(date -u +'%Y-%m-%d %H:%M')"
+            git pull --rebase origin master
+            git push
+          )
