@@ -185,8 +185,8 @@ def generate():
         if raw.startswith("json"):
             raw = raw[4:]
     raw = raw.strip()
-    # Remove invalid control characters (keep \t \n \r)
-    raw = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', raw)
+    # Remove ALL control characters (JSON escape sequences like \n are unaffected)
+    raw = re.sub(r'[\x00-\x1f\x7f]', '', raw)
 
     # Validate JSON
     try:
