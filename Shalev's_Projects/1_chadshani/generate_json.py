@@ -171,7 +171,12 @@ def generate():
     raw = raw.strip()
 
     # Validate JSON
-    data = json.loads(raw)
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: Invalid JSON from Gemini — {e}")
+        print(f"Raw output (first 500 chars): {raw[:500]}")
+        sys.exit(1)
 
     # Always set generated_at to now
     data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
