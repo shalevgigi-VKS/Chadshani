@@ -11,6 +11,7 @@ import sys
 from datetime import datetime
 from google import genai
 from google.genai import types
+import yfinance as yf
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
@@ -147,6 +148,98 @@ JSON_PROMPT = """
 
 MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
 
+# Crypto ticker mapping: JSON ticker → yfinance symbol
+CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
+
+
+def fetch_prices(symbols):
+    """Fetch last price and daily change% for a list of yfinance symbols.
+    Returns dict: symbol → (price_float, change_pct_float)
+    """
+    result = {}
+    if not symbols:
+        return result
+    try:
+        data = yf.download(list(symbols), period="2d", interval="1d",
+                           auto_adjust=True, progress=False, threads=True)
+        close = data["Close"]
+        for sym in symbols:
+            try:
+                col = close[sym] if sym in close.columns else close
+                prices = col.dropna()
+                if len(prices) >= 2:
+                    p_now, p_prev = float(prices.iloc[-1]), float(prices.iloc[-2])
+                    result[sym] = (p_now, (p_now - p_prev) / p_prev * 100)
+                elif len(prices) == 1:
+                    result[sym] = (float(prices.iloc[-1]), 0.0)
+            except Exception:
+                pass
+    except Exception as e:
+        print(f"[PRICE WARN] batch fetch failed: {e}")
+    return result
+
+
+def fmt_price(p, is_crypto=False):
+    if p >= 1000:
+        return f"${p:,.2f}"
+    if p >= 1:
+        return f"${p:.2f}"
+    return f"${p:.4f}"
+
+
+def fmt_change(c):
+    sign = "+" if c >= 0 else ""
+    return f"{sign}{c:.2f}%"
+
+
+def patch_prices(data):
+    """Replace 'לא זמין' / placeholder prices with real yfinance data."""
+    # Collect all symbols needed
+    stock_symbols = set()
+    for section in ("section_3_sectors", "section_5_semis", "section_6_software"):
+        for item in data.get(section, []):
+            sym = item.get("etf") or item.get("ticker")
+            if sym:
+                stock_symbols.add(sym)
+
+    crypto_symbols = set()
+    for item in data.get("section_4_crypto", []):
+        sym = CRYPTO_MAP.get(item.get("ticker", ""))
+        if sym:
+            crypto_symbols.add(sym)
+
+    # Fetch
+    stock_prices = fetch_prices(stock_symbols)
+    crypto_prices = fetch_prices(crypto_symbols)
+
+    # Patch section_3_sectors
+    for item in data.get("section_3_sectors", []):
+        sym = item.get("etf")
+        if sym and sym in stock_prices:
+            p, c = stock_prices[sym]
+            item["change"] = fmt_change(c)
+
+    # Patch section_5_semis and section_6_software
+    for section in ("section_5_semis", "section_6_software"):
+        for item in data.get(section, []):
+            sym = item.get("ticker")
+            if sym and sym in stock_prices:
+                p, c = stock_prices[sym]
+                item["price"] = fmt_price(p)
+                item["change"] = fmt_change(c)
+
+    # Patch section_4_crypto
+    for item in data.get("section_4_crypto", []):
+        yf_sym = CRYPTO_MAP.get(item.get("ticker", ""))
+        if yf_sym and yf_sym in crypto_prices:
+            p, c = crypto_prices[yf_sym]
+            item["price"] = fmt_price(p, is_crypto=True)
+            item["change_24h"] = fmt_change(c)
+
+    patched = sum(1 for s in (stock_prices, crypto_prices) for _ in s)
+    print(f"[PRICES] patched {len(stock_prices)} stocks + {len(crypto_prices)} crypto symbols")
+    return data
+
 def generate():
     import time
     last_err = None
@@ -196,6 +289,9 @@ def generate():
         print(f"Raw (first 300): {raw[:300]}")
         print(f"Raw (last 300): {raw[-300:]}")
         sys.exit(1)
+
+    # Patch prices with real yfinance data
+    data = patch_prices(data)
 
     # Always set generated_at to now
     data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")

@@ -32,8 +32,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Gemini SDK
-        run: pip install --quiet google-genai
+      - name: Install dependencies
+        run: pip install --quiet google-genai yfinance
 
       - name: Generate latest.json
         env:
