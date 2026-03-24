@@ -160,7 +160,7 @@ def generate():
                     config=types.GenerateContentConfig(
                         system_instruction=SYSTEM_PROMPT,
                         temperature=0.3,
-                        max_output_tokens=8192,
+                        max_output_tokens=16384,
                         tools=[types.Tool(google_search=types.GoogleSearch())],
                     ),
                 )
@@ -193,7 +193,8 @@ def generate():
         data = json.loads(raw)
     except json.JSONDecodeError as e:
         print(f"ERROR: Invalid JSON from Gemini — {e}")
-        print(f"Raw output (first 500 chars): {raw[:500]}")
+        print(f"Raw (first 300): {raw[:300]}")
+        print(f"Raw (last 300): {raw[-300:]}")
         sys.exit(1)
 
     # Always set generated_at to now
