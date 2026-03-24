@@ -257,54 +257,61 @@ def patch_prices(data):
     print(f"[PRICES] patched {len(stock_prices)} stocks + {len(crypto_prices)} crypto + {len(market_prices)} indices")
     return data
 
-def generate():
-    import time
-    last_err = None
-    for model in MODELS:
-        for attempt in range(3):
-            try:
-                print(f"[TRY] model={model} attempt={attempt+1}")
-                response = client.models.generate_content(
-                    model=model,
-                    contents=JSON_PROMPT,
-                    config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_PROMPT,
-                        temperature=0.3,
-                        max_output_tokens=16384,
-                        tools=[types.Tool(google_search=types.GoogleSearch())],
-                    ),
-                )
-                break  # success
-            except Exception as e:
-                last_err = e
-                print(f"[WARN] {e}")
-                if attempt < 2:
-                    time.sleep(15)
-        else:
-            print(f"[SKIP] {model} failed after 3 attempts")
-            continue
-        break  # model worked
-    else:
-        print(f"ERROR: All models failed. Last: {last_err}")
-        sys.exit(1)
-
-    raw = response.text.strip()
-    # Strip markdown code fences if model added them
+def clean_raw(raw):
+    """Strip markdown fences and control characters from Gemini output."""
+    raw = raw.strip()
     if raw.startswith("```"):
         raw = raw.split("```")[1]
         if raw.startswith("json"):
             raw = raw[4:]
     raw = raw.strip()
-    # Remove ALL control characters (JSON escape sequences like \n are unaffected)
-    raw = re.sub(r'[\x00-\x1f\x7f]', '', raw)
+    # Strip control chars except \t (0x09) which is valid JSON whitespace
+    raw = re.sub(r'[\x00-\x08\x0a-\x1f\x7f]', '', raw)
+    # Strip Unicode directional/invisible marks
+    raw = re.sub(r'[\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]', '', raw)
+    return raw
 
-    # Validate JSON
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError as e:
-        print(f"ERROR: Invalid JSON from Gemini — {e}")
-        print(f"Raw (first 300): {raw[:300]}")
-        print(f"Raw (last 300): {raw[-300:]}")
+
+def call_gemini(model, attempt):
+    import time
+    print(f"[TRY] model={model} attempt={attempt+1}")
+    response = client.models.generate_content(
+        model=model,
+        contents=JSON_PROMPT,
+        config=types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
+            temperature=0.3,
+            max_output_tokens=16384,
+            tools=[types.Tool(google_search=types.GoogleSearch())],
+        ),
+    )
+    return response
+
+
+def generate():
+    import time
+    data = None
+    for model in MODELS:
+        for attempt in range(3):
+            try:
+                response = call_gemini(model, attempt)
+                raw = clean_raw(response.text)
+                data = json.loads(raw)
+                print(f"[OK] JSON parsed — model={model}")
+                break  # valid JSON obtained
+            except json.JSONDecodeError as e:
+                print(f"[WARN] Invalid JSON attempt {attempt+1}: {e} — retrying")
+                if attempt < 2:
+                    time.sleep(10)
+            except Exception as e:
+                print(f"[WARN] API error attempt {attempt+1}: {e}")
+                if attempt < 2:
+                    time.sleep(15)
+        if data is not None:
+            break
+        print(f"[SKIP] {model} failed after 3 attempts")
+    if data is None:
+        print("ERROR: All models and attempts exhausted")
         sys.exit(1)
 
     # Patch prices with real yfinance data
