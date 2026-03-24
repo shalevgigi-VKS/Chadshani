@@ -146,7 +146,7 @@ JSON_PROMPT = """
 
 def generate():
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-2.0-flash-lite",
         contents=JSON_PROMPT,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
