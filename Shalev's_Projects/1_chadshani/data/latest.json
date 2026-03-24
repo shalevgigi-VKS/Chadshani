@@ -1,72 +1,132 @@
 {
-  "generated_at": "2026-03-24T07:00:00",
+  "generated_at": "2026-03-24T05:00:00Z",
   "section_1_situation": {
-    "headline": "השווקים הגלובליים מציגים התאוששות בצורת K, המונעת ממעבר לשלב הטמעת ה-AI",
-    "analysis": "סביבת מסחר תנודתית אך מוכוונת אלפא. הון מוסדי ממשיך לזרום לתשתיות AI תוך הימנעות מחשיפה לצריכה מחזורית.",
+    "headline": "שוק ההון מגיב בעוצמה לנתוני תעסוקה חזקים — AI Capex ממשיך להוביל",
+    "analysis": "סביבת Risk-on מתגברת עם זרימת הון לטכנולוגיה ו-AI. הפד שומר על ריבית יציבה — שוק מתמחר 2 הורדות ב-2026. NVDA ו-TSM מובילים עם ביקוש לשבבי AI.",
     "cards": [
-      {"label": "מיקוד הוני", "value": "חזית הפריון"},
-      {"label": "גורמי חיכוך", "value": "פרימיום גיאופוליטי"},
-      {"label": "סביבת מסחר", "value": "תנודתית, מוכוונת אלפא"}
+      {"label": "מיקוד הוני", "value": "AI Infrastructure & Semis"},
+      {"label": "גורמי חיכוך", "value": "אינפלציה עיקשת, מתח סחר"},
+      {"label": "סביבת מסחר", "value": "Risk-On — Momentum"}
     ],
     "alert": {
       "title": "התרעת מעקב קריטית",
-      "value": "$800M USDC",
-      "description": "800 מיליון דולר ב-USDC הועברו מקופת Circle ל-Coinbase Prime. איתות לפקודת קנייה מוסדית ענקית של BTC בשעות הקרובות.",
+      "value": "$500B",
+      "description": "תכנית ה-AI Capex של Big Tech ל-2026 — ביקוש שיא לשבבים ותשתיות",
       "impact": "HIGH VOLATILITY"
     }
   },
   "section_2_news": [
-    {"title": "OpenAI מכריזה על GPT-5 Operator", "body": "מערכת חשיבה מסדר 2 עם שליטה אוטונומית בשולחן העבודה. תחרות ישירה על שוק Agentic AI.", "so_what": "מאיצה את המרוץ לאוטומציה תאגידית — בעלי תשתיות (NVDA, MSFT) מרוויחים ראשונים."},
-    {"title": "TSMC מדווחת על עלייה של 34% בהכנסות", "body": "ביקוש חסר תקדים ל-CoWoS-L לייצור שבבי AI. מצמצמת צוואר בקבוק.", "so_what": "TSM נשאר הנכס הקריטי ביותר בשרשרת אספקת ה-AI."},
-    {"title": "Fed שומרת על ריביות — אות לשוק", "body": "פרוטוקול ישיבת ה-FOMC מעיד על דאגה מאינפלציית שירותים. שתי הורדות ריבית ב-2026 עדיין בתמחור.", "so_what": "סביבת תשואות יציבה תומכת בטכנולוגיה, לוחצת על נדל\"ן מסחרי."}
+    {
+      "title": "NVDA מציגה ביקוש שיא לארכיטקטורת Blackwell",
+      "body": "NVIDIA מדווחת על הזמנות שיא מ-Microsoft, Google ו-Amazon. ארכיטקטורת Blackwell Ultra מוכנה לייצור סדרתי ב-Q2 2026 עם שיפור של 4x בביצועי inference.",
+      "so_what": "מנוע הצמיחה של NVDA נשמר. TSM מרוויחה מהביקוש עם עדיפות ל-3nm."
+    },
+    {
+      "title": "הפד שומר על ריבית — שוק מתמחר הורדה בספטמבר",
+      "body": "ועדת ה-FOMC הותירה את הריבית ב-4.25-4.5%. שוק הנגזרים מתמחר 68% סיכוי להורדה בספטמבר 2026.",
+      "so_what": "דולר מחזיק. Growth stocks נהנים יחסית לValue. אגרות חוב לטווח ארוך בלחץ."
+    },
+    {
+      "title": "OpenAI משיקה GPT-5 עם יכולות reasoning מתקדמות",
+      "body": "OpenAI מכריזה על GPT-5 עם ציון MMLU של 92.3% ויכולת multi-step reasoning. זמין ב-API עם תמחור $0.015/1K tokens.",
+      "so_what": "לחץ תחרותי על Google ו-Anthropic. הזדמנות לחברות SaaS שמשלבות AI."
+    },
+    {
+      "title": "Bitcoin חוצה $91,000 — ETF inflows שוברים שיא",
+      "body": "BTC עלה מעל $91K לראשונה. ETF-ים של BlackRock ו-Fidelity רשמו גיוסים מצטברים של $3.2B בשבוע.",
+      "so_what": "MSTR ו-COIN כ-High Beta Plays. SOL ו-LINK מרוויחות מהסנטימנט החיובי."
+    },
+    {
+      "title": "Microsoft Azure מדווחת על צמיחה של 31% ב-AI workloads",
+      "body": "Azure AI Services גדל 31% YoY. Copilot for Microsoft 365 הגיע ל-30M משתמשים פעילים. השקעה נוספת של $10B בתשתיות cloud.",
+      "so_what": "MSFT ממצבת את עצמה כשחקן AI Enterprise מוביל. CRM ו-NOW בלחץ תחרותי."
+    },
+    {
+      "title": "Broadcom (AVGO) מציגה תוצאות שיא עם AI ASIC",
+      "body": "Broadcom מדווחת על הכנסות $14.9B ברבעון עם צמיחה של 47% ב-AI semiconductor. חוזים חדשים עם Google ו-Meta לפיתוח TPU מותאם אישית.",
+      "so_what": "AVGO מרוויחה מגיוון מ-NVDA. Custom ASIC = margin גבוה יותר למפעיל הענן."
+    }
   ],
   "section_3_sectors": [
-    {"etf": "XLK", "name": "טכנולוגיה (תשתיות AI)", "change": "+1.8%", "flow": "Inflow", "note": "ביקוש חזק למאיצי AI"},
-    {"etf": "XLV", "name": "בריאות (GLP-1)", "change": "+0.9%", "flow": "Inflow", "note": "Novo Nordisk ו-Eli Lilly מובילות"},
-    {"etf": "XLU", "name": "תשתיות (גרעין)", "change": "+0.4%", "flow": "Inflow", "note": "SMR nuclear energy 2026"},
-    {"etf": "XLF", "name": "פיננסים", "change": "+0.2%", "flow": "נייטרלי", "note": "ריבית יציבה מסייעת"},
-    {"etf": "XLE", "name": "אנרגיה", "change": "-0.3%", "flow": "Outflow", "note": "לחץ ממחירי נפט"},
-    {"etf": "XLY", "name": "צריכה מחזורית", "change": "-0.7%", "flow": "Outflow", "note": "ירידה בביטחון הצרכנים"},
-    {"etf": "XLI", "name": "תעשייה", "change": "+0.1%", "flow": "נייטרלי", "note": "הזמנות מפעלי ייצור יציבות"},
-    {"etf": "XLB", "name": "חומרי גלם", "change": "-0.5%", "flow": "Outflow", "note": "ירידת ביקוש סיני"},
-    {"etf": "XLRE", "name": "נדל\"ן", "change": "-1.1%", "flow": "Outflow", "note": "לחץ מאג\"ח ארוך"},
-    {"etf": "XLP", "name": "צריכה בסיסית", "change": "+0.3%", "flow": "נייטרלי", "note": "מגן מפני תנודתיות"},
-    {"etf": "XLC", "name": "תקשורת", "change": "+0.6%", "flow": "Inflow", "note": "META ו-GOOGL מובילות"}
+    {"etf": "XLK", "name": "טכנולוגיה", "change": "+1.8%", "flow": "Inflow", "note": "AI Capex cycle"},
+    {"etf": "XLV", "name": "בריאות", "change": "+0.6%", "flow": "Inflow", "note": "GLP-1 demand"},
+    {"etf": "XLU", "name": "תשתיות", "change": "+0.4%", "flow": "Inflow", "note": "Data center power"},
+    {"etf": "XLF", "name": "פיננסים", "change": "+0.9%", "flow": "Inflow", "note": "Strong earnings"},
+    {"etf": "XLE", "name": "אנרגיה", "change": "-0.3%", "flow": "נייטרלי", "note": "Oil range-bound"},
+    {"etf": "XLY", "name": "צריכה מחזורית", "change": "-0.7%", "flow": "Outflow", "note": "Consumer pressure"},
+    {"etf": "XLI", "name": "תעשייה", "change": "+0.2%", "flow": "נייטרלי", "note": "Defense orders"},
+    {"etf": "XLB", "name": "חומרי גלם", "change": "-0.5%", "flow": "Outflow", "note": "China demand weak"},
+    {"etf": "XLRE", "name": "נדל\"ן", "change": "-1.1%", "flow": "Outflow", "note": "Rates sticky"},
+    {"etf": "XLP", "name": "צריכה בסיסית", "change": "+0.1%", "flow": "נייטרלי", "note": "Defensive bid"},
+    {"etf": "XLC", "name": "תקשורת", "change": "+0.5%", "flow": "נייטרלי", "note": "META strength"}
+  ],
+  "section_3_capital_flow": [
+    {"label": "טכנולוגיה (תשתיות AI)", "amount": "+$14.2B", "direction": "in"},
+    {"label": "בריאות (GLP-1 / Biotech)", "amount": "+$8.8B", "direction": "in"},
+    {"label": "תשתיות (Data Centers)", "amount": "+$6.5B", "direction": "in"},
+    {"label": "פיננסים (בנקים גדולים)", "amount": "+$3.7B", "direction": "in"},
+    {"label": "אנרגיה (גרעין/SMR)", "amount": "+$4.1B", "direction": "in"},
+    {"label": "ביטחון / Aerospace", "amount": "+$2.3B", "direction": "in"},
+    {"label": "צריכה מחזורית", "amount": "-$5.4B", "direction": "out"},
+    {"label": "נדל\"ן מסחרי", "amount": "-$3.2B", "direction": "out"},
+    {"label": "קמעונאות מסורתית", "amount": "-$2.1B", "direction": "out"},
+    {"label": "תקשורת / Media", "amount": "-$1.8B", "direction": "out"},
+    {"label": "חומרי גלם", "amount": "-$1.4B", "direction": "out"}
   ],
   "section_4_crypto": [
-    {"ticker": "BTC", "price": "$87,200", "change_24h": "-1.4%", "note": "ETF flows שליליים קלות, תמיכה ב-85K"},
-    {"ticker": "ETH", "price": "$4,850", "change_24h": "+0.8%", "note": "שדרוג Pectra מתקרב, היצע נמוך בבורסות"},
-    {"ticker": "SOL", "price": "$175", "change_24h": "+2.1%", "note": "TVL חזק, Firedancer משפר latency"},
-    {"ticker": "BNB", "price": "$580", "change_24h": "+0.3%", "note": "נייטרלי, נפח מסחר יציב"}
+    {"ticker": "BTC", "price": "$91,240", "change_24h": "+2.8%", "note": "ETF inflows שוברים שיא שבועי"},
+    {"ticker": "ETH", "price": "$3,420", "change_24h": "+1.4%", "note": "Pectra upgrade boost"},
+    {"ticker": "SOL", "price": "$187", "change_24h": "+3.2%", "note": "Firedancer testnet live"},
+    {"ticker": "LINK", "price": "$18.4", "change_24h": "+4.1%", "note": "DeFi oracle demand surge"}
   ],
   "section_5_semis": [
-    {"ticker": "NVDA", "price": "$850", "change": "+2.3%", "note": "Blackwell B200 ביקוש חסר תקדים"},
-    {"ticker": "TSM", "price": "$195", "change": "+1.1%", "note": "N2 ייצור מסחרי החל, CoWoS-L מלאי נמוך"},
-    {"ticker": "AMD", "price": "$145", "change": "-0.4%", "note": "MI300X מתחרה ב-H100, נתח שוק עולה"},
-    {"ticker": "AVGO", "price": "$185", "change": "+0.9%", "note": "Jericho3-AI זמני אספקה 35 שבועות"},
-    {"ticker": "MU", "price": "$115", "change": "+1.8%", "note": "HBM4 ייצור מוקדם, נתח שוק מ-Samsung"},
-    {"ticker": "ASML", "price": "$750", "change": "+0.5%", "note": "EUV מכירות חזקות לאסיה"}
+    {"ticker": "NVDA", "price": "$875", "change": "+2.3%", "note": "Blackwell Ultra demand leads"},
+    {"ticker": "TSM", "price": "$204", "change": "+1.1%", "note": "3nm capacity expansion"},
+    {"ticker": "AMD", "price": "$178", "change": "+1.8%", "note": "MI300X datacenter share gains"},
+    {"ticker": "AVGO", "price": "$248", "change": "+2.1%", "note": "Custom ASIC record revenue"},
+    {"ticker": "MU", "price": "$124", "change": "+1.4%", "note": "HBM4 ramp on track"},
+    {"ticker": "ASML", "price": "$892", "change": "+0.6%", "note": "EUV orders solid"},
+    {"ticker": "QCOM", "price": "$165", "change": "+0.9%", "note": "On-device AI PC cycle"},
+    {"ticker": "ARM", "price": "$138", "change": "+1.6%", "note": "Royalty growth from custom silicon"},
+    {"ticker": "MRVL", "price": "$82", "change": "+2.4%", "note": "Cloud networking ASIC wins"},
+    {"ticker": "LRCX", "price": "$890", "change": "+0.7%", "note": "Etch equipment demand stable"}
   ],
   "section_6_software": [
-    {"ticker": "MSFT", "price": "$415", "change": "+0.7%", "note": "Copilot אימוץ ארגוני מאיץ"},
-    {"ticker": "GOOGL", "price": "$175", "change": "+1.2%", "note": "Gemini 2.0 Ultra — 10M context window"},
-    {"ticker": "META", "price": "$620", "change": "+2.1%", "note": "Llama 4 400B שווה GPT-5 בביצועים"},
-    {"ticker": "AMZN", "price": "$220", "change": "+0.4%", "note": "AWS Bedrock growth 85% YoY"},
-    {"ticker": "CRM", "price": "$285", "change": "-0.2%", "note": "Agentforce האטה זמנית, צמיחה ארוכת טווח"},
-    {"ticker": "NOW", "price": "$980", "change": "+1.5%", "note": "AI workflow automation — leader"}
+    {"ticker": "MSFT", "price": "$421", "change": "+1.2%", "note": "Azure AI +31% YoY"},
+    {"ticker": "GOOGL", "price": "$176", "change": "+0.8%", "note": "Gemini adoption accelerating"},
+    {"ticker": "META", "price": "$588", "change": "+1.9%", "note": "Llama 4 enterprise push"},
+    {"ticker": "AMZN", "price": "$212", "change": "+1.0%", "note": "AWS Bedrock AI growth"},
+    {"ticker": "CRM", "price": "$312", "change": "+0.5%", "note": "Agentforce adoption early"},
+    {"ticker": "NOW", "price": "$1,040", "change": "+0.7%", "note": "IT workflow AI strong"},
+    {"ticker": "ORCL", "price": "$162", "change": "+1.1%", "note": "Cloud database AI demand"},
+    {"ticker": "ADBE", "price": "$448", "change": "-0.3%", "note": "Firefly competition pressure"},
+    {"ticker": "PLTR", "price": "$28", "change": "+3.2%", "note": "Government AI contracts expand"},
+    {"ticker": "SNOW", "price": "$178", "change": "+1.4%", "note": "Data cloud AI workloads"}
   ],
   "section_7_ai": [
-    {"company": "OpenAI", "product": "GPT-5 Operator", "update": "חשיבה מערכת 2, שליטה אוטונומית בשולחן עבודה", "status": "GA"},
-    {"company": "Google/Gemini", "product": "Gemini 2.0 Ultra", "update": "10 מיליון אסימונים, הקשר אינסופי לסנתוז מאגרי מידע", "status": "Beta"},
-    {"company": "Anthropic/Claude", "product": "Claude 4", "update": "Verifiable Reasoning להפחתת הזיות — יתרון ארגוני", "status": "GA"},
-    {"company": "Meta/Llama", "product": "Llama 4 400B", "update": "שוויון ביצועים מול GPT-5, רישיון מסחרי פתוח", "status": "GA"},
-    {"company": "xAI/Grok", "product": "Grok 3", "update": "אינטגרציה עמוקה ב-X, נתוני מדיה חברתית ייחודיים", "status": "GA"},
-    {"company": "Mistral", "product": "Mistral Large 3", "update": "מוביל במגזר אירופי, ציות GDPR מובנה", "status": "GA"}
+    {"company": "OpenAI", "product": "GPT-5", "update": "השקה מלאה עם reasoning מתקדם, MMLU 92.3%, multi-step tasks", "status": "GA"},
+    {"company": "Google/Gemini", "product": "Gemini 2.0 Ultra", "update": "אינטגרציה מלאה עם Google Workspace, grounding מוגבר", "status": "GA"},
+    {"company": "Anthropic/Claude", "product": "Claude 3.7 Sonnet", "update": "Extended thinking mode, 200K context, code generation leader", "status": "GA"},
+    {"company": "Meta/Llama", "product": "Llama 4 Scout", "update": "MoE architecture, 17B params, open source עם commercial license", "status": "GA"},
+    {"company": "xAI/Grok", "product": "Grok 3", "update": "Real-time X data, math reasoning improvements, beta testing", "status": "Beta"},
+    {"company": "Perplexity", "product": "Perplexity Pro Search", "update": "AI search עם citations מדויקות, API enterprise, 100M queries/day", "status": "GA"}
   ],
   "section_8_conclusion": {
-    "thesis": "תזת ה-AI Infrastructure Play נשארת חזקה — ה-Capex של hyperscalers (MSFT, GOOGL, META, AMZN) ממשיך לצמוח ב-40%+ YoY, שמונע ביקוש ישיר ל-NVDA, TSM ו-AVGO.",
-    "risks": "CRE — גל מחזור חוב ב-Q3-Q4 2026 עלול להלחיץ מלווים אזוריים. תנודתיות אג\"ח ריבוני — מכרזים כושלים בארה\"ב. Regulatory overhang על AI.",
-    "opportunities": "NVDA לפני Blackwell ramp. TSM N2 — הכנסות Q2 עשויות להפתיע. SOL — Firedancer upgrade catalyst. MU HBM4 — נתח שוק גדל על חשבון Samsung.",
-    "action": "הטייה לתשתיות AI ו-Power Infra (VRT/ETN). הימנעות מ-CRE ו-Regional Banks. BTC — החזקה עם stop ב-$80K."
-  }
+    "thesis": "מחזור ה-AI Capex נמצא בשיא — Big Tech ממשיכה להשקיע בתשתיות בקצב חסר תקדים. שבבים ותשתיות (NVDA, AVGO, TSM) הם הנהנים הישירים.",
+    "risks": "אינפלציה עיקשת בשירותים עלולה לדחות הורדות ריבית. מתחים גיאופוליטיים (טייוואן, סחר) מסכנים שרשרת אספקת שבבים.",
+    "opportunities": "PLTR ו-MRVL עדיין לא מומחשות בשוק — פוטנציאל upside ב-6 חודשים. LINK עם momentum טכני.",
+    "action": "להחזיק core AI positions (NVDA, MSFT, TSM), להוסיף PLTR ו-MRVL בירידות, לקצץ ADBE."
+  },
+  "section_8_watchlist": [
+    {"ticker": "NVDA", "note": "CoWoS-L Supply Chain"},
+    {"ticker": "TSM", "note": "2nm Performance Hub"},
+    {"ticker": "VRT", "note": "Cooling & Grid Infra"},
+    {"ticker": "MSTR", "note": "Crypto High Beta"},
+    {"ticker": "SOL", "note": "Firedancer Catalyst"},
+    {"ticker": "MU", "note": "HBM4 Market Share"},
+    {"ticker": "PLTR", "note": "AI Gov Contracts"},
+    {"ticker": "ARM", "note": "Custom Silicon Royalties"},
+    {"ticker": "LINK", "note": "DeFi Oracle Leader"},
+    {"ticker": "AVGO", "note": "AI Networking ASIC"}
+  ]
 }

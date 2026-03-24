@@ -183,13 +183,6 @@
 </head>
 <body class="font-body">
 
-<!-- Ticker Bar -->
-<div class="ticker-wrap py-2 text-xs font-mono" id="ticker-bar">
-    <div class="ticker-track" id="ticker-track">
-        <!-- populated by JS -->
-    </div>
-</div>
-
 <!-- Header -->
 <header class="px-4 md:px-6 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
@@ -222,16 +215,17 @@
 
 <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-20">
 
-    <!-- Carousel -->
+    <!-- Ticker Bar -->
+    <div class="ticker-wrap py-2 text-xs font-mono -mx-4 md:-mx-6" id="ticker-bar">
+        <div class="ticker-track" id="ticker-track">
+            <!-- populated by JS -->
+        </div>
+    </div>
+
+    <!-- Carousel (built dynamically by JS) -->
     <section>
         <div class="carousel-container">
-            <div class="carousel-track" id="carousel-track">
-                <div class="carousel-slide"><img src="assets/karusela/1.png" alt="חדשני 1" loading="lazy"></div>
-                <div class="carousel-slide"><img src="assets/karusela/2.png" alt="חדשני 2" loading="lazy"></div>
-                <div class="carousel-slide"><img src="assets/karusela/3.png" alt="חדשני 3" loading="lazy"></div>
-                <div class="carousel-slide"><img src="assets/karusela/4.png" alt="חדשני 4" loading="lazy"></div>
-                <div class="carousel-slide"><img src="assets/karusela/5.png" alt="חדשני 5" loading="lazy"></div>
-            </div>
+            <div class="carousel-track" id="carousel-track"></div>
             <button class="carousel-btn prev" onclick="carouselMove(-1)">&#x2039;</button>
             <button class="carousel-btn next" onclick="carouselMove(1)">&#x203a;</button>
         </div>
@@ -262,7 +256,7 @@
     <!-- Section 2: News -->
     <section>
         <div class="section-label label-blue">חדשות מרכזיות</div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="s2-news"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="s2-news"></div>
     </section>
 
     <!-- Market Cards -->
@@ -313,42 +307,8 @@
                 <div class="section-label label-emerald mb-0">זרימת הון — 30 יום</div>
                 <span class="text-xs font-mono text-brand-muted uppercase tracking-widest">Global Sector Exposure</span>
             </div>
-            <div class="space-y-5">
-                <div>
-                    <div class="flex justify-between text-sm mb-1.5">
-                        <span class="text-slate-700">טכנולוגיה (תשתיות AI)</span>
-                        <span class="text-emerald-600 font-bold">+$14.2B</span>
-                    </div>
-                    <div class="bar-track"><div class="bar-fill bg-emerald-500" style="width:90%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-sm mb-1.5">
-                        <span class="text-slate-700">בריאות (GLP-1)</span>
-                        <span class="text-emerald-600 font-bold">+$8.8B</span>
-                    </div>
-                    <div class="bar-track"><div class="bar-fill bg-emerald-400" style="width:65%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-sm mb-1.5">
-                        <span class="text-slate-700">אנרגיה (גרעין/SMR)</span>
-                        <span class="text-emerald-600 font-bold">+$4.1B</span>
-                    </div>
-                    <div class="bar-track"><div class="bar-fill bg-emerald-300" style="width:40%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-sm mb-1.5">
-                        <span class="text-slate-700">צריכה מחזורית</span>
-                        <span class="text-rose-500 font-bold">-$5.4B</span>
-                    </div>
-                    <div class="bar-track flex justify-start"><div class="bar-fill bg-rose-400" style="width:45%"></div></div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-sm mb-1.5">
-                        <span class="text-slate-700">נדל"ן מסחרי</span>
-                        <span class="text-rose-500 font-bold">-$3.2B</span>
-                    </div>
-                    <div class="bar-track"><div class="bar-fill bg-rose-300" style="width:30%"></div></div>
-                </div>
+            <div class="space-y-3" id="s3-capital-flow">
+                <!-- populated by JS -->
             </div>
         </div>
     </section>
@@ -404,13 +364,8 @@
         </div>
         <div class="card p-7">
             <div class="section-label label-blue">Watchlist — טיקרים למעקב</div>
-            <div class="grid grid-cols-2 gap-3">
-                <div class="ticker-chip"><div class="font-bold text-brand-accent text-lg">NVDA</div><div class="text-xs text-brand-muted">CoWoS-L Supply Chain</div></div>
-                <div class="ticker-chip"><div class="font-bold text-brand-accent text-lg">TSM</div><div class="text-xs text-brand-muted">2nm Performance Hub</div></div>
-                <div class="ticker-chip"><div class="font-bold text-brand-accent text-lg">VRT / ETN</div><div class="text-xs text-brand-muted">Cooling & Grid Infra</div></div>
-                <div class="ticker-chip"><div class="font-bold text-brand-accent text-lg">MSTR / COIN</div><div class="text-xs text-brand-muted">Crypto High Beta</div></div>
-                <div class="ticker-chip"><div class="font-bold text-brand-accent text-lg">SOL</div><div class="text-xs text-brand-muted">Firedancer Catalyst</div></div>
-                <div class="ticker-chip"><div class="font-bold text-brand-accent text-lg">MU</div><div class="text-xs text-brand-muted">HBM4 Market Share</div></div>
+            <div class="grid grid-cols-2 gap-3" id="s8-watchlist">
+                <!-- populated by JS -->
             </div>
             <div class="mt-5 pt-5 border-t border-slate-100 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-xs font-mono text-brand-muted">
@@ -426,7 +381,7 @@
     <section class="card about-section p-8 md:p-10">
         <div class="flex flex-col md:flex-row items-center gap-8">
             <div class="flex-shrink-0">
-                <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover shadow-md border-2 border-white">
+                <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-32 md:w-44 rounded-2xl object-cover shadow-md border-2 border-white">
             </div>
             <div class="text-center md:text-right">
                 <div class="section-label label-blue mb-2">אודותי</div>
@@ -605,28 +560,36 @@ function renderAll(d) {
         document.getElementById('s8-action').textContent = s8.action || '';
     }
 
-    // Populate market cards from crypto data
+    // Capital flow
+    renderCapitalFlow(d.section_3_capital_flow);
+
+    // Watchlist
+    renderWatchlist(d.section_8_watchlist);
+
+    // Market cards from crypto data
     if (d.section_4_crypto) {
         const btc = d.section_4_crypto.find(c => c.ticker === 'BTC');
         if (btc) document.getElementById('mkt-btc').textContent = btc.price;
-    }
-    if (d.section_5_semis) {
-        // use first semi for illustration
     }
 }
 
 // ===== TICKER =====
 const tickerItems = [
-    {label: 'S&P 500', val: '5,842', chg: '+0.8%', up: true},
-    {label: 'Nasdaq', val: '19,210', chg: '+1.1%', up: true},
-    {label: 'BTC', val: '$87,200', chg: '-1.4%', up: false},
-    {label: 'ETH', val: '$4,850', chg: '+0.8%', up: true},
-    {label: 'Gold', val: '$3,045', chg: '+0.3%', up: true},
-    {label: 'VIX', val: '18.2', chg: '-2.1%', up: false},
-    {label: 'DXY', val: '103.4', chg: '-0.2%', up: false},
-    {label: 'Oil (WTI)', val: '$74.8', chg: '-0.5%', up: false},
-    {label: 'NVDA', val: '$850', chg: '+2.3%', up: true},
-    {label: 'TSLA', val: '$248', chg: '+1.8%', up: true},
+    {label: 'S&P 500',     val: '5,842',   chg: '+0.8%',  up: true},
+    {label: 'Nasdaq-100',  val: '19,210',  chg: '+1.1%',  up: true},
+    {label: 'Dow Jones',   val: '43,100',  chg: '+0.4%',  up: true},
+    {label: 'Russell 2000',val: '2,140',   chg: '-0.3%',  up: false},
+    {label: 'BTC',         val: '$91,240', chg: '+2.8%',  up: true},
+    {label: 'ETH',         val: '$3,420',  chg: '+1.4%',  up: true},
+    {label: 'SOL',         val: '$187',    chg: '+3.2%',  up: true},
+    {label: 'Gold',        val: '$3,045',  chg: '+0.3%',  up: true},
+    {label: 'Silver',      val: '$34.2',   chg: '+0.5%',  up: true},
+    {label: 'Oil (WTI)',   val: '$74.8',   chg: '-0.5%',  up: false},
+    {label: 'VIX',         val: '18.2',    chg: '-2.1%',  up: false},
+    {label: 'DXY',         val: '103.4',   chg: '-0.2%',  up: false},
+    {label: 'EUR/USD',     val: '1.082',   chg: '+0.1%',  up: true},
+    {label: 'NVDA',        val: '$875',    chg: '+2.3%',  up: true},
+    {label: 'TSLA',        val: '$248',    chg: '+1.8%',  up: true},
 ];
 function buildTicker() {
     const items = [...tickerItems, ...tickerItems]; // duplicate for seamless loop
@@ -640,10 +603,22 @@ function buildTicker() {
 }
 
 // ===== CAROUSEL =====
+const carouselImages = [
+    '1.png','2.png','3.png','4.png','5.png',
+    '6.jpg','7.png','8.png','9.jpg','10.jpg','11.jpg'
+];
+const TOTAL_SLIDES = carouselImages.length;
 let carouselIdx = 0;
-const TOTAL_SLIDES = 5;
+
+function buildCarouselSlides() {
+    const track = document.getElementById('carousel-track');
+    track.innerHTML = carouselImages.map((img, i) =>
+        `<div class="carousel-slide"><img src="assets/karusela/${img}" alt="חדשני ${i+1}" loading="lazy"></div>`
+    ).join('');
+    track.style.transform = 'translateX(0%)';
+}
 function carouselMove(dir) {
-    carouselIdx = (carouselIdx + dir + TOTAL_SLIDES) % TOTAL_SLIDES;
+    carouselIdx = (carouselIdx - dir + TOTAL_SLIDES) % TOTAL_SLIDES;
     document.getElementById('carousel-track').style.transform = `translateX(${carouselIdx * 100}%)`;
     document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === carouselIdx));
 }
@@ -652,15 +627,39 @@ function buildCarouselDots() {
     dots.innerHTML = Array.from({length: TOTAL_SLIDES}, (_, i) =>
         `<div class="dot ${i === 0 ? 'active' : ''}" onclick="carouselMove(${i} - carouselIdx)"></div>`).join('');
 }
-// Auto-play
 setInterval(() => carouselMove(1), 4000);
 
-// Fix RTL carousel direction
-document.getElementById('carousel-track').style.transform = 'translateX(0%)';
-function carouselMove(dir) {
-    carouselIdx = (carouselIdx - dir + TOTAL_SLIDES) % TOTAL_SLIDES;
-    document.getElementById('carousel-track').style.transform = `translateX(${carouselIdx * 100}%)`;
-    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === carouselIdx));
+// ===== CAPITAL FLOW =====
+function renderCapitalFlow(arr) {
+    const el = document.getElementById('s3-capital-flow');
+    if (!el || !arr || !arr.length) return;
+    const amounts = arr.map(r => Math.abs(parseFloat(r.amount.replace(/[^0-9.]/g,''))));
+    const maxAmt = Math.max(...amounts) || 1;
+    el.innerHTML = arr.map((r, i) => {
+        const isIn = r.direction === 'in';
+        const pct = Math.min(95, (amounts[i] / maxAmt) * 95);
+        const barColor = isIn ? 'bg-emerald-500' : 'bg-rose-400';
+        const amtColor = isIn ? 'text-emerald-600' : 'text-rose-500';
+        return `
+        <div>
+            <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-700">${r.label}</span>
+                <span class="${amtColor} font-bold">${r.amount}</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill ${barColor}" style="width:${pct}%"></div></div>
+        </div>`;
+    }).join('');
+}
+
+// ===== WATCHLIST =====
+function renderWatchlist(arr) {
+    const el = document.getElementById('s8-watchlist');
+    if (!el || !arr || !arr.length) return;
+    el.innerHTML = arr.map(w => `
+        <div class="ticker-chip">
+            <div class="font-bold text-brand-accent text-lg">${w.ticker}</div>
+            <div class="text-xs text-brand-muted">${w.note}</div>
+        </div>`).join('');
 }
 
 // ===== CLOCK =====
@@ -674,6 +673,7 @@ setInterval(updateClock, 1000);
 
 // ===== INIT =====
 buildTicker();
+buildCarouselSlides();
 buildCarouselDots();
 updateClock();
 loadData();
