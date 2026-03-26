@@ -7,7 +7,23 @@ Called by Windows Task Scheduler (chadshani-0600, chadshani-1200, chadshani-2030
 import subprocess
 import sys
 import os
+import urllib.request
 from datetime import datetime
+
+NTFY_TOPIC = "CHA0511"
+
+
+def notify(title, message, tags="white_check_mark"):
+    try:
+        req = urllib.request.Request(
+            f"https://ntfy.sh/{NTFY_TOPIC}",
+            data=message.encode("utf-8"),
+            headers={"Title": title, "Tags": tags, "Priority": "default"},
+            method="POST"
+        )
+        urllib.request.urlopen(req, timeout=10)
+    except Exception as e:
+        print(f"[NTFY] Failed to send notification: {e}")
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(PROJECT_DIR, "..", ".."))
@@ -38,6 +54,7 @@ def main():
     )
     if result.returncode != 0:
         print("[ERROR] generate_json.py failed — aborting")
+        notify("חדשני ❌ עדכון נכשל", f"generate_json.py נכשל — {now}", tags="x")
         sys.exit(1)
 
     # Step 2: Stage only the data file
@@ -62,6 +79,7 @@ def main():
         sys.exit(1)
 
     print(f"[DONE] Update deployed — {now}")
+    notify("חדשני ✅ עודכן", f"האתר עודכן בהצלחה\n{now}")
 
 
 if __name__ == "__main__":
