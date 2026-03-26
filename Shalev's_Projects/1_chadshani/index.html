@@ -76,22 +76,16 @@
             overflow: hidden;
             white-space: nowrap;
             border-bottom: 1px solid rgba(255,255,255,0.06);
+            position: sticky;
+            top: 48px;
+            z-index: 40;
         }
         .ticker-track {
             display: flex;
             width: max-content;
-            animation: ticker-scroll 55s linear infinite;
             gap: 3rem;
             padding: 0 1rem;
             will-change: transform;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            transform: translate3d(0, 0, 0);
-        }
-        .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
-        @keyframes ticker-scroll {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-50%, 0, 0); }
         }
         .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; }
         .up { color: #10b981; }
@@ -743,7 +737,8 @@ const tickerItems = [
     {label: 'Natural Gas', val: '$2.14',   chg: '-1.2%',  up: false},
 ];
 function buildTicker() {
-    const items = [...tickerItems, ...tickerItems]; // duplicate for seamless loop
+    // 4 copies for robust seamless loop
+    const items = [...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems];
     const track = document.getElementById('ticker-track');
     track.innerHTML = items.map(t => `
         <span class="ticker-item">
@@ -751,6 +746,25 @@ function buildTicker() {
             <span class="font-bold">${t.val}</span>
             <span class="${t.up ? 'up' : 'down'}">${t.chg}</span>
         </span>`).join('');
+
+    // JS-driven scroll — resets exactly at 1/4 mark (one full copy width)
+    let pos = 0;
+    let paused = false;
+    const wrap = document.getElementById('ticker-bar');
+    wrap.addEventListener('mouseenter', () => { paused = true; });
+    wrap.addEventListener('mouseleave', () => { paused = false; });
+
+    function tick() {
+        if (!paused) {
+            pos -= 0.6;
+            // singleWidth = 1/4 of total track (4 copies)
+            const singleWidth = track.scrollWidth / 4;
+            if (Math.abs(pos) >= singleWidth) pos = 0;
+            track.style.transform = `translateX(${pos}px)`;
+        }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
 }
 
 // ===== CAROUSEL =====
