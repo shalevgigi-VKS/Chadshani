@@ -232,15 +232,15 @@
     <!-- Clock Bar -->
     <div id="clock-bar" class="grid grid-cols-3 text-center text-xs font-mono py-1" style="background:transparent;border:none;box-shadow:none">
         <div>
-            <div class="text-slate-400 text-[0.62rem] mb-0.5 uppercase tracking-wider">שעה נוכחית</div>
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">שעה נוכחית</div>
             <div id="clock-now" class="font-bold text-brand-text tabular-nums"></div>
         </div>
         <div class="border-x border-slate-200">
-            <div class="text-slate-400 text-[0.62rem] mb-0.5 uppercase tracking-wider">עדכון אחרון</div>
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון אחרון</div>
             <div id="clock-last" class="font-bold text-emerald-600 tabular-nums"></div>
         </div>
         <div>
-            <div class="text-slate-400 text-[0.62rem] mb-0.5 uppercase tracking-wider">עדכון הבא</div>
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון הבא בעוד</div>
             <div id="clock-next" class="font-bold text-brand-accent tabular-nums"></div>
         </div>
     </div>
@@ -263,7 +263,7 @@
                 טוען נתונים...
             </p>
             <p class="text-sm text-brand-muted leading-relaxed mb-6" id="s1-analysis"></p>
-            <div class="grid gap-2" id="s1-cards" style="grid-template-columns:repeat(3,1fr)"></div>
+            <div class="flex flex-row gap-3" id="s1-cards"></div>
         </div>
         <div class="card p-7 border-t-4 border-t-emerald-500 bg-gradient-to-br from-emerald-50/60 to-white">
             <div class="section-label label-emerald">התרעת מעקב</div>
@@ -302,17 +302,63 @@
                 <div id="mkt-ndx" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
                 <div class="text-xs text-brand-muted mt-1">NDX</div>
             </div>
-            <!-- BTC -->
+            <!-- Dow Jones -->
             <div class="card p-5 border-r-4 border-r-amber-400">
-                <div class="text-xs font-mono text-brand-muted mb-1">Bitcoin</div>
-                <div id="mkt-btc" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
-                <div class="text-xs text-brand-muted mt-1">BTC/USD</div>
+                <div class="text-xs font-mono text-brand-muted mb-1">Dow Jones</div>
+                <div id="mkt-dji" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">DJIA</div>
             </div>
             <!-- Gold -->
             <div class="card p-5 border-r-4 border-r-emerald-500">
                 <div class="text-xs font-mono text-brand-muted mb-1">US 10Y Yield</div>
                 <div id="mkt-yield" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
                 <div class="text-xs text-brand-muted mt-1">TNX</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sentiment Gauges -->
+    <section>
+        <div class="section-label label-rose">מדדי סנטימנט</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="sentiment-gauges">
+            <!-- VIX -->
+            <div class="card p-5">
+                <div class="text-xs font-mono text-rose-500 font-bold mb-1 uppercase underline">VIX — מדד הפחד</div>
+                <div class="flex items-end gap-2 mb-3">
+                    <div id="gauge-vix-value" class="text-3xl font-bold font-display text-brand-text">—</div>
+                    <div id="gauge-vix-change" class="text-sm font-mono text-brand-muted mb-1">—</div>
+                </div>
+                <div class="bar-track mb-2"><div id="gauge-vix-bar" class="bar-fill" style="width:0%;background:#e11d48"></div></div>
+                <div class="flex justify-between text-[0.6rem] font-mono text-slate-400 mb-2">
+                    <span>0 — שקט</span><span>15</span><span>25</span><span>40+</span>
+                </div>
+                <div id="gauge-vix-label" class="text-xs font-semibold text-rose-600"></div>
+            </div>
+            <!-- Fear & Greed Stock -->
+            <div class="card p-5">
+                <div class="text-xs font-mono text-amber-600 font-bold mb-1 uppercase underline">Fear & Greed — מניות</div>
+                <div class="flex items-end gap-2 mb-3">
+                    <div id="gauge-fg-stock-value" class="text-3xl font-bold font-display text-brand-text">—</div>
+                    <span class="text-sm font-mono text-brand-muted mb-1">/100</span>
+                </div>
+                <div class="bar-track mb-2"><div id="gauge-fg-stock-bar" class="bar-fill" style="width:0%"></div></div>
+                <div class="flex justify-between text-[0.6rem] font-mono text-slate-400 mb-2">
+                    <span>פחד קיצוני</span><span>פחד</span><span>נייטרל</span><span>חמדנות</span>
+                </div>
+                <div id="gauge-fg-stock-label" class="text-xs font-semibold text-amber-600"></div>
+            </div>
+            <!-- Fear & Greed Crypto -->
+            <div class="card p-5">
+                <div class="text-xs font-mono text-brand-accent font-bold mb-1 uppercase underline">Fear & Greed — קריפטו</div>
+                <div class="flex items-end gap-2 mb-3">
+                    <div id="gauge-fg-crypto-value" class="text-3xl font-bold font-display text-brand-text">—</div>
+                    <span class="text-sm font-mono text-brand-muted mb-1">/100</span>
+                </div>
+                <div class="bar-track mb-2"><div id="gauge-fg-crypto-bar" class="bar-fill" style="width:0%"></div></div>
+                <div class="flex justify-between text-[0.6rem] font-mono text-slate-400 mb-2">
+                    <span>פחד קיצוני</span><span>פחד</span><span>נייטרל</span><span>חמדנות</span>
+                </div>
+                <div id="gauge-fg-crypto-label" class="text-xs font-semibold text-brand-accent"></div>
             </div>
         </div>
     </section>
@@ -342,6 +388,35 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="s4-crypto"></div>
     </section>
 
+    <!-- Section 4b: Crypto Brief -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card p-7 border-t-4 border-t-amber-400">
+            <div class="section-label label-gold">סיפור היום בקריפטו</div>
+            <div class="space-y-4">
+                <div>
+                    <div class="text-xs font-mono text-amber-600 font-semibold mb-1 uppercase underline">נרטיב יומי</div>
+                    <p class="text-sm text-slate-700 leading-relaxed" id="crypto-brief-narrative"></p>
+                </div>
+                <div>
+                    <div class="text-xs font-mono text-amber-600 font-semibold mb-1 uppercase underline">כסף חכם ומוסדיים</div>
+                    <p class="text-sm text-slate-600 leading-relaxed" id="crypto-brief-smart"></p>
+                </div>
+            </div>
+        </div>
+        <div class="card p-7 border-t-4 border-t-amber-400">
+            <div class="space-y-4 h-full flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-mono text-amber-600 font-semibold mb-1 uppercase underline">פעילות לוויתנים</div>
+                    <p class="text-sm text-slate-600 leading-relaxed" id="crypto-brief-whale"></p>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-auto">
+                    <div class="text-xs font-mono text-amber-700 font-semibold mb-1 uppercase">מסקנה ותזה</div>
+                    <p class="text-sm font-medium text-amber-900 leading-relaxed" id="crypto-brief-conclusion"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Sections 5 & 6: Semis + Software -->
     <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Semis -->
@@ -368,19 +443,19 @@
             <div class="section-label label-rose">עמדה ומסקנות</div>
             <div class="space-y-4">
                 <div>
-                    <div class="text-xs font-mono text-brand-muted mb-1 uppercase">תזת השקעה</div>
+                    <div class="text-xs font-mono text-rose-500 font-semibold mb-1 uppercase underline">תזת השקעה</div>
                     <p class="text-sm text-slate-700 leading-relaxed" id="s8-thesis"></p>
                 </div>
                 <div>
-                    <div class="text-xs font-mono text-rose-500 mb-1 uppercase">סיכונים עיקריים</div>
+                    <div class="text-xs font-mono text-rose-500 font-semibold mb-1 uppercase underline">סיכונים עיקריים</div>
                     <p class="text-sm text-slate-600 leading-relaxed" id="s8-risks"></p>
                 </div>
                 <div>
-                    <div class="text-xs font-mono text-emerald-600 mb-1 uppercase">הזדמנויות</div>
+                    <div class="text-xs font-mono text-rose-500 font-semibold mb-1 uppercase underline">הזדמנויות</div>
                     <p class="text-sm text-slate-600 leading-relaxed" id="s8-opportunities"></p>
                 </div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                    <div class="text-xs font-mono text-brand-accent mb-1 uppercase">פעולה מומלצת</div>
+                <div class="bg-rose-50 border border-rose-200 rounded-xl p-4">
+                    <div class="text-xs font-mono text-rose-600 font-semibold mb-1 uppercase">פעולה מומלצת</div>
                     <p class="text-sm font-medium text-brand-text leading-relaxed" id="s8-action"></p>
                 </div>
             </div>
@@ -462,9 +537,9 @@ function renderAll(d) {
         document.getElementById('s1-analysis').textContent = s1.analysis || '';
         const cardsEl = document.getElementById('s1-cards');
         cardsEl.innerHTML = (s1.cards || []).map(c => `
-            <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl">
-                <span class="block text-xs text-brand-muted mb-1">${c.label}</span>
-                <span class="font-semibold text-brand-text text-sm">${c.value}</span>
+            <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl flex-1 min-w-0">
+                <span class="block text-xs text-brand-accent font-semibold mb-1 underline uppercase">${c.label}</span>
+                <span class="text-xs text-slate-700 leading-relaxed">${c.value}</span>
             </div>`).join('');
         if (s1.alert) {
             document.getElementById('s1-alert-value').textContent = s1.alert.value || '';
@@ -557,14 +632,16 @@ function renderAll(d) {
     const aiEl = document.getElementById('s7-ai');
     if (aiEl && d.section_7_ai) {
         const borderColors = ['border-t-brand-accent','border-t-emerald-500','border-t-rose-500','border-t-amber-400','border-t-purple-500','border-t-sky-500'];
+        const labelColors = ['text-brand-accent','text-emerald-600','text-rose-500','text-amber-600','text-purple-600','text-sky-600'];
         aiEl.innerHTML = d.section_7_ai.map((a, i) => `
             <div class="card p-5 border-t-2 ${borderColors[i % borderColors.length]}">
                 <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs font-mono text-brand-muted uppercase">${a.company}</span>
+                    <span class="text-xs font-mono ${labelColors[i % labelColors.length]} font-bold uppercase underline">${a.company}</span>
                     <span class="text-xs px-2 py-0.5 rounded-full font-mono ${a.status === 'GA' ? 'status-ga' : 'status-beta'}">${a.status}</span>
                 </div>
                 <h4 class="font-bold text-brand-text mb-2 text-sm">${a.product}</h4>
-                <p class="text-xs text-slate-500 leading-relaxed">${a.update}</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">${a.brief || a.update || ''}</p>
+                ${a.last_known_update ? `<div class="text-[0.6rem] font-mono text-slate-400 border-t border-slate-100 pt-2">עדכון ידוע: ${a.last_known_update}</div>` : ''}
             </div>`).join('');
     }
 
@@ -583,18 +660,57 @@ function renderAll(d) {
     // Watchlist
     renderWatchlist(d.section_8_watchlist);
 
-    // Market cards from crypto data
-    if (d.section_4_crypto) {
-        const btc = d.section_4_crypto.find(c => c.ticker === 'BTC');
-        if (btc) document.getElementById('mkt-btc').textContent = btc.price;
-    }
-
-    // Market index cards from markets field
+    // Market index cards
     if (d.markets) {
         const m = d.markets;
         if (m.sp500)     document.getElementById('mkt-sp').textContent    = m.sp500.price;
         if (m.nasdaq)    document.getElementById('mkt-ndx').textContent   = m.nasdaq.price;
         if (m.yield_10y) document.getElementById('mkt-yield').textContent = m.yield_10y.value;
+        if (m.dji)       document.getElementById('mkt-dji').textContent   = m.dji.price;
+    }
+
+    // Sentiment gauges
+    const gauges = d.section_1_situation && d.section_1_situation.gauges;
+    if (gauges) {
+        if (gauges.vix) {
+            const v = parseFloat(gauges.vix.value) || 0;
+            document.getElementById('gauge-vix-value').textContent = gauges.vix.value;
+            document.getElementById('gauge-vix-label').textContent = gauges.vix.label || '';
+            // VIX scale: 0-40+ mapped to 0-100%
+            const vixPct = Math.min(v / 40 * 100, 100);
+            const vixColor = v < 15 ? '#10b981' : v < 20 ? '#f59e0b' : v < 30 ? '#f97316' : '#e11d48';
+            const bar = document.getElementById('gauge-vix-bar');
+            bar.style.width = vixPct + '%'; bar.style.background = vixColor;
+            if (d.markets && d.markets.vix) document.getElementById('gauge-vix-change').textContent = d.markets.vix.change;
+        }
+        if (gauges.fear_greed_stock) {
+            const fg = gauges.fear_greed_stock;
+            const val = parseInt(fg.value) || 0;
+            document.getElementById('gauge-fg-stock-value').textContent = fg.value;
+            document.getElementById('gauge-fg-stock-label').textContent = fg.label || '';
+            const fgColor = val < 25 ? '#e11d48' : val < 45 ? '#f97316' : val < 55 ? '#94a3b8' : val < 75 ? '#10b981' : '#059669';
+            const b = document.getElementById('gauge-fg-stock-bar');
+            b.style.width = val + '%'; b.style.background = fgColor;
+        }
+        if (gauges.fear_greed_crypto) {
+            const fg = gauges.fear_greed_crypto;
+            const val = parseInt(fg.value) || 0;
+            document.getElementById('gauge-fg-crypto-value').textContent = fg.value;
+            document.getElementById('gauge-fg-crypto-label').textContent = fg.label || '';
+            const fgColor = val < 25 ? '#e11d48' : val < 45 ? '#f97316' : val < 55 ? '#94a3b8' : val < 75 ? '#10b981' : '#059669';
+            const b = document.getElementById('gauge-fg-crypto-bar');
+            b.style.width = val + '%'; b.style.background = fgColor;
+        }
+    }
+
+    // Crypto brief
+    const cb = d.section_4_crypto_brief;
+    if (cb) {
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
+        set('crypto-brief-narrative', cb.daily_narrative);
+        set('crypto-brief-smart',     cb.smart_money);
+        set('crypto-brief-whale',     cb.whale_activity);
+        set('crypto-brief-conclusion',cb.conclusion);
     }
 }
 
@@ -699,26 +815,26 @@ function renderWatchlist(arr) {
 
 // ===== CLOCKS =====
 function getNextUpdateIL() {
-    // Scheduled: 07:00, 13:00, 18:00 Israel time (UTC+3 in summer)
     const scheduleHours = [7, 13, 18];
     const now = new Date();
-    const ilOffset = 3 * 60; // UTC+3 (summer)
-    const nowUtcMin = now.getUTCHours() * 60 + now.getUTCMinutes();
-    const nowIlMin = (nowUtcMin + ilOffset) % (24 * 60);
+    const ilOffset = 3 * 3600; // UTC+3 (summer)
+    const nowUtcSec = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+    const nowIlSec = (nowUtcSec + ilOffset) % (24 * 3600);
     for (const h of scheduleHours) {
-        const targetMin = h * 60;
-        if (targetMin > nowIlMin) {
-            const diff = targetMin - nowIlMin;
-            const hh = Math.floor(diff / 60).toString().padStart(2, '0');
-            const mm = (diff % 60).toString().padStart(2, '0');
-            return `${hh}:${mm}`;
+        const targetSec = h * 3600;
+        if (targetSec > nowIlSec) {
+            const diff = targetSec - nowIlSec;
+            const hh = Math.floor(diff / 3600).toString().padStart(2, '0');
+            const mm = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+            const ss = (diff % 60).toString().padStart(2, '0');
+            return `${hh}:${mm}:${ss}`;
         }
     }
-    // Next is tomorrow 07:00
-    const diff = (24 * 60 - nowIlMin) + 7 * 60;
-    const hh = Math.floor(diff / 60).toString().padStart(2, '0');
-    const mm = (diff % 60).toString().padStart(2, '0');
-    return `${hh}:${mm}`;
+    const diff = (24 * 3600 - nowIlSec) + 7 * 3600;
+    const hh = Math.floor(diff / 3600).toString().padStart(2, '0');
+    const mm = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+    const ss = (diff % 60).toString().padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
 }
 
 function updateClock() {

@@ -44,6 +44,11 @@ JSON_PROMPT = """
       "value": "[סכום/ערך מרכזי]",
       "description": "[תיאור קצר של האירוע]",
       "impact": "HIGH / MEDIUM / LOW VOLATILITY"
+    },
+    "gauges": {
+      "vix": {"value": "X.X", "zone": "low/medium/high/extreme", "label": "תיאור מצב VIX"},
+      "fear_greed_stock": {"value": "XX", "label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"},
+      "fear_greed_crypto": {"value": "XX", "label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"}
     }
   },
   "section_2_news": [
@@ -86,6 +91,12 @@ JSON_PROMPT = """
     {"ticker": "SOL", "price": "$...", "change_24h": "+X.X%", "note": "..."},
     {"ticker": "LINK", "price": "$...", "change_24h": "+X.X%", "note": "..."}
   ],
+  "section_4_crypto_brief": {
+    "daily_narrative": "סיפור היום בקריפטו — מה הניע את השוק, אירועים מרכזיים, נרטיב מלא (לפחות 3-4 משפטים)",
+    "smart_money": "זרימת הכסף החכם — מה המוסדיים עושים, ETF flows, futures positions",
+    "whale_activity": "פעילות לוויתנים — העברות גדולות, ריכוז ארנקים, on-chain signals",
+    "conclusion": "מסקנה ותזה — מה המשמעות למשקיע, מה לעקוב"
+  },
   "section_5_semis": [
     {"ticker": "NVDA", "price": "$...", "change": "+X.X%", "note": "..."},
     {"ticker": "TSM", "price": "$...", "change": "+X.X%", "note": "..."},
@@ -111,12 +122,12 @@ JSON_PROMPT = """
     {"ticker": "SNOW", "price": "$...", "change": "+X.X%", "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI", "product": "...", "update": "...", "status": "GA/Beta"},
-    {"company": "Google/Gemini", "product": "...", "update": "...", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude", "product": "...", "update": "...", "status": "GA/Beta"},
-    {"company": "Meta/Llama", "product": "...", "update": "...", "status": "GA/Beta"},
-    {"company": "xAI/Grok", "product": "...", "update": "...", "status": "GA/Beta"},
-    {"company": "Perplexity", "product": "...", "update": "...", "status": "GA/Beta"}
+    {"company": "OpenAI", "product": "GPT-4o / o3", "brief": "פסקה מפורטת של לפחות 4 משפטים על המצב הנוכחי: מה השתנה לאחרונה, capabilities חדשות, עדכוני API, שינויי תמחור, מיקום תחרותי, אירועים אחרונים. אם לא השתנה כלום — תאר את המצב הנוכחי הידוע.", "last_known_update": "תאריך או 'אין עדכון חדש'", "status": "GA/Beta"},
+    {"company": "Google/Gemini", "product": "Gemini 2.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude", "product": "Claude 3.x / 4.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
+    {"company": "Meta/Llama", "product": "Llama 4.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
+    {"company": "xAI/Grok", "product": "Grok 3.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
+    {"company": "Perplexity", "product": "Perplexity AI", "brief": "...", "last_known_update": "...", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -140,8 +151,12 @@ JSON_PROMPT = """
 
 כללים קריטיים:
 - שדות price ו-change_24h: מחירים ושינויים יסופקו מ-yfinance לאחר מכן — כתוב "לא זמין" כ-placeholder בלבד.
-- שדות note, so_what, body, analysis, update, thesis, risks, opportunities, action, flow: חייבים להכיל טקסט אנליטי ממשי — אסור לכתוב "לא זמין".
-- section_3_capital_flow amounts: הערך ב-$XB פורמט — אמוד לפי סנטימנט הסקטור (לא חייב להיות מדויק, רק ריאלי).
+- שדות note, so_what, body, analysis, brief, thesis, risks, opportunities, action, flow, daily_narrative, smart_money, whale_activity, conclusion: חייבים להכיל טקסט אנליטי ממשי — אסור לכתוב "לא זמין".
+- section_7_ai brief: חייב להיות לפחות 4 משפטים לכל חברה. אם אין עדכון חדש — תאר את המצב הידוע הנוכחי.
+- section_4_crypto_brief: כל שדה חייב להיות לפחות 2-3 משפטים עם מידע ממשי.
+- section_1_situation gauges: חפש את ערכי CNN Fear & Greed ו-Crypto Fear & Greed האחרונים דרך Google Search. VIX יוחלף אוטומטית על ידי yfinance.
+- gauges zone: "extreme_fear" (0-24) / "fear" (25-44) / "neutral" (45-54) / "greed" (55-74) / "extreme_greed" (75-100) עבור F&G. VIX zone: "low" (<15) / "medium" (15-20) / "high" (20-30) / "extreme" (>30).
+- section_3_capital_flow amounts: הערך ב-$XB פורמט — אמוד לפי סנטימנט הסקטור.
 - section_3_sectors flow: "Inflow" / "Outflow" / "נייטרלי" בלבד.
 - generated_at: timestamp ISO עכשווי בדיוק עם Z בסיום.
 - section_8_watchlist: בחר 10 טיקרים רלוונטיים לשבוע הקרוב לפי החדשות שמצאת.
@@ -154,7 +169,7 @@ MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
 CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
 
 # Market indices: yfinance symbol → JSON key
-MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y"}
+MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", "^VIX": "vix"}
 
 
 def fetch_prices(symbols):
@@ -249,10 +264,16 @@ def patch_prices(data):
             p, c = market_prices[yf_sym]
             if key == "yield_10y":
                 markets[key] = {"value": f"{p:.2f}%", "change": fmt_change(c)}
+            elif key == "vix":
+                markets[key] = {"value": f"{p:.2f}", "change": fmt_change(c)}
             else:
                 markets[key] = {"price": fmt_price(p), "change": fmt_change(c)}
     if markets:
         data["markets"] = markets
+
+    # Overwrite VIX value from yfinance (more accurate than Gemini estimate)
+    if "vix" in markets and data.get("section_1_situation", {}).get("gauges", {}).get("vix"):
+        data["section_1_situation"]["gauges"]["vix"]["value"] = markets["vix"]["value"]
 
     print(f"[PRICES] patched {len(stock_prices)} stocks + {len(crypto_prices)} crypto + {len(market_prices)} indices")
     return data
