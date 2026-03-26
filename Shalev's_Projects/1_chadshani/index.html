@@ -524,6 +524,18 @@ function renderAll(d) {
     // Last update — updates header, clock bar, and footer
     if (d.generated_at) setLastUpdateClock(d.generated_at);
 
+    // Staleness warning: data >2h old shows sticky banner
+    if (d.generated_at) {
+        const ageHours = (Date.now() - new Date(d.generated_at).getTime()) / 3600000;
+        const hour = new Date().getHours();
+        if (ageHours > 2 && !(hour >= 0 && hour < 7)) {
+            const banner = document.createElement('div');
+            banner.style.cssText = 'background:#fef3c7;color:#92400e;text-align:center;padding:6px 12px;font-size:13px;position:sticky;top:0;z-index:999;';
+            banner.textContent = `⚠️ הנתונים עודכנו לאחרונה לפני ${Math.floor(ageHours)} שעות — ייתכן שאינם עדכניים`;
+            document.body.prepend(banner);
+        }
+    }
+
     // Section 1
     const s1 = d.section_1_situation;
     if (s1) {
