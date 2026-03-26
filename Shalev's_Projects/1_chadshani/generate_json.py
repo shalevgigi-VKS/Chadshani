@@ -319,8 +319,59 @@ def clean_raw(raw):
     return raw
 
 
+# ── Gemini pricing (per 1M tokens, USD) ──────────────────────────────────────
+# Flash 2.5: input $0.075 / output $0.30 / search grounding $35 per 1K requests
+# Pro   2.5: input $1.25  / output $10.00 / search grounding $35 per 1K requests
+_PRICING = {
+    "gemini-2.5-flash": {"in": 0.075, "out": 0.30,  "search": 35.0},
+    "gemini-2.5-pro":   {"in": 1.25,  "out": 10.00, "search": 35.0},
+}
+USD_TO_ILS = 3.65   # approximate; update if needed
+COST_LOG = os.path.join(os.path.dirname(__file__), "data", "cost_log.json")
+
+
+def _load_cost_log():
+    if os.path.exists(COST_LOG):
+        with open(COST_LOG, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"runs": [], "total_usd": 0.0, "total_ils": 0.0}
+
+
+def _save_cost_log(log):
+    with open(COST_LOG, "w", encoding="utf-8") as f:
+        json.dump(log, f, ensure_ascii=False, indent=2)
+
+
+def log_cost(model, usage):
+    """Calculate cost from usage_metadata and append to cost_log.json."""
+    try:
+        p = _PRICING.get(model, _PRICING["gemini-2.5-flash"])
+        in_tok  = getattr(usage, "prompt_token_count", 0) or 0
+        out_tok = getattr(usage, "candidates_token_count", 0) or 0
+        cost_usd = (in_tok / 1_000_000 * p["in"] +
+                    out_tok / 1_000_000 * p["out"] +
+                    1 / 1000 * p["search"])   # 1 grounding call per run
+        cost_ils = cost_usd * USD_TO_ILS
+        log = _load_cost_log()
+        log["runs"].append({
+            "ts": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "model": model,
+            "in_tokens": in_tok,
+            "out_tokens": out_tok,
+            "cost_usd": round(cost_usd, 5),
+            "cost_ils": round(cost_ils, 4),
+        })
+        log["total_usd"] = round(log["total_usd"] + cost_usd, 5)
+        log["total_ils"] = round(log["total_ils"] + cost_ils, 4)
+        _save_cost_log(log)
+        print(f"[COST] run=${cost_usd:.5f} / ₪{cost_ils:.4f} | "
+              f"total=${log['total_usd']:.4f} / ₪{log['total_ils']:.3f} "
+              f"(budget ₪20.00 — {log['total_ils']/20*100:.1f}% used)")
+    except Exception as e:
+        print(f"[COST] tracking error: {e}")
+
+
 def call_gemini(model, attempt):
-    import time
     print(f"[TRY] model={model} attempt={attempt+1}")
     response = client.models.generate_content(
         model=model,
@@ -332,6 +383,8 @@ def call_gemini(model, attempt):
             tools=[types.Tool(google_search=types.GoogleSearch())],
         ),
     )
+    if hasattr(response, "usage_metadata"):
+        log_cost(model, response.usage_metadata)
     return response
 
 

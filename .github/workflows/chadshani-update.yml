@@ -1,0 +1,63 @@
+name: Chadshani Auto-Update
+
+on:
+  schedule:
+    # Israel time UTC+2 (winter) / UTC+3 (summer)
+    # 06:00 IL = 04:00 UTC
+    - cron: '0 4 * * *'
+    # 12:00 IL = 10:00 UTC
+    - cron: '0 10 * * *'
+    # 20:30 IL = 18:30 UTC
+    - cron: '30 18 * * *'
+  workflow_dispatch:   # allow manual trigger from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install google-genai yfinance
+
+      - name: Generate JSON
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          cd "Shalev's_Projects/1_chadshani"
+          python generate_json.py
+
+      - name: Commit & push
+        run: |
+          git config user.name "chadshani-bot"
+          git config user.email "bot@chadshani"
+          git add "Shalev's_Projects/1_chadshani/data/latest.json" \
+                  "Shalev's_Projects/1_chadshani/data/cost_log.json" || true
+          git diff --cached --quiet || git commit -m "update $(date -u +'%Y-%m-%d %H:%M') UTC"
+          git push
+
+      - name: Notify ntfy on success
+        run: |
+          NOW=$(date -u +'%Y-%m-%d %H:%M UTC')
+          curl -s -X POST https://ntfy.sh/CHA0511 \
+            -H "Title: Chadshani Updated" \
+            -H "Tags: white_check_mark" \
+            -d "האתר עודכן בהצלחה (GitHub Actions) — $NOW"
+
+      - name: Notify ntfy on failure
+        if: failure()
+        run: |
+          curl -s -X POST https://ntfy.sh/CHA0511 \
+            -H "Title: Chadshani FAILED" \
+            -H "Tags: x" \
+            -H "Priority: high" \
+            -d "GitHub Actions נכשל — בדוק את הלוגים"
