@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>חדשני | דסק חדשות מודיעיני פיננסי-טכנולוגי</title>
+    <meta property="og:title" content="חדשני | דסק חדשות מודיעיני פיננסי-טכנולוגי">
+    <meta property="og:description" content="דסק חדשות מודיעיני פיננסי-טכנולוגי – עדכון יומי בזמן אמת על שוק ההון, AI, שבבים וקריפטו">
+    <meta property="og:image" content="https://shalevgigi-vks.github.io/Chadshani/LOGO.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shalevgigi-vks.github.io/Chadshani/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="חדשני | דסק חדשות מודיעיני">
+    <meta name="twitter:image" content="https://shalevgigi-vks.github.io/Chadshani/LOGO.jpg">
+    <link rel="icon" href="LOGO.jpg" type="image/jpeg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,15 +78,20 @@
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
         .ticker-track {
-            display: inline-flex;
-            animation: ticker-scroll 40s linear infinite;
+            display: flex;
+            width: max-content;
+            animation: ticker-scroll 55s linear infinite;
             gap: 3rem;
             padding: 0 1rem;
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translate3d(0, 0, 0);
         }
         .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
         @keyframes ticker-scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
         }
         .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; }
         .up { color: #10b981; }
@@ -188,9 +204,7 @@
     <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
         <div class="flex items-center gap-3">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                </div>
+                <img src="LOGO.jpg" alt="חדשני" class="w-10 h-10 rounded-lg object-cover shrink-0" style="border:1px solid rgba(0,0,0,0.08)">
                 <div>
                     <h1 class="font-display font-bold text-lg leading-none text-brand-text">חדשני</h1>
                     <p class="text-xs text-brand-muted font-mono tracking-wider">INTELLIGENCE TERMINAL</p>
@@ -222,6 +236,22 @@
         </div>
     </div>
 
+    <!-- Clock Bar -->
+    <div id="clock-bar" class="grid grid-cols-3 text-center text-xs font-mono py-1" style="background:transparent;border:none;box-shadow:none">
+        <div>
+            <div class="text-slate-400 text-[0.62rem] mb-0.5 uppercase tracking-wider">שעה נוכחית</div>
+            <div id="clock-now" class="font-bold text-brand-text tabular-nums"></div>
+        </div>
+        <div class="border-x border-slate-200">
+            <div class="text-slate-400 text-[0.62rem] mb-0.5 uppercase tracking-wider">עדכון אחרון</div>
+            <div id="clock-last" class="font-bold text-emerald-600 tabular-nums"></div>
+        </div>
+        <div>
+            <div class="text-slate-400 text-[0.62rem] mb-0.5 uppercase tracking-wider">עדכון הבא</div>
+            <div id="clock-next" class="font-bold text-brand-accent tabular-nums"></div>
+        </div>
+    </div>
+
     <!-- Carousel (built dynamically by JS) -->
     <section>
         <div class="carousel-container">
@@ -240,7 +270,7 @@
                 טוען נתונים...
             </p>
             <p class="text-sm text-brand-muted leading-relaxed mb-6" id="s1-analysis"></p>
-            <div class="grid grid-cols-3 gap-3" id="s1-cards"></div>
+            <div class="grid gap-2" id="s1-cards" style="grid-template-columns:repeat(3,1fr)"></div>
         </div>
         <div class="card p-7 border-t-4 border-t-emerald-500 bg-gradient-to-br from-emerald-50/60 to-white">
             <div class="section-label label-emerald">התרעת מעקב</div>
@@ -403,14 +433,12 @@
 <footer class="border-t border-slate-200 bg-white mt-8 py-6 px-6">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3 text-xs font-mono text-brand-muted">
         <div class="flex items-center gap-2">
-            <div class="w-5 h-5 bg-brand-accent rounded flex items-center justify-center">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
+            <img src="LOGO.jpg" alt="חדשני" class="w-6 h-6 rounded object-cover" style="border:1px solid rgba(0,0,0,0.08)">
             <span class="font-bold text-brand-text">חדשני</span>
             <span class="text-slate-300">|</span>
             <span>Powered by Gemini AI</span>
         </div>
-        <div class="text-slate-400">עדכון אוטומטי יומי | © 2026 Shalev Gigi</div>
+        <div class="text-slate-400">עדכון אחרון: <span id="footer-last-update">—</span> | © 2026 Shalev Gigi</div>
         <div class="flex items-center gap-1">
             <div class="pulse-dot" style="width:6px;height:6px;background:#10b981"></div>
             <span>AUTO-UPDATE DAILY 07:00 IL</span>
@@ -431,12 +459,8 @@ async function loadData() {
 }
 
 function renderAll(d) {
-    // Last update
-    if (d.generated_at) {
-        const dt = new Date(d.generated_at);
-        document.getElementById('last-update').textContent =
-            dt.toLocaleDateString('he-IL') + ' ' + dt.toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'});
-    }
+    // Last update — updates header, clock bar, and footer
+    if (d.generated_at) setLastUpdateClock(d.generated_at);
 
     // Section 1
     const s1 = d.section_1_situation;
@@ -596,8 +620,18 @@ const tickerItems = [
     {label: 'VIX',         val: '18.2',    chg: '-2.1%',  up: false},
     {label: 'DXY',         val: '103.4',   chg: '-0.2%',  up: false},
     {label: 'EUR/USD',     val: '1.082',   chg: '+0.1%',  up: true},
+    {label: 'USD/ILS',     val: '3.71',    chg: '-0.1%',  up: false},
+    {label: 'EUR/ILS',     val: '4.01',    chg: '+0.0%',  up: true},
     {label: 'NVDA',        val: '$875',    chg: '+2.3%',  up: true},
     {label: 'TSLA',        val: '$248',    chg: '+1.8%',  up: true},
+    {label: 'AAPL',        val: '$212',    chg: '+0.6%',  up: true},
+    {label: 'MSFT',        val: '$415',    chg: '+0.9%',  up: true},
+    {label: 'META',        val: '$590',    chg: '+1.5%',  up: true},
+    {label: 'AMZN',        val: '$198',    chg: '+1.2%',  up: true},
+    {label: 'GOOGL',       val: '$175',    chg: '+0.7%',  up: true},
+    {label: 'AMD',         val: '$112',    chg: '-0.8%',  up: false},
+    {label: 'TSM',         val: '$175',    chg: '+1.4%',  up: true},
+    {label: 'Natural Gas', val: '$2.14',   chg: '-1.2%',  up: false},
 ];
 function buildTicker() {
     const items = [...tickerItems, ...tickerItems]; // duplicate for seamless loop
@@ -670,12 +704,60 @@ function renderWatchlist(arr) {
         </div>`).join('');
 }
 
-// ===== CLOCK =====
+// ===== CLOCKS =====
+function getNextUpdateIL() {
+    // Scheduled: 07:00, 13:00, 18:00 Israel time (UTC+3 in summer)
+    const scheduleHours = [7, 13, 18];
+    const now = new Date();
+    const ilOffset = 3 * 60; // UTC+3 (summer)
+    const nowUtcMin = now.getUTCHours() * 60 + now.getUTCMinutes();
+    const nowIlMin = (nowUtcMin + ilOffset) % (24 * 60);
+    for (const h of scheduleHours) {
+        const targetMin = h * 60;
+        if (targetMin > nowIlMin) {
+            const diff = targetMin - nowIlMin;
+            const hh = Math.floor(diff / 60).toString().padStart(2, '0');
+            const mm = (diff % 60).toString().padStart(2, '0');
+            return `${hh}:${mm}`;
+        }
+    }
+    // Next is tomorrow 07:00
+    const diff = (24 * 60 - nowIlMin) + 7 * 60;
+    const hh = Math.floor(diff / 60).toString().padStart(2, '0');
+    const mm = (diff % 60).toString().padStart(2, '0');
+    return `${hh}:${mm}`;
+}
+
 function updateClock() {
     const now = new Date();
-    document.getElementById('live-clock').textContent =
-        now.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit', second: '2-digit'}) + ' | ' +
-        now.toLocaleDateString('he-IL');
+    const timeStr = now.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    const dateStr = now.toLocaleDateString('he-IL');
+    const full = timeStr + ' | ' + dateStr;
+
+    const liveEl = document.getElementById('live-clock');
+    if (liveEl) liveEl.textContent = full;
+
+    const nowEl = document.getElementById('clock-now');
+    if (nowEl) nowEl.textContent = timeStr;
+
+    const nextEl = document.getElementById('clock-next');
+    if (nextEl) nextEl.textContent = getNextUpdateIL();
+}
+
+function setLastUpdateClock(isoStr) {
+    if (!isoStr) return;
+    const dt = new Date(isoStr);
+    const t = dt.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'});
+    const d = dt.toLocaleDateString('he-IL');
+    const label = d + ' ' + t;
+
+    const el = document.getElementById('clock-last');
+    if (el) el.textContent = label;
+
+    const footerEl = document.getElementById('footer-last-update');
+    if (footerEl) footerEl.textContent = label;
+
+    document.getElementById('last-update').textContent = label;
 }
 setInterval(updateClock, 1000);
 

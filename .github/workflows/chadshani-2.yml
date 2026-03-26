@@ -2,7 +2,9 @@ name: Chadshani 2.0 — Daily Auto-Update
 
 on:
   schedule:
-    - cron: '0 5 * * *'    # 07:00 Israel time (UTC+2 winter)
+    - cron: '0 4 * * *'    # 07:00 Israel (UTC+3 summer)
+    - cron: '0 10 * * *'   # 13:00 Israel (UTC+3 summer)
+    - cron: '0 15 * * *'   # 18:00 Israel (UTC+3 summer)
   workflow_dispatch:        # Manual trigger from GitHub UI
 
 permissions:
@@ -61,3 +63,22 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+
+      - name: Notify Telegram
+        if: always() && env.TELEGRAM_BOT_TOKEN != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          TIME=$(TZ=Asia/Jerusalem date +'%H:%M')
+          URL="https://shalevgigi-vks.github.io/Chadshani/"
+          if [ "$JOB_STATUS" = "success" ]; then
+            MSG="✅ חדשני מוכן לצפייה נכון לשעה: ${TIME}%0A🔗 ${URL}"
+          else
+            MSG="⚠️ חדשני — עדכון נכשל בשעה ${TIME}"
+          fi
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "text=${MSG}" \
+            -d parse_mode="HTML" > /dev/null
