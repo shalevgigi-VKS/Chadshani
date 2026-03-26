@@ -1,6 +1,496 @@
 {
   "runs": [
     {
+      "ts": "2026-03-26T14:40:07Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T12:08:21Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T09:39:22Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T09:34:50Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T09:23:32Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T09:13:45Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T06:36:01Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T06:08:22Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-26T05:56:32Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-25T08:00:57Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-24T21:40:35Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-24T21:29:36Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-24T21:20:38Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-24T21:03:47Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-24T20:39:48Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-24T20:36:02Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T12:08:17Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T14:08:03Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T12:06:17Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T14:06:04Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T12:03:59Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T14:03:48Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T12:01:14Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T14:01:01Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:58:48Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:58:36Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:56:36Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:56:26Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:54:04Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:53:55Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:52:09Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:51:58Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:49:41Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:49:29Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:47:11Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:46:58Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:44:49Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:44:39Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:42:28Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:42:17Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:40:41Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:40:29Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:39:24Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:39:12Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:38:30Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:38:09Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:37:27Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:37:16Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:36:28Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:36:17Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:35:53Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:35:43Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:35:09Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T13:34:54Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T09:17:31Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:17:20Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T09:07:41Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-15T11:07:28Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T21:44:21Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T21:32:05Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T21:20:48Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T21:12:28Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T20:57:06Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T20:45:06Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T20:33:06Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T20:27:32Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T20:19:51Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T20:15:47Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T17:47:37Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
+      "ts": "2026-03-14T17:30:06Z",
+      "model": "gemini-2.5-flash",
+      "cost_usd": 0.03755,
+      "cost_ils": 0.1371,
+      "note": "retroactive"
+    },
+    {
       "ts": "2026-03-26T14:40:05Z",
       "model": "gemini-2.5-flash",
       "in_tokens": 3516,
@@ -9,6 +499,6 @@
       "cost_ils": 0.137
     }
   ],
-  "total_usd": 0.03755,
-  "total_ils": 0.137
+  "total_usd": 2.666,
+  "total_ils": 9.73
 }
