@@ -189,6 +189,28 @@
         @media (max-width: 768px) {
             .carousel-slide img { height: 220px; }
         }
+
+        /* Important Notices */
+        .notice-box {
+            border: 2px solid #dc2626;
+            background: #fff1f1;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            text-align: center;
+            font-family: 'Heebo', sans-serif;
+        }
+        .notice-box .notice-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #b91c1c;
+            margin-bottom: 0.6rem;
+        }
+        .notice-box .notice-body {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.7;
+        }
     </style>
 </head>
 <body class="font-body">
@@ -248,6 +270,9 @@
         </div>
         <div class="carousel-dots" id="carousel-dots"></div>
     </section>
+
+    <!-- Important Notice (auto-expires) -->
+    <div id="important-notice"></div>
 
     <!-- Section 1: Situation -->
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -806,6 +831,29 @@ function buildCarouselDots() {
 }
 setInterval(() => carouselMove(1), 4000);
 
+// ===== IMPORTANT NOTICES =====
+// Each notice: { title, body, expiresISO }
+// expiresISO: the notice is hidden from this date onward (Israel midnight = UTC-2 or UTC-3)
+const NOTICES = [
+    {
+        title: '😎 הודעה חשובה לסוחרים 😎',
+        body: 'בעקבות יום שישי הטוב (Good Friday), שוקי המניות בארה״ב יהיו סגורים ביום שישי, ה־3 באפריל 2026, לאורך כל יום המסחר.\n\nהמסחר יחזור לפעילות רגילה ביום שני, ה־6 באפריל 2026.',
+        expiresISO: '2026-04-04T06:00:00+03:00'
+    }
+];
+
+function renderNotices() {
+    const el = document.getElementById('important-notice');
+    if (!el) return;
+    const now = Date.now();
+    const active = NOTICES.filter(n => new Date(n.expiresISO).getTime() > now);
+    el.innerHTML = active.map(n => `
+        <div class="notice-box">
+            <div class="notice-title">${n.title}</div>
+            <div class="notice-body">${n.body.replace(/\n/g,'<br>')}</div>
+        </div>`).join('');
+}
+
 // ===== CAPITAL FLOW =====
 function renderCapitalFlow(arr) {
     const el = document.getElementById('s3-capital-flow');
@@ -897,6 +945,7 @@ setInterval(updateClock, 1000);
 buildTicker();
 buildCarouselSlides();
 buildCarouselDots();
+renderNotices();
 updateClock();
 loadData();
 </script>
