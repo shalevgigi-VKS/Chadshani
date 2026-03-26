@@ -257,6 +257,32 @@ def patch_prices(data):
     print(f"[PRICES] patched {len(stock_prices)} stocks + {len(crypto_prices)} crypto + {len(market_prices)} indices")
     return data
 
+
+def validate(data):
+    """Returns list of critical missing fields. Empty list = pass."""
+    issues = []
+    # Numeric price fields must not be 'לא זמין'
+    for item in data.get("section_5_semis", []):
+        if item.get("price") in ("לא זמין", "$...", None):
+            issues.append(f"semis {item.get('ticker')} price missing")
+    for item in data.get("section_6_software", []):
+        if item.get("price") in ("לא זמין", "$...", None):
+            issues.append(f"software {item.get('ticker')} price missing")
+    for item in data.get("section_4_crypto", []):
+        if item.get("price") in ("לא זמין", "$...", None):
+            issues.append(f"crypto {item.get('ticker')} price missing")
+    # Required sections must be present and non-empty
+    for section, min_items in [("section_2_news", 4), ("section_3_sectors", 11),
+                                ("section_5_semis", 10), ("section_6_software", 10),
+                                ("section_7_ai", 4), ("section_8_watchlist", 8)]:
+        count = len(data.get(section, []))
+        if count < min_items:
+            issues.append(f"{section} has {count} items (need {min_items})")
+    # Markets block must exist
+    if not data.get("markets"):
+        issues.append("markets block missing")
+    return issues
+
 def clean_raw(raw):
     """Strip markdown fences and control characters from Gemini output."""
     raw = raw.strip()
@@ -296,9 +322,17 @@ def generate():
             try:
                 response = call_gemini(model, attempt)
                 raw = clean_raw(response.text)
-                data = json.loads(raw)
-                print(f"[OK] JSON parsed — model={model}")
-                break  # valid JSON obtained
+                candidate = json.loads(raw)
+                candidate = patch_prices(candidate)
+                issues = validate(candidate)
+                if issues:
+                    print(f"[WARN] Validation failed attempt {attempt+1}: {issues[:3]}")
+                    if attempt < 2:
+                        time.sleep(10)
+                    continue
+                data = candidate
+                print(f"[OK] JSON parsed and validated — model={model}")
+                break
             except json.JSONDecodeError as e:
                 print(f"[WARN] Invalid JSON attempt {attempt+1}: {e} — retrying")
                 if attempt < 2:
@@ -313,9 +347,6 @@ def generate():
     if data is None:
         print("ERROR: All models and attempts exhausted")
         sys.exit(1)
-
-    # Patch prices with real yfinance data
-    data = patch_prices(data)
 
     # Always set generated_at to now
     data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
