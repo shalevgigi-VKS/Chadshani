@@ -54,7 +54,7 @@ def main():
     )
     if result.returncode != 0:
         print("[ERROR] generate_json.py failed — aborting")
-        notify("חדשני ❌ עדכון נכשל", f"generate_json.py נכשל — {now}", tags="x")
+        notify("Chadshani FAILED", f"generate_json.py נכשל — {now}", tags="x")
         sys.exit(1)
 
     # Step 2: Stage only the data file
@@ -79,7 +79,7 @@ def main():
         sys.exit(1)
 
     print(f"[DONE] Update deployed — {now}")
-    notify("חדשני ✅ עודכן", f"האתר עודכן בהצלחה\n{now}")
+    notify("Chadshani Updated", f"האתר עודכן בהצלחה\n{now}")
 
 
 if __name__ == "__main__":
