@@ -215,6 +215,9 @@
 </head>
 <body class="font-body">
 
+<!-- Staleness Banner (pre-placed so header/ticker can offset correctly) -->
+<div id="staleness-banner" hidden style="background:#fef3c7;color:#92400e;text-align:center;padding:6px 12px;font-size:13px;position:sticky;top:0;z-index:60;border-bottom:1px solid #fcd34d;"></div>
+
 <!-- Header -->
 <header class="px-4 md:px-6 py-3">
     <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
@@ -528,7 +531,7 @@
         <div class="text-slate-400">עדכון אחרון: <span id="footer-last-update">—</span> | © 2026 Shalev Gigi</div>
         <div class="flex items-center gap-1">
             <div class="pulse-dot" style="width:6px;height:6px;background:#10b981"></div>
-            <span>AUTO-UPDATE DAILY 07:00 IL</span>
+            <span>AUTO-UPDATE 06:00 · 12:00 · 20:30 IL</span>
         </div>
     </div>
 </footer>
@@ -549,15 +552,20 @@ function renderAll(d) {
     // Last update — updates header, clock bar, and footer
     if (d.generated_at) setLastUpdateClock(d.generated_at);
 
-    // Staleness warning: data >2h old shows sticky banner
+    // Staleness warning: data >2h old shows sticky banner above header
     if (d.generated_at) {
         const ageHours = (Date.now() - new Date(d.generated_at).getTime()) / 3600000;
         const hour = new Date().getHours();
         if (ageHours > 2 && !(hour >= 0 && hour < 7)) {
-            const banner = document.createElement('div');
-            banner.style.cssText = 'background:#fef3c7;color:#92400e;text-align:center;padding:6px 12px;font-size:13px;position:sticky;top:0;z-index:999;';
-            banner.textContent = `⚠️ הנתונים עודכנו לאחרונה לפני ${Math.floor(ageHours)} שעות — ייתכן שאינם עדכניים`;
-            document.body.prepend(banner);
+            const bannerEl = document.getElementById('staleness-banner');
+            bannerEl.textContent = `⚠️ הנתונים עודכנו לאחרונה לפני ${Math.floor(ageHours)} שעות — ייתכן שאינם עדכניים`;
+            bannerEl.hidden = false;
+            requestAnimationFrame(() => {
+                const h = bannerEl.offsetHeight;
+                document.querySelector('header').style.top = h + 'px';
+                const ticker = document.querySelector('.ticker-wrap');
+                if (ticker) ticker.style.top = (h + document.querySelector('header').offsetHeight) + 'px';
+            });
         }
     }
 
