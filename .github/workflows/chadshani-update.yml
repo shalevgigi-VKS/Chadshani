@@ -47,11 +47,11 @@ jobs:
 
       - name: Notify ntfy on success
         run: |
-          NOW=$(date -u +'%Y-%m-%d %H:%M UTC')
+          NOW=$(TZ=Asia/Jerusalem date +'%H:%M IL')
           curl -s -X POST https://ntfy.sh/CHA0511 \
             -H "Title: Chadshani Updated" \
             -H "Tags: white_check_mark" \
-            -d "האתר עודכן בהצלחה (GitHub Actions) — $NOW"
+            -d "האתר עודכן בהצלחה — $NOW"
 
       - name: Notify ntfy on failure
         if: failure()
