@@ -1,7 +1,9 @@
 name: EmotionWheel Deploy
-
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   deploy:
@@ -10,27 +12,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Sync to Emotion-Whell repo
-        env:
-          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
-          git clone https://x-access-token:${DEPLOY_TOKEN}@github.com/shalevgigi-VKS/Emotion-Whell.git /tmp/emotion-whell
-          rsync -av --exclude="project_index.md" --exclude="README.md" "Shalev's_Projects/000_EmotionWheel/" /tmp/emotion-whell/
-          cd /tmp/emotion-whell
+          git clone https://x-access-token:${{ secrets.DEPLOY_TOKEN }}@github.com/shalevgigi-VKS/Emotion-Whell.git /tmp/ew
+          rsync -av --exclude="project_index.md" --exclude="README.md" "Shalev's_Projects/000_EmotionWheel/" /tmp/ew/
+          cd /tmp/ew
           git config user.name "EmotionWheel Bot"
-          git config user.email "emotionwheel@users.noreply.github.com"
+          git config user.email "bot@noreply"
           git add -A
-          git diff --staged --quiet && echo "No changes" || git commit -m "update $(date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "update $(date +%F)"
           git push
 
       - name: Notify
         if: always()
         run: |
-          STATUS="${{ job.status }}"
-          python3 -c "
-import json,urllib.request,os
-ok = os.environ.get('STATUS','')=='success'
-d=json.dumps({'topic':'CLA0511','title':'גלגל הרגשות: ' + ('עודכן' if ok else 'נכשל'),'message':'פרסום ' + ('הושלם' if ok else 'נכשל'),'priority':3 if ok else 4,'tags':['white_check_mark' if ok else 'x']}).encode('utf-8')
-urllib.request.urlopen(urllib.request.Request('https://ntfy.sh',d,{'Content-Type':'application/json; charset=utf-8'}))
-" || true
-        env:
-          STATUS: ${{ job.status }}
+          curl -s -X POST https://ntfy.sh/CLA0511             -H "Title: EmotionWheel deploy ${{ job.status }}"             -d "Deploy ${{ job.status }}"
