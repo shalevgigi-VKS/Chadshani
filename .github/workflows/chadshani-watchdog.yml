@@ -1,0 +1,57 @@
+name: Chadshani — Watchdog
+
+on:
+  schedule:
+    - cron: '20 4 * * *'   # 07:20 Israel — checks 07:00 run
+    - cron: '20 10 * * *'  # 13:20 Israel — checks 13:00 run
+    - cron: '20 17 * * *'  # 20:20 Israel — checks 20:00 run
+  workflow_dispatch:
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check last auto-update run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the most recent run of the main update workflow
+          LAST_RUN=$(gh run list \
+            --repo ${{ github.repository }} \
+            --workflow chadshani-2.yml \
+            --limit 1 \
+            --json status,conclusion,createdAt \
+            --jq '.[0]')
+
+          STATUS=$(echo "$LAST_RUN" | jq -r '.status')
+          CONCLUSION=$(echo "$LAST_RUN" | jq -r '.conclusion')
+          CREATED=$(echo "$LAST_RUN" | jq -r '.createdAt')
+
+          echo "Last run: status=$STATUS conclusion=$CONCLUSION created=$CREATED"
+
+          # Check if last run was within the last 30 minutes and succeeded
+          LAST_TS=$(date -d "$CREATED" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$CREATED" +%s)
+          NOW_TS=$(date +%s)
+          DIFF=$(( (NOW_TS - LAST_TS) / 60 ))
+
+          echo "Minutes since last run: $DIFF"
+
+          if [ "$CONCLUSION" != "success" ] || [ "$DIFF" -gt 30 ]; then
+            NOW_IL=$(TZ=Asia/Jerusalem date +'%H:%M IL')
+            if [ "$DIFF" -gt 30 ]; then
+              MSG="⚠️ עדכון לא רץ כבר ${DIFF} דקות — בדוק GitHub Actions ($NOW_IL)"
+            else
+              MSG="❌ עדכון נכשל — סטטוס: $CONCLUSION ($NOW_IL)"
+            fi
+
+            curl -s -X POST https://ntfy.sh/CHA0511 \
+              -H "Title: Chadshani — טעון טיפול" \
+              -H "Tags: warning" \
+              -H "Priority: high" \
+              -d "$MSG"
+
+            echo "ALERT SENT: $MSG"
+            exit 1
+          fi
+
+          echo "✅ Last run was successful and recent ($DIFF min ago) — all good"
