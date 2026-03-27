@@ -2,9 +2,6 @@ name: EmotionWheel Deploy
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "Shalev's_Projects/000_EmotionWheel/**"
 
 jobs:
   deploy:
@@ -17,29 +14,23 @@ jobs:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
           git clone https://x-access-token:${DEPLOY_TOKEN}@github.com/shalevgigi-VKS/Emotion-Whell.git /tmp/emotion-whell
-          cp -r "Shalev's_Projects/000_EmotionWheel/." /tmp/emotion-whell/
-          rm -f /tmp/emotion-whell/project_index.md
+          rsync -av --exclude="project_index.md" --exclude="README.md" "Shalev's_Projects/000_EmotionWheel/" /tmp/emotion-whell/
           cd /tmp/emotion-whell
           git config user.name "EmotionWheel Bot"
           git config user.email "emotionwheel@users.noreply.github.com"
           git add -A
-          git diff --staged --quiet && echo "[skip] No changes" || git commit -m "update $(date +'%Y-%m-%d %H:%M')"
+          git diff --staged --quiet && echo "No changes" || git commit -m "update $(date +%Y-%m-%d)"
           git push
 
-      - name: Notify success
-        if: success()
+      - name: Notify
+        if: always()
         run: |
+          STATUS="${{ job.status }}"
           python3 -c "
-import json,urllib.request
-d=json.dumps({'topic':'CLA0511','title':'גלגל הרגשות עודכן','message':'האתר פורסם בהצלחה','priority':3,'tags':['white_check_mark']}).encode('utf-8')
+import json,urllib.request,os
+ok = os.environ.get('STATUS','')=='success'
+d=json.dumps({'topic':'CLA0511','title':'גלגל הרגשות: ' + ('עודכן' if ok else 'נכשל'),'message':'פרסום ' + ('הושלם' if ok else 'נכשל'),'priority':3 if ok else 4,'tags':['white_check_mark' if ok else 'x']}).encode('utf-8')
 urllib.request.urlopen(urllib.request.Request('https://ntfy.sh',d,{'Content-Type':'application/json; charset=utf-8'}))
-"
-
-      - name: Notify failure
-        if: failure()
-        run: |
-          python3 -c "
-import json,urllib.request
-d=json.dumps({'topic':'CLA0511','title':'גלגל הרגשות נכשל','message':'פרסום נכשל — בדוק GitHub Actions','priority':4,'tags':['x']}).encode('utf-8')
-urllib.request.urlopen(urllib.request.Request('https://ntfy.sh',d,{'Content-Type':'application/json; charset=utf-8'}))
-"
+" || true
+        env:
+          STATUS: ${{ job.status }}
