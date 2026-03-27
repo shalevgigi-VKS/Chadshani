@@ -3,6 +3,7 @@ name: Chadshani — Auto Update (DATA+DEPLOY)
 # For HTML/design changes only: use "Chadshani — Deploy Only" workflow
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 4 * * *'    # 07:00 Israel (UTC+3)
     - cron: '0 10 * * *'   # 13:00 Israel (UTC+3)
