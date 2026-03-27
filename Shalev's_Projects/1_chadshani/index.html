@@ -655,11 +655,13 @@ function renderAll(d) {
         semisEl.innerHTML = d.section_5_semis.map(s => {
             const up = s.change && s.change.startsWith('+');
             return `
-            <div class="flex items-center gap-3 py-2 border-b border-slate-100 last:border-0">
-                <span class="font-mono font-bold text-brand-accent text-sm w-14 shrink-0">${s.ticker}</span>
-                <span class="font-bold text-brand-text text-sm w-20 shrink-0">${s.price}</span>
-                <span class="font-mono text-sm font-bold ${up ? 'text-emerald-600' : 'text-rose-500'} w-14 shrink-0">${s.change}</span>
-                <span class="text-xs text-brand-muted truncate">${s.note}</span>
+            <div class="py-2 border-b border-slate-100 last:border-0">
+                <div class="flex items-center gap-3">
+                    <span class="font-mono font-bold text-brand-accent text-sm w-14 shrink-0">${s.ticker}</span>
+                    <span class="font-bold text-brand-text text-sm w-20 shrink-0">${s.price}</span>
+                    <span class="font-mono text-sm font-bold ${up ? 'text-emerald-600' : 'text-rose-500'} w-14 shrink-0">${s.change}</span>
+                </div>
+                <p class="text-xs text-brand-muted mt-1 leading-relaxed">${s.note}</p>
             </div>`;
         }).join('');
     }
@@ -670,11 +672,13 @@ function renderAll(d) {
         softEl.innerHTML = d.section_6_software.map(s => {
             const up = s.change && s.change.startsWith('+');
             return `
-            <div class="flex items-center gap-3 py-2 border-b border-slate-100 last:border-0">
-                <span class="font-mono font-bold text-brand-accent text-sm w-14 shrink-0">${s.ticker}</span>
-                <span class="font-bold text-brand-text text-sm w-20 shrink-0">${s.price}</span>
-                <span class="font-mono text-sm font-bold ${up ? 'text-emerald-600' : 'text-rose-500'} w-14 shrink-0">${s.change}</span>
-                <span class="text-xs text-brand-muted truncate">${s.note}</span>
+            <div class="py-2 border-b border-slate-100 last:border-0">
+                <div class="flex items-center gap-3">
+                    <span class="font-mono font-bold text-brand-accent text-sm w-14 shrink-0">${s.ticker}</span>
+                    <span class="font-bold text-brand-text text-sm w-20 shrink-0">${s.price}</span>
+                    <span class="font-mono text-sm font-bold ${up ? 'text-emerald-600' : 'text-rose-500'} w-14 shrink-0">${s.change}</span>
+                </div>
+                <p class="text-xs text-brand-muted mt-1 leading-relaxed">${s.note}</p>
             </div>`;
         }).join('');
     }
