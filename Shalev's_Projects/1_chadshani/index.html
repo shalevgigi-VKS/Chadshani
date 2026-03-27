@@ -277,38 +277,11 @@
     <!-- Important Notice (auto-expires) -->
     <div id="important-notice"></div>
 
-    <!-- Section 1: Situation -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="card lg:col-span-2 p-7 relative overflow-hidden">
-            <div class="section-label label-blue">תמונת מצב מיידית</div>
-            <p class="text-xl md:text-2xl font-light leading-relaxed text-slate-700 mb-6" id="s1-headline">
-                טוען נתונים...
-            </p>
-            <p class="text-sm text-brand-muted leading-relaxed mb-6" id="s1-analysis"></p>
-            <div class="flex flex-row gap-3" id="s1-cards"></div>
-        </div>
-        <div class="card p-7 border-t-4 border-t-emerald-500 bg-gradient-to-br from-emerald-50/60 to-white">
-            <div class="section-label label-emerald">התרעת מעקב</div>
-            <div id="s1-alert-value" class="text-3xl font-bold text-emerald-700 font-mono mb-3"></div>
-            <p class="text-sm text-slate-600 leading-relaxed mb-4" id="s1-alert-desc"></p>
-            <div class="bg-emerald-100 text-emerald-800 text-xs font-mono px-3 py-2 rounded-lg flex justify-between">
-                <span>EST. IMPACT</span>
-                <span class="font-bold" id="s1-alert-impact"></span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 2: News -->
-    <section>
-        <div class="section-label label-blue">חדשות מרכזיות</div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="s2-news"></div>
-    </section>
-
     <!-- Market Cards -->
     <section>
         <div class="section-label label-blue">שווקים</div>
         <!-- TradingView Mini Tickers -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <!-- S&P 500 -->
             <div class="card p-5 border-r-4 border-r-brand-accent">
                 <div class="text-xs font-mono text-brand-muted mb-1">S&P 500</div>
@@ -330,11 +303,23 @@
                 <div id="mkt-dji" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
                 <div class="text-xs text-brand-muted mt-1">DJIA</div>
             </div>
-            <!-- Gold -->
+            <!-- 10Y Yield -->
             <div class="card p-5 border-r-4 border-r-emerald-500">
                 <div class="text-xs font-mono text-brand-muted mb-1">US 10Y Yield</div>
                 <div id="mkt-yield" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
                 <div class="text-xs text-brand-muted mt-1">TNX</div>
+            </div>
+            <!-- Gold -->
+            <div class="card p-5 border-r-4 border-r-yellow-500">
+                <div class="text-xs font-mono text-brand-muted mb-1">Gold</div>
+                <div id="mkt-gold" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">XAU/USD</div>
+            </div>
+            <!-- Silver -->
+            <div class="card p-5 border-r-4 border-r-slate-400">
+                <div class="text-xs font-mono text-brand-muted mb-1">Silver</div>
+                <div id="mkt-silver" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">XAG/USD</div>
             </div>
         </div>
     </section>
@@ -383,6 +368,33 @@
                 <div id="gauge-fg-crypto-label" class="text-xs font-semibold text-brand-accent"></div>
             </div>
         </div>
+    </section>
+
+    <!-- Section 1: Situation -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card lg:col-span-2 p-7 relative overflow-hidden">
+            <div class="section-label label-blue">תמונת מצב מיידית</div>
+            <p class="text-xl md:text-2xl font-light leading-relaxed text-slate-700 mb-6" id="s1-headline">
+                טוען נתונים...
+            </p>
+            <p class="text-sm text-brand-muted leading-relaxed mb-6" id="s1-analysis"></p>
+            <div class="flex flex-row gap-3" id="s1-cards"></div>
+        </div>
+        <div class="card p-7 border-t-4 border-t-emerald-500 bg-gradient-to-br from-emerald-50/60 to-white">
+            <div class="section-label label-emerald">התרעת מעקב</div>
+            <div id="s1-alert-value" class="text-3xl font-bold text-emerald-700 font-mono mb-3"></div>
+            <p class="text-sm text-slate-600 leading-relaxed mb-4" id="s1-alert-desc"></p>
+            <div class="bg-emerald-100 text-emerald-800 text-xs font-mono px-3 py-2 rounded-lg flex justify-between">
+                <span>EST. IMPACT</span>
+                <span class="font-bold" id="s1-alert-impact"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: News -->
+    <section>
+        <div class="section-label label-blue">חדשות מרכזיות</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="s2-news"></div>
     </section>
 
     <!-- Section 3: Sectors + Capital Flow -->
@@ -531,7 +543,7 @@
         <div class="text-slate-400">עדכון אחרון: <span id="footer-last-update">—</span> | © 2026 Shalev Gigi</div>
         <div class="flex items-center gap-1">
             <div class="pulse-dot" style="width:6px;height:6px;background:#10b981"></div>
-            <span>AUTO-UPDATE 06:00 · 12:00 · 20:30 IL</span>
+            <span>AUTO-UPDATE 07:00 · 13:00 · 20:00 IL</span>
         </div>
     </div>
 </footer>
@@ -706,6 +718,8 @@ function renderAll(d) {
         if (m.nasdaq)    document.getElementById('mkt-ndx').textContent   = m.nasdaq.price;
         if (m.yield_10y) document.getElementById('mkt-yield').textContent = m.yield_10y.value;
         if (m.dji)       document.getElementById('mkt-dji').textContent   = m.dji.price;
+        if (m.gold)      document.getElementById('mkt-gold').textContent  = m.gold.price;
+        if (m.silver)    document.getElementById('mkt-silver').textContent = m.silver.price;
     }
 
     // Sentiment gauges
@@ -897,7 +911,7 @@ function renderWatchlist(arr) {
 
 // ===== CLOCKS =====
 function getNextUpdateIL() {
-    const scheduleHours = [7, 13, 18];
+    const scheduleHours = [7, 13, 20];
     const now = new Date();
     const ilOffset = 3 * 3600; // UTC+3 (summer)
     const nowUtcSec = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
@@ -912,7 +926,7 @@ function getNextUpdateIL() {
             return `${hh}:${mm}:${ss}`;
         }
     }
-    const diff = (24 * 3600 - nowIlSec) + 7 * 3600;
+    const diff = (24 * 3600 - nowIlSec) + 7 * 3600; // next day 07:00
     const hh = Math.floor(diff / 3600).toString().padStart(2, '0');
     const mm = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
     const ss = (diff % 60).toString().padStart(2, '0');

@@ -169,7 +169,7 @@ MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
 CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
 
 # Market indices: yfinance symbol → JSON key
-MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", "^VIX": "vix"}
+MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", "^VIX": "vix", "GC=F": "gold", "SI=F": "silver"}
 
 
 def fetch_prices(symbols):
@@ -266,6 +266,8 @@ def patch_prices(data):
                 markets[key] = {"value": f"{p:.2f}%", "change": fmt_change(c)}
             elif key == "vix":
                 markets[key] = {"value": f"{p:.2f}", "change": fmt_change(c)}
+            elif key in ("gold", "silver"):
+                markets[key] = {"price": fmt_price(p), "change": fmt_change(c)}
             else:
                 markets[key] = {"price": fmt_price(p), "change": fmt_change(c)}
     if markets:
