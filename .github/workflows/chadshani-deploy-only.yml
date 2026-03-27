@@ -20,6 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Write design version timestamp
+        run: |
+          echo '{"design_updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}' > "Shalev's_Projects/1_chadshani/version.json"
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -28,3 +32,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+
+      - name: Notify iPhone — design updated
+        if: success()
+        run: |
+          DEPLOY_TIME=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M')
+          curl -s -X POST https://ntfy.sh/CHA0511 \
+            -H "Title: חדשני — עיצוב עודכן ✅" \
+            -H "Priority: default" \
+            -H "Tags: art" \
+            -d "האתר עודכן בהצלחה — ${DEPLOY_TIME} IL"

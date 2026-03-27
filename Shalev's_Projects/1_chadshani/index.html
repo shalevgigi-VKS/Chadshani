@@ -316,14 +316,18 @@
 <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-20">
 
     <!-- Clock Bar -->
-    <div id="clock-bar" class="grid grid-cols-3 text-center text-xs font-mono py-1" style="background:transparent;border:none;box-shadow:none">
+    <div id="clock-bar" class="grid grid-cols-2 md:grid-cols-4 text-center text-xs font-mono py-1" style="background:transparent;border:none;box-shadow:none">
         <div>
             <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">שעה נוכחית</div>
             <div id="clock-now" class="font-bold text-brand-text tabular-nums"></div>
         </div>
         <div class="border-x border-slate-200">
-            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון אחרון</div>
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון נתונים</div>
             <div id="clock-last" class="font-bold text-emerald-600 tabular-nums"></div>
+        </div>
+        <div class="border-x border-slate-200">
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון עיצוב</div>
+            <div id="clock-design" class="font-bold text-blue-600 tabular-nums">—</div>
         </div>
         <div>
             <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון הבא בעוד</div>
@@ -445,7 +449,7 @@
                 טוען נתונים...
             </p>
             <p class="text-sm text-brand-muted leading-relaxed mb-6" id="s1-analysis"></p>
-            <div class="flex flex-row gap-3" id="s1-cards"></div>
+            <div class="flex flex-col sm:flex-row gap-3" id="s1-cards"></div>
         </div>
         <div class="card p-7 border-t-4 border-t-emerald-500 bg-gradient-to-br from-emerald-50/60 to-white">
             <div class="section-label label-emerald">התרעת מעקב</div>
@@ -535,7 +539,7 @@
     <!-- Section 7: AI Models -->
     <section>
         <div class="section-label label-rose">חזית ה-AI — מודלים</div>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="s7-ai"></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="s7-ai"></div>
     </section>
 
     <!-- Section 8: Conclusion + Watchlist -->
@@ -1025,6 +1029,17 @@ function fixTickerTop() {
     const bannerH = (banner && !banner.hidden) ? banner.offsetHeight : 0;
     ticker.style.top = (bannerH + header.offsetHeight) + 'px';
 }
+
+// ===== DESIGN VERSION =====
+fetch('version.json?t=' + Date.now())
+  .then(r => r.json())
+  .then(v => {
+    if (v && v.design_updated) {
+      const d = new Date(v.design_updated);
+      const str = d.toLocaleString('he-IL', {timeZone:'Asia/Jerusalem', day:'numeric', month:'numeric', hour:'2-digit', minute:'2-digit'});
+      document.getElementById('clock-design').textContent = str;
+    }
+  }).catch(() => {});
 
 // ===== INIT =====
 window.scrollTo(0, 0);
