@@ -802,9 +802,6 @@ function buildTicker(d) {
     ).join('');
     const track = document.getElementById('ticker-track');
     track.innerHTML = render(items) + render(items);
-    track.style.animation = 'none';
-    void track.offsetHeight;
-    track.style.animation = '';
 }
 
 // ===== CAROUSEL =====
