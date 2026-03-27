@@ -78,7 +78,7 @@
             white-space: nowrap;
             border-bottom: 1px solid rgba(255,255,255,0.06);
             position: sticky;
-            top: 48px;
+            top: 0;
             z-index: 40;
         }
         .ticker-track {
@@ -90,8 +90,8 @@
             will-change: transform;
         }
         @keyframes ticker-scroll {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
+            from { transform: translateX(-50%); }
+            to   { transform: translateX(0); }
         }
         .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
         .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; }
@@ -246,14 +246,14 @@
     </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-20">
-
-    <!-- Ticker Bar -->
-    <div class="ticker-wrap py-2 text-xs font-mono -mx-4 md:-mx-6" id="ticker-bar">
-        <div class="ticker-track" id="ticker-track">
-            <!-- populated by JS -->
-        </div>
+<!-- Ticker Bar -->
+<div class="ticker-wrap py-2 text-xs font-mono" id="ticker-bar">
+    <div class="ticker-track" id="ticker-track">
+        <!-- populated by JS -->
     </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-20">
 
     <!-- Clock Bar -->
     <div id="clock-bar" class="grid grid-cols-3 text-center text-xs font-mono py-1" style="background:transparent;border:none;box-shadow:none">
@@ -947,8 +947,10 @@ setInterval(updateClock, 1000);
 function fixTickerTop() {
     const header = document.querySelector('header');
     const ticker = document.querySelector('.ticker-wrap');
+    const banner = document.getElementById('staleness-banner');
     if (!header || !ticker) return;
-    ticker.style.top = header.offsetHeight + 'px';
+    const bannerH = (banner && !banner.hidden) ? banner.offsetHeight : 0;
+    ticker.style.top = (bannerH + header.offsetHeight) + 'px';
 }
 
 // ===== INIT =====
