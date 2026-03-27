@@ -1,0 +1,437 @@
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>גלגל הרגשות - שיח רגשי משפחתי</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        display: ['Rubik', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#ec4899',
+                        accent: '#f59e0b',
+                        background: {
+                            start: '#fdfbfb',
+                            end: '#ebedee'
+                        }
+                    },
+                    borderRadius: {
+                        '3xl': '24px',
+                    },
+                    animation: {
+                        'bounce-subtle': 'bounceSubtle 2s infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'scale-up': 'scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                    },
+                    keyframes: {
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(-2%)' },
+                            '50%': { transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleUp: {
+                            '0%': { transform: 'scale(0.9)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+        }
+        #wheel-canvas {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+        }
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 40px;
+            background: #ef4444;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 10;
+        }
+        .character-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .character-card:active {
+            transform: scale(0.95);
+        }
+        .view-hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4 md:p-8">
+
+    <!-- Character Selection View -->
+    <div id="view-selection" class="w-full max-w-2xl animate-fade-in">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-900 text-center mb-10 font-display leading-tight">
+            מי רוצה לסובב <br><span class="text-transparent bg-clip-text bg-gradient-to-l from-indigo-600 to-pink-500">את הגלגל?</span>
+        </h1>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <button onclick="selectCharacter('שלו')" class="character-card glass-card p-6 rounded-3xl flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:bg-white transition-all">
+                <span class="text-5xl mb-3">👨</span>
+                <span class="text-xl font-bold text-indigo-900">שלו</span>
+            </button>
+            <button onclick="selectCharacter('לי')" class="character-card glass-card p-6 rounded-3xl flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:bg-white transition-all">
+                <span class="text-5xl mb-3">👩</span>
+                <span class="text-xl font-bold text-indigo-900">לי</span>
+            </button>
+            <button onclick="selectCharacter('אושרי')" class="character-card glass-card p-6 rounded-3xl flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:bg-white transition-all">
+                <span class="text-5xl mb-3">👦</span>
+                <span class="text-xl font-bold text-indigo-900">אושרי</span>
+            </button>
+            <button onclick="selectCharacter('אליאן')" class="character-card glass-card p-6 rounded-3xl flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:bg-white transition-all">
+                <span class="text-5xl mb-3">👧</span>
+                <span class="text-xl font-bold text-indigo-900">אליאן</span>
+            </button>
+            <button onclick="selectCharacter('אופרי')" class="character-card glass-card p-6 rounded-3xl flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:bg-white transition-all col-span-2 md:col-span-1">
+                <span class="text-5xl mb-3">👶</span>
+                <span class="text-xl font-bold text-indigo-900">אופרי</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Spin Wheel View -->
+    <div id="view-wheel" class="view-hidden flex flex-col items-center justify-center w-full max-w-md animate-scale-up">
+        <h2 id="current-character-name" class="text-2xl font-bold text-indigo-800 mb-8 bg-white/50 px-6 py-2 rounded-full"></h2>
+        
+        <div class="wheel-container mb-12">
+            <div class="wheel-pointer"></div>
+            <canvas id="wheel-canvas" width="600" height="600"></canvas>
+        </div>
+
+        <button id="spin-button" onclick="spinWheel()" class="group relative px-12 py-5 bg-gradient-to-r from-indigo-600 to-blue-500 text-white text-2xl font-bold rounded-3xl shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 overflow-hidden">
+            <span class="relative z-10">סובב את הגלגל!</span>
+            <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+        </button>
+    </div>
+
+    <!-- Conversation Card View -->
+    <div id="view-card" class="view-hidden w-full max-w-lg animate-scale-up">
+        <div class="glass-card p-8 rounded-3xl shadow-2xl bg-white/90 border-t-8 border-indigo-500">
+            <div id="card-content" class="space-y-6">
+                <h3 id="topic-title" class="text-4xl font-extrabold text-indigo-900 text-center leading-tight"></h3>
+                
+                <div class="p-4 bg-indigo-50 rounded-2xl border-r-4 border-indigo-400">
+                    <p id="opening-phrase" class="text-lg text-indigo-800 font-medium"></p>
+                </div>
+
+                <p id="encouraging-phrase" class="text-md italic text-pink-600 text-center font-semibold opacity-90"></p>
+
+                <div class="space-y-4">
+                    <p class="font-bold text-gray-700 text-sm uppercase tracking-wider">שאלות המשך:</p>
+                    <ul id="follow-up-questions" class="space-y-3">
+                        <!-- Questions will be injected here -->
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="resetToSelection()" class="mt-10 w-full py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-2xl transition-colors flex items-center justify-center gap-2">
+                <span>חזרה להתחלה</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Data Configuration
+        const topics = [
+            { 
+                title: "שמחה", 
+                color: ["#FDE047", "#FACC15"], // Yellow
+                opening: "ספרו על רגע השבוע שבו הרגשתם שמחה אמיתית בלב.",
+                encouraging: "שמחה היא מדבקת, תודה ששיתפתם!",
+                questions: ["מה הדבר הקטן שגורם לכם לחייך?", "איך אתם משמחים מישהו אחר שמרגיש עצוב?"]
+            },
+            { 
+                title: "גאווה", 
+                color: ["#FB923C", "#F97316"], // Orange
+                opening: "במה אתם גאים בעצמכם היום? פעולה קטנה או גדולה.",
+                encouraging: "כל הכבוד! היכולת להעריך את עצמכם היא כוח.",
+                questions: ["מישהו מהמשפחה עשה משהו שגרם לכם גאווה?", "איך זה מרגיש בגוף כשגאים?"]
+            },
+            { 
+                title: "רוגע", 
+                color: ["#60A5FA", "#3B82F6"], // Blue
+                opening: "בואו נחשוב על מקום או רגע שבו הרגשתם הכי רגועים בעולם.",
+                encouraging: "נשימה עמוקה... הרוגע שלכם חשוב לנו.",
+                questions: ["מה עוזר לכם להירגע כשאתם לחוצים?", "איך נראה 'מקום שקט' בדמיון שלכם?"]
+            },
+            { 
+                title: "חברות", 
+                color: ["#4ADE80", "#22C55E"], // Green
+                opening: "מה הופך מישהו לחבר טוב באמת לדעתכם?",
+                encouraging: "חברות היא המתנה הכי יפה שאפשר לתת.",
+                questions: ["מה הדבר הכי נחמד שחבר עשה עבורכם?", "איך אתם מראים לחברים שאתם אוהבים אותם?"]
+            },
+            { 
+                title: "חלומות", 
+                color: ["#A78BFA", "#8B5CF6"], // Purple
+                opening: "אם הכל היה אפשרי, מה הייתם רוצים שיקרה מחר?",
+                encouraging: "החלומות שלכם הם המצפן שלכם. תמשיכו לחלום!",
+                questions: ["מה החלום הכי מצחיק שחלמתם?", "איזה כוח על הייתם רוצים שיהיה לכם?"]
+            },
+            { 
+                title: "תודה", 
+                color: ["#F472B6", "#EC4899"], // Pink
+                opening: "על מה אתם רוצים להגיד 'תודה' היום?",
+                encouraging: "הכרת תודה פותחת את הלב.",
+                questions: ["למי מהנוכחים תרצו להגיד תודה מיוחדת?", "מה הדבר הכי טוב שקרה לכם היום?"]
+            },
+            { 
+                title: "אומץ", 
+                color: ["#2DD4BF", "#0D9488"], // Turquoise
+                opening: "ספרו על פעם שהתגברתם על פחד או עשיתם משהו קצת מפחיד.",
+                encouraging: "אומץ הוא לא חוסר פחד, אלא עשייה למרות הפחד.",
+                questions: ["ממי אתם שואבים השראה להיות אמיצים?", "מה עוזר לכם להרגיש בטוחים?"]
+            },
+            { 
+                title: "אהבה", 
+                color: ["#F87171", "#EF4444"], // Soft Red
+                opening: "איך אתם מרגישים אהבה מהמשפחה שלכם?",
+                encouraging: "האהבה היא הדבק שמחבר אותנו.",
+                questions: ["מהי הדרך האהובה עליכם לקבל חיבוק?", "מה אתם הכי אוהבים לעשות יחד?"]
+            },
+            { 
+                title: "סקרנות", 
+                color: ["#818CF8", "#6366F1"], // Indigo
+                opening: "מה הדבר החדש שגיליתם או שלמדתם השבוע?",
+                encouraging: "הסקרנות שומרת עלינו צעירים בלב!",
+                questions: ["איזו שאלה הייתם רוצים לשאול את העולם?", "איך דברים עובדים? מה הכי מעניין אתכם?"]
+            },
+            { 
+                title: "הצלחה", 
+                color: ["#FB7185", "#E11D48"], // Rose
+                opening: "שתפו במשהו שהצלחתם לעשות והרגשתם עם זה מעולה.",
+                encouraging: "כל הצלחה מתחילה בצעד אחד קטן.",
+                questions: ["איך חוגגים הצלחה בבית שלנו?", "מה למדתם מהדרך שעברתם?"]
+            }
+        ];
+
+        let currentRotation = 0;
+        let isSpinning = false;
+        const canvas = document.getElementById('wheel-canvas');
+        const ctx = canvas.getContext('2d');
+        let selectedCharacterName = "";
+
+        // Initialize Wheel Rendering
+        function drawWheel() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = canvas.width / 2 - 10;
+            const sliceAngle = (2 * Math.PI) / topics.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            topics.forEach((topic, i) => {
+                const angle = i * sliceAngle + currentRotation;
+                
+                // Draw slice
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + sliceAngle);
+                ctx.closePath();
+                
+                // Gradient fill
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+                gradient.addColorStop(0, topic.color[0]);
+                gradient.addColorStop(1, topic.color[1]);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                // Border
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Text
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + sliceAngle / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 32px Assistant';
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 4;
+                ctx.fillText(topic.title, radius - 40, 10);
+                ctx.restore();
+            });
+
+            // Center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 40, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            ctx.stroke();
+        }
+
+        // View Navigation
+        function selectCharacter(name) {
+            selectedCharacterName = name;
+            document.getElementById('current-character-name').innerText = `תור של: ${name}`;
+            showView('view-wheel');
+            drawWheel();
+        }
+
+        function showView(viewId) {
+            const views = ['view-selection', 'view-wheel', 'view-card'];
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (id === viewId) {
+                    el.classList.remove('view-hidden');
+                } else {
+                    el.classList.add('view-hidden');
+                }
+            });
+        }
+
+        function resetToSelection() {
+            showView('view-selection');
+        }
+
+        // Sound Effects (Web Audio API)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTick() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        // Spin Logic
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            
+            const spinBtn = document.getElementById('spin-button');
+            spinBtn.disabled = true;
+            spinBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const totalSlices = topics.length;
+            const extraSpins = 5 + Math.random() * 5; 
+            const stopAngle = Math.random() * (2 * Math.PI);
+            const totalRotation = extraSpins * 2 * Math.PI + stopAngle;
+            
+            const startTime = performance.now();
+            const duration = 4000;
+
+            let lastTickAngle = 0;
+            const sliceAngle = (2 * Math.PI) / totalSlices;
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease out cubic
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const currentMove = totalRotation * easeOut;
+                
+                currentRotation = currentMove;
+                drawWheel();
+
+                // Sound effect logic
+                if (Math.floor(currentRotation / (sliceAngle)) > Math.floor(lastTickAngle / (sliceAngle))) {
+                    playTick();
+                }
+                lastTickAngle = currentRotation;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    spinBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    
+                    // Final calculation
+                    // We need to find which slice is at the top (angle 1.5 * PI)
+                    // The slices are drawn starting from currentRotation
+                    const normalizedRotation = (currentRotation % (2 * Math.PI));
+                    const topPointerAngle = (1.5 * Math.PI);
+                    let winningIndex = Math.floor((topPointerAngle - normalizedRotation + 2 * Math.PI) % (2 * Math.PI) / sliceAngle);
+                    
+                    // Handle rounding edge cases
+                    winningIndex = (topics.length - winningIndex) % topics.length;
+                    
+                    setTimeout(() => {
+                        if (window.navigator.vibrate) window.navigator.vibrate(200);
+                        showConversationCard(winningIndex);
+                    }, 500);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function showConversationCard(index) {
+            const topic = topics[index];
+            document.getElementById('topic-title').innerText = topic.title;
+            document.getElementById('opening-phrase').innerText = topic.opening;
+            document.getElementById('encouraging-phrase').innerText = topic.encouraging;
+            
+            const qList = document.getElementById('follow-up-questions');
+            qList.innerHTML = '';
+            topic.questions.forEach(q => {
+                const li = document.createElement('li');
+                li.className = "flex items-start gap-3 p-4 bg-white/50 rounded-xl shadow-sm border border-white";
+                li.innerHTML = `
+                    <span class="text-indigo-500 mt-1">✨</span>
+                    <span class="text-gray-800">${q}</span>
+                `;
+                qList.appendChild(li);
+            });
+
+            showView('view-card');
+        }
+
+        // Initial Draw
+        window.onload = () => {
+            drawWheel();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+name: EmotionWheel — Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Shalev's_Projects/000_EmotionWheel/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push to Emotion-Whell repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "EmotionWheel Bot"
+          git config user.email "emotionwheel@users.noreply.github.com"
+
+          # Clone the target repo
+          git clone https://x-access-token:${{ secrets.DEPLOY_TOKEN }}@github.com/shalevgigi-VKS/Emotion-Whell.git /tmp/emotion-whell
+
+          # Sync files
+          cp -r "Shalev's_Projects/000_EmotionWheel/." /tmp/emotion-whell/
+          rm -f /tmp/emotion-whell/project_index.md
+
+          cd /tmp/emotion-whell
+          git config user.name "EmotionWheel Bot"
+          git config user.email "emotionwheel@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet && echo "[skip] No changes" || \
+            git commit -m "update $(date +'%Y-%m-%d %H:%M')"
+          git push
+
+      - name: Notify
+        run: |
+          python3 -c "
+import json, urllib.request
+data = json.dumps({
+  'topic': 'CLA0511',
+  'title': 'גלגל הרגשות: עודכן',
+  'message': 'האתר פורסם בהצלחה ל-GitHub Pages',
+  'priority': 3,
+  'tags': ['white_check_mark']
+}).encode('utf-8')
+req = urllib.request.Request('https://ntfy.sh', data=data,
+      headers={'Content-Type': 'application/json; charset=utf-8'})
+urllib.request.urlopen(req)
+"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          python3 -c "
+import json, urllib.request
+data = json.dumps({
+  'topic': 'CLA0511',
+  'title': 'גלגל הרגשות: שגיאה',
+  'message': 'פרסום נכשל — בדוק GitHub Actions',
+  'priority': 4,
+  'tags': ['x']
+}).encode('utf-8')
+req = urllib.request.Request('https://ntfy.sh', data=data,
+      headers={'Content-Type': 'application/json; charset=utf-8'})
+urllib.request.urlopen(req)
+"
