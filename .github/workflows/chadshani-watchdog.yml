@@ -7,6 +7,10 @@ on:
     - cron: '20 17 * * *'  # 20:20 Israel — checks 20:00 run
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   watchdog:
     runs-on: ubuntu-latest
@@ -29,21 +33,37 @@ jobs:
 
           echo "Last run: status=$STATUS conclusion=$CONCLUSION created=$CREATED"
 
-          # Check if last run was within the last 30 minutes and succeeded
-          LAST_TS=$(date -d "$CREATED" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$CREATED" +%s)
+          # If the run is currently in_progress — it's fine, nothing to do
+          if [ "$STATUS" = "in_progress" ] || [ "$STATUS" = "queued" ] || [ "$STATUS" = "waiting" ]; then
+            STARTED_TS=$(date -d "$CREATED" +%s 2>/dev/null || echo 0)
+            NOW_TS=$(date +%s)
+            RUNNING_MIN=$(( (NOW_TS - STARTED_TS) / 60 ))
+            if [ "$RUNNING_MIN" -lt 20 ]; then
+              echo "✅ Run is currently $STATUS (started ${RUNNING_MIN}m ago) — all good"
+              exit 0
+            fi
+            echo "⚠️ Run has been $STATUS for ${RUNNING_MIN}m — may be stuck"
+          fi
+
+          # Check if last run was within the last 90 minutes and succeeded
+          LAST_TS=$(date -d "$CREATED" +%s 2>/dev/null || echo 0)
           NOW_TS=$(date +%s)
           DIFF=$(( (NOW_TS - LAST_TS) / 60 ))
 
-          echo "Minutes since last run: $DIFF"
+          echo "Minutes since last run started: $DIFF"
 
-          if [ "$CONCLUSION" != "success" ] || [ "$DIFF" -gt 30 ]; then
+          NEED_ALERT=false
+          if [ "$CONCLUSION" = "failure" ]; then
+            NEED_ALERT=true
             NOW_IL=$(TZ=Asia/Jerusalem date +'%H:%M IL')
-            if [ "$DIFF" -gt 30 ]; then
-              MSG="⚠️ עדכון לא רץ כבר ${DIFF} דקות — בדוק GitHub Actions ($NOW_IL)"
-            else
-              MSG="❌ עדכון נכשל — סטטוס: $CONCLUSION ($NOW_IL)"
-            fi
+            MSG="❌ עדכון נכשל — בדוק GitHub Actions ($NOW_IL)"
+          elif [ "$DIFF" -gt 90 ] && [ "$STATUS" != "in_progress" ] && [ "$STATUS" != "queued" ]; then
+            NEED_ALERT=true
+            NOW_IL=$(TZ=Asia/Jerusalem date +'%H:%M IL')
+            MSG="⚠️ עדכון לא רץ כבר ${DIFF} דקות — בדוק GitHub Actions ($NOW_IL)"
+          fi
 
+          if [ "$NEED_ALERT" = "true" ]; then
             # Auto-retry the main workflow
             echo "Triggering auto-retry of chadshani-2.yml..."
             gh workflow run chadshani-2.yml \
@@ -60,4 +80,4 @@ jobs:
             exit 1
           fi
 
-          echo "✅ Last run was successful and recent ($DIFF min ago) — all good"
+          echo "✅ Last run was $CONCLUSION ($DIFF min ago) — all good"
