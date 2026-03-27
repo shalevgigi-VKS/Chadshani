@@ -8,6 +8,9 @@ require("dotenv").config({ path: require("path").join(__dirname, "..", ".env") }
 
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
+const QRCode = require("qrcode");
+const http = require("http");
+const { exec } = require("child_process");
 const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");
@@ -42,10 +45,46 @@ const client = new Client({
   puppeteer: { args: ["--no-sandbox", "--disable-setuid-sandbox"] },
 });
 
+// ── QR HTTP server ─────────────────────────────────────────────────────────
+let _qrDataUrl = null;
+const QR_PORT = 3000;
+
+const qrServer = http.createServer(async (req, res) => {
+  if (_qrDataUrl) {
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(`<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta http-equiv="refresh" content="10">
+<title>WhatsApp QR</title>
+<style>body{background:#111;display:flex;flex-direction:column;align-items:center;
+justify-content:center;height:100vh;margin:0;font-family:sans-serif;color:#fff;}
+img{width:420px;height:420px;border:12px solid #fff;border-radius:16px;}
+p{font-size:1.2rem;margin-top:20px;opacity:.7;}</style></head>
+<body><img src="${_qrDataUrl}"><p>סרוק עם הטאבלט → WhatsApp → מכשירים מקושרים</p>
+<p style="font-size:.9rem">מתרענן אוטומטית כל 10 שניות</p></body></html>`);
+  } else {
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(`<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="3">
+<title>ממתין...</title><style>body{background:#111;color:#fff;display:flex;align-items:center;
+justify-content:center;height:100vh;font-family:sans-serif;font-size:1.5rem;}</style></head>
+<body>ממתין לקוד QR...</body></html>`);
+  }
+});
+
+qrServer.listen(QR_PORT, () => {
+  log(`QR server ready → http://localhost:${QR_PORT}`);
+});
+
 // ── Event: QR code ─────────────────────────────────────────────────────────
-client.on("qr", (qr) => {
+client.on("qr", async (qr) => {
   log("Scan QR code to connect WhatsApp");
   qrcode.generate(qr, { small: true });
+  try {
+    _qrDataUrl = await QRCode.toDataURL(qr, { width: 420, margin: 2 });
+    log(`QR ready in browser → http://localhost:${QR_PORT}`);
+    exec(`start http://localhost:${QR_PORT}`);
+  } catch (err) {
+    log(`QR browser gen failed: ${err.message}`);
+  }
 });
 
 // ── Event: Ready ───────────────────────────────────────────────────────────
