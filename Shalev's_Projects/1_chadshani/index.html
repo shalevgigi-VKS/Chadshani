@@ -86,14 +86,8 @@
             width: max-content;
             gap: 3rem;
             padding: 0 1rem;
-            animation: ticker-scroll 55s linear infinite;
             will-change: transform;
         }
-        @keyframes ticker-scroll {
-            from { transform: translateX(-50%); }
-            to   { transform: translateX(0); }
-        }
-        .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
         .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; }
         .up { color: #10b981; }
         .down { color: #f43f5e; }
@@ -802,6 +796,22 @@ function buildTicker(d) {
     ).join('');
     const track = document.getElementById('ticker-track');
     track.innerHTML = render(items) + render(items);
+    // JS tick: right-scroll, 2 copies, seamless reset
+    let pos = 0;
+    const wrap2 = document.getElementById('ticker-bar');
+    let paused = false;
+    wrap2.addEventListener('mouseenter', () => { paused = true; });
+    wrap2.addEventListener('mouseleave', () => { paused = false; });
+    function tick() {
+        if (!paused) {
+            pos += 0.5;
+            const sw = track.scrollWidth / 2;
+            if (sw > 0 && pos >= sw) pos -= sw;
+            track.style.transform = 'translateX(' + pos + 'px)';
+        }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
 }
 
 // ===== CAROUSEL =====
