@@ -1,11 +1,12 @@
-name: Chadshani — Auto Update
+name: Chadshani — Auto Update (DATA+DEPLOY)
+# SCHEDULE ONLY — uses Gemini API
+# For HTML/design changes only: use "Chadshani — Deploy Only" workflow
 
 on:
   schedule:
     - cron: '0 4 * * *'    # 07:00 Israel (UTC+3)
     - cron: '0 10 * * *'   # 13:00 Israel (UTC+3)
     - cron: '0 17 * * *'   # 20:00 Israel (UTC+3)
-  workflow_dispatch:
 
 permissions:
   contents: write
