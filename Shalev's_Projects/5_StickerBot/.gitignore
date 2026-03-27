@@ -1,0 +1,10 @@
+.env
+bot/session/
+tmp/
+.wwebjs_cache/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+node_modules/

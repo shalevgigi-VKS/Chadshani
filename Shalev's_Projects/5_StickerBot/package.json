@@ -1,0 +1,14 @@
+{
+  "name": "sticker-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp sticker bot — grid image to stickers",
+  "main": "bot/index.js",
+  "scripts": {
+    "start": "node bot/index.js"
+  },
+  "dependencies": {
+    "whatsapp-web.js": "^1.23.0",
+    "qrcode-terminal": "^0.12.0",
+    "dotenv": "^16.0.0"
+  }
+}
