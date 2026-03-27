@@ -48,6 +48,7 @@
 
     <style>
         * { box-sizing: border-box; }
+        p, .text-justify-all { text-align: justify; text-align-last: auto; hyphens: auto; }
 
         body {
             background-color: #f8fafc;
@@ -81,12 +82,18 @@
             z-index: 40;
         }
         .ticker-track {
-            display: flex;
+            display: inline-flex;
             width: max-content;
             gap: 3rem;
             padding: 0 1rem;
+            animation: ticker-scroll 55s linear infinite;
             will-change: transform;
         }
+        @keyframes ticker-scroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+        .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
         .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; }
         .up { color: #10b981; }
         .down { color: #f43f5e; }
@@ -575,11 +582,11 @@ function renderAll(d) {
             requestAnimationFrame(() => {
                 const h = bannerEl.offsetHeight;
                 document.querySelector('header').style.top = h + 'px';
-                const ticker = document.querySelector('.ticker-wrap');
-                if (ticker) ticker.style.top = (h + document.querySelector('header').offsetHeight) + 'px';
+                fixTickerTop();
             });
         }
     }
+    buildTicker(d);
 
     // Section 1
     const s1 = d.section_1_situation;
@@ -772,62 +779,32 @@ function renderAll(d) {
 }
 
 // ===== TICKER =====
-const tickerItems = [
-    {label: 'S&P 500',     val: '5,842',   chg: '+0.8%',  up: true},
-    {label: 'Nasdaq-100',  val: '19,210',  chg: '+1.1%',  up: true},
-    {label: 'Dow Jones',   val: '43,100',  chg: '+0.4%',  up: true},
-    {label: 'Russell 2000',val: '2,140',   chg: '-0.3%',  up: false},
-    {label: 'BTC',         val: '$91,240', chg: '+2.8%',  up: true},
-    {label: 'ETH',         val: '$3,420',  chg: '+1.4%',  up: true},
-    {label: 'SOL',         val: '$187',    chg: '+3.2%',  up: true},
-    {label: 'Gold',        val: '$3,045',  chg: '+0.3%',  up: true},
-    {label: 'Silver',      val: '$34.2',   chg: '+0.5%',  up: true},
-    {label: 'Oil (WTI)',   val: '$74.8',   chg: '-0.5%',  up: false},
-    {label: 'VIX',         val: '18.2',    chg: '-2.1%',  up: false},
-    {label: 'DXY',         val: '103.4',   chg: '-0.2%',  up: false},
-    {label: 'EUR/USD',     val: '1.082',   chg: '+0.1%',  up: true},
-    {label: 'USD/ILS',     val: '3.71',    chg: '-0.1%',  up: false},
-    {label: 'EUR/ILS',     val: '4.01',    chg: '+0.0%',  up: true},
-    {label: 'NVDA',        val: '$875',    chg: '+2.3%',  up: true},
-    {label: 'TSLA',        val: '$248',    chg: '+1.8%',  up: true},
-    {label: 'AAPL',        val: '$212',    chg: '+0.6%',  up: true},
-    {label: 'MSFT',        val: '$415',    chg: '+0.9%',  up: true},
-    {label: 'META',        val: '$590',    chg: '+1.5%',  up: true},
-    {label: 'AMZN',        val: '$198',    chg: '+1.2%',  up: true},
-    {label: 'GOOGL',       val: '$175',    chg: '+0.7%',  up: true},
-    {label: 'AMD',         val: '$112',    chg: '-0.8%',  up: false},
-    {label: 'TSM',         val: '$175',    chg: '+1.4%',  up: true},
-    {label: 'Natural Gas', val: '$2.14',   chg: '-1.2%',  up: false},
-];
-function buildTicker() {
-    // 4 copies for robust seamless loop
-    const items = [...tickerItems, ...tickerItems, ...tickerItems, ...tickerItems];
+function buildTicker(d) {
+    const items = [];
+    const m = (d && d.markets) || {};
+    const add = (label, val, chg) => { if (val) items.push({label, val, chg:chg||'', up:!!(chg&&chg.startsWith('+'))}); };
+    add('S&P 500',   m.sp500&&m.sp500.price,        m.sp500&&m.sp500.change);
+    add('Nasdaq',    m.nasdaq&&m.nasdaq.price,       m.nasdaq&&m.nasdaq.change);
+    add('Dow Jones', m.dji&&m.dji.price,             m.dji&&m.dji.change);
+    add('VIX',       m.vix&&m.vix.value,             m.vix&&m.vix.change);
+    add('Gold',      m.gold&&m.gold.price,           m.gold&&m.gold.change);
+    add('Silver',    m.silver&&m.silver.price,       m.silver&&m.silver.change);
+    add('Oil WTI',   m.oil&&m.oil.price,             m.oil&&m.oil.change);
+    add('BTC',       m.btc&&m.btc.price,             m.btc&&m.btc.change);
+    add('ETH',       m.eth&&m.eth.price,             m.eth&&m.eth.change);
+    add('10Y Yield', m.yield_10y&&m.yield_10y.value, m.yield_10y&&m.yield_10y.change);
+    add('DXY',       m.dxy&&m.dxy.price,             m.dxy&&m.dxy.change);
+    (d&&d.section_5_semis||[]).slice(0,2).forEach(s=>s.ticker&&s.price&&add(s.ticker,s.price,s.change));
+    (d&&d.section_6_software||[]).slice(0,2).forEach(s=>s.ticker&&s.price&&add(s.ticker,s.price,s.change));
+    if (!items.length) return;
+    const render = arr => arr.map(t =>
+        `<span class="ticker-item"><span class="text-slate-400">${t.label}</span> <span class="font-bold">${t.val}</span> <span class="${t.up?'up':'down'}">${t.chg}</span></span>`
+    ).join('');
     const track = document.getElementById('ticker-track');
-    track.innerHTML = items.map(t => `
-        <span class="ticker-item">
-            <span class="text-slate-400">${t.label}</span>
-            <span class="font-bold">${t.val}</span>
-            <span class="${t.up ? 'up' : 'down'}">${t.chg}</span>
-        </span>`).join('');
-
-    // JS-driven scroll — resets exactly at 1/4 mark (one full copy width)
-    let pos = 0;
-    let paused = false;
-    const wrap = document.getElementById('ticker-bar');
-    wrap.addEventListener('mouseenter', () => { paused = true; });
-    wrap.addEventListener('mouseleave', () => { paused = false; });
-
-    function tick() {
-        if (!paused) {
-            pos -= 0.6;
-            // singleWidth = 1/4 of total track (4 copies)
-            const singleWidth = track.scrollWidth / 4;
-            if (Math.abs(pos) >= singleWidth) pos = 0;
-            track.style.transform = `translateX(${pos}px)`;
-        }
-        requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
+    track.innerHTML = render(items) + render(items);
+    track.style.animation = 'none';
+    void track.offsetHeight;
+    track.style.animation = '';
 }
 
 // ===== CAROUSEL =====
@@ -967,12 +944,20 @@ function setLastUpdateClock(isoStr) {
 }
 setInterval(updateClock, 1000);
 
+function fixTickerTop() {
+    const header = document.querySelector('header');
+    const ticker = document.querySelector('.ticker-wrap');
+    if (!header || !ticker) return;
+    ticker.style.top = header.offsetHeight + 'px';
+}
+
 // ===== INIT =====
-buildTicker();
 buildCarouselSlides();
 buildCarouselDots();
 renderNotices();
 updateClock();
+requestAnimationFrame(fixTickerTop);
+window.addEventListener('resize', fixTickerTop);
 loadData();
 </script>
 </body>

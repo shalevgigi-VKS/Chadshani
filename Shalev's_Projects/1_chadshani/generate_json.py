@@ -169,7 +169,7 @@ MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
 CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
 
 # Market indices: yfinance symbol → JSON key
-MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", "^VIX": "vix", "GC=F": "gold", "SI=F": "silver"}
+MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", "^VIX": "vix", "GC=F": "gold", "SI=F": "silver", "CL=F": "oil", "BTC-USD": "btc", "ETH-USD": "eth", "DX-Y.NYB": "dxy"}
 
 
 def fetch_prices(symbols):
