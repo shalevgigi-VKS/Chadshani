@@ -44,13 +44,19 @@ jobs:
               MSG="❌ עדכון נכשל — סטטוס: $CONCLUSION ($NOW_IL)"
             fi
 
+            # Auto-retry the main workflow
+            echo "Triggering auto-retry of chadshani-2.yml..."
+            gh workflow run chadshani-2.yml \
+              --repo ${{ github.repository }} \
+              --ref master && RETRY_STATUS="✅ הפעלה חוזרת הושקה" || RETRY_STATUS="❌ הפעלה חוזרת נכשלה — טעון טיפול ידני"
+
             curl -s -X POST https://ntfy.sh/CHA0511 \
               -H "Title: Chadshani — טעון טיפול" \
               -H "Tags: warning" \
               -H "Priority: high" \
-              -d "$MSG"
+              -d "$MSG | $RETRY_STATUS"
 
-            echo "ALERT SENT: $MSG"
+            echo "ALERT SENT: $MSG | $RETRY_STATUS"
             exit 1
           fi
 
