@@ -1,23 +1,25 @@
 {
   "seen": [
-    "cbcoutinho/nextcloud-mcp-server",
-    "dliedke/ClaudeCodeExtension",
-    "oraios/serena",
-    "yzfly/Awesome-MCP-ZH",
     "nicobailon/pi-mcp-adapter",
-    "firecrawl/firecrawl-mcp-server",
-    "mcp-use/mcp-use",
-    "nickjvandyke/opencode.nvim",
-    "Alishahryar1/free-claude-code",
-    "yvgude/lean-ctx",
-    "maxritter/pilot-shell",
-    "atilladeniz/Kubeli",
-    "ntanner-ctrl/claude-sail",
-    "AgriciDaniel/claude-seo",
     "alvinunreal/tmuxai",
-    "wonderwhy-er/DesktopCommanderMCP",
+    "dliedke/ClaudeCodeExtension",
+    "mcp-use/mcp-use",
     "abingyyds/OpenAsst",
-    "yusifeng/formax"
+    "wonderwhy-er/DesktopCommanderMCP",
+    "ntanner-ctrl/claude-sail",
+    "firecrawl/firecrawl-mcp-server",
+    "AgriciDaniel/claude-seo",
+    "yvgude/lean-ctx",
+    "nickjvandyke/opencode.nvim",
+    "davila7/claude-code-templates",
+    "oraios/serena",
+    "bytebase/dbhub",
+    "yusifeng/formax",
+    "Alishahryar1/free-claude-code",
+    "yzfly/Awesome-MCP-ZH",
+    "cbcoutinho/nextcloud-mcp-server",
+    "maxritter/pilot-shell",
+    "atilladeniz/Kubeli"
   ],
-  "last_run": "2026-03-28T09:55:44.103487+00:00"
+  "last_run": "2026-03-28T14:04:28.150281+00:00"
 }
