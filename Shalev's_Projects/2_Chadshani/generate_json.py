@@ -1,6 +1,6 @@
 """
 Chadshani 2.0 — News Generator
-Uses Gemini API with free news context (yfinance.news + Hacker News + Fear&Greed APIs).
+Uses Gemini API with free news context (yfinance.news + AI RSS feeds + Hacker News + Fear&Greed APIs).
 No Google Search grounding — saves ~92% of API cost.
 Outputs data/latest.json in the exact schema the website expects.
 """
@@ -10,6 +10,7 @@ import json
 import re
 import sys
 import urllib.request
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from google import genai
 from google.genai import types
@@ -237,15 +238,79 @@ def fetch_yfinance_news_batch(tickers, max_per=2):
     return items
 
 
-def fetch_hn_news(max_items=8):
-    """Fetch Hacker News top stories — free, no key, strong AI/tech coverage."""
+_AI_RSS_FEEDS = [
+    # (label, url, item_tag, title_tag, desc_tag)
+    ("TechCrunch AI",  "https://techcrunch.com/category/artificial-intelligence/feed/", "item",  "title", "description"),
+    ("VentureBeat AI", "https://venturebeat.com/category/ai/feed/",                     "item",  "title", "description"),
+    ("The Verge",      "https://www.theverge.com/rss/index.xml",                        "entry", "title", "summary"),
+    ("ArsTechnica",    "https://feeds.arstechnica.com/arstechnica/index",               "item",  "title", "description"),
+]
+
+_AI_KEYWORDS = {
+    "openai", "anthropic", "claude", "gemini", "gpt", "llama", "grok", "mistral",
+    "deepmind", "copilot", "sora", "chatgpt", "perplexity", "xai", "llm", "ai model",
+    "language model", "foundation model", "generative ai", "artificial intelligence",
+}
+
+
+def _clean_rss_xml(raw: bytes) -> bytes:
+    """Strip namespace prefixes and declarations so ElementTree can parse any RSS/Atom feed."""
+    # Remove prefixed tags: <ns:tag> → <tag>
+    raw = re.sub(rb'<(/?)[\w][\w]*:([\w])', rb'<\1\2', raw)
+    # Remove prefixed attributes: ns:attr="val"
+    raw = re.sub(rb'\s[\w][\w]*:[\w][^=>\s]+=(?:"[^"]*"|\'[^\']*\')', b'', raw)
+    # Remove xmlns declarations
+    raw = re.sub(rb'\s+xmlns(?::[^=]+)?="[^"]*"', b'', raw)
+    return raw
+
+
+def fetch_ai_rss(max_per_feed=4):
+    """Fetch recent headlines from AI-focused RSS feeds — no API key required."""
+    items = []
+    seen = set()
+    for label, url, item_tag, title_tag, desc_tag in _AI_RSS_FEEDS:
+        try:
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (compatible; Chadshani/2.0)"},
+            )
+            with urllib.request.urlopen(req, timeout=10) as r:
+                raw = r.read()
+            root = ET.fromstring(_clean_rss_xml(raw))
+            count = 0
+            for el in root.iter(item_tag):
+                title_el = el.find(title_tag)
+                desc_el = el.find(desc_tag)
+                title = (title_el.text or "").strip() if title_el is not None else ""
+                desc = (desc_el.text or "").strip() if desc_el is not None else ""
+                desc = re.sub(r"<[^>]+>", "", desc)[:200]
+                if title and title not in seen and count < max_per_feed:
+                    seen.add(title)
+                    line = f"[{label}] {title}"
+                    if desc:
+                        line += f": {desc}"
+                    items.append(line)
+                    count += 1
+            print(f"[RSS] {label}: {count} items")
+        except Exception as e:
+            print(f"[WARN] RSS {label}: {e}")
+    print(f"[RSS] total: {len(items)} AI items from {len(_AI_RSS_FEEDS)} feeds")
+    return items
+
+
+def fetch_hn_news(max_items=15):
+    """Fetch Hacker News stories filtered for AI/tech relevance — free, no key."""
     stories = []
+    ai_kw = _AI_KEYWORDS
     try:
         with urllib.request.urlopen(
             "https://hacker-news.firebaseio.com/v0/topstories.json", timeout=8
         ) as r:
-            ids = json.loads(r.read())[:max_items * 2]
-        for sid in ids[:max_items]:
+            ids = json.loads(r.read())[:60]  # scan top 60 to find AI-relevant ones
+        collected = 0
+        for sid in ids:
+            if collected >= max_items:
+                break
             try:
                 with urllib.request.urlopen(
                     f"https://hacker-news.firebaseio.com/v0/item/{sid}.json", timeout=5
@@ -253,7 +318,12 @@ def fetch_hn_news(max_items=8):
                     item = json.loads(r.read())
                     title = (item.get("title") or "").strip()
                     if title:
-                        stories.append(f"• {title}")
+                        title_lower = title.lower()
+                        # Prioritise AI-related stories; always include if we need to fill
+                        is_ai = any(kw in title_lower for kw in ai_kw)
+                        if is_ai or collected < 5:
+                            stories.append(f"• {title}")
+                            collected += 1
             except Exception:
                 pass
     except Exception as e:
@@ -275,20 +345,26 @@ def build_news_context():
             lines.append(f"Crypto Fear & Greed Index: {fg['crypto']}/100")
         lines.append("")
 
+    ai_rss = fetch_ai_rss(max_per_feed=4)
+    if ai_rss:
+        lines.append("=== חדשות AI — RSS (TechCrunch/VentureBeat/TheVerge/ArsTechnica) ===")
+        lines.extend(ai_rss)
+        lines.append("")
+
     stock_news = fetch_yfinance_news_batch(NEWS_TICKERS, max_per=2)
     if stock_news:
         lines.append("=== חדשות מניות וסקטורים (yfinance) ===")
         lines.extend(stock_news[:50])
         lines.append("")
 
-    hn_news = fetch_hn_news(max_items=8)
+    hn_news = fetch_hn_news(max_items=15)
     if hn_news:
         lines.append("=== חדשות AI וטכנולוגיה (Hacker News) ===")
         lines.extend(hn_news)
         lines.append("")
 
     context = "\n".join(lines)
-    print(f"[CONTEXT] {len(context)} chars | {len(stock_news)} stock items | {len(hn_news)} HN | F&G={fg}")
+    print(f"[CONTEXT] {len(context)} chars | {len(ai_rss)} RSS | {len(stock_news)} stock | {len(hn_news)} HN | F&G={fg}")
     return context, fg
 
 
