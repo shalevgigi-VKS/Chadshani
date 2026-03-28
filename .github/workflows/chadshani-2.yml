@@ -41,14 +41,14 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          cd "Shalev's_Projects/1_chadshani"
+          cd "Shalev's_Projects/2_Chadshani"
           python generate_json.py
 
       - name: Commit data files
         run: |
           git config user.name  "Chadshani Bot"
           git config user.email "chadshani@users.noreply.github.com"
-          git add "Shalev's_Projects/1_chadshani/data/"
+          git add "Shalev's_Projects/2_Chadshani/data/"
           git diff --staged --quiet && echo "[skip] No data changes" || \
             git commit -m "update $(TZ=Asia/Jerusalem date +'%Y-%m-%d %H:%M IL')"
           git push
@@ -56,7 +56,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "Shalev's_Projects/1_chadshani"
+          path: "Shalev's_Projects/2_Chadshani"
 
       - name: Deploy to GitHub Pages
         id: deploy

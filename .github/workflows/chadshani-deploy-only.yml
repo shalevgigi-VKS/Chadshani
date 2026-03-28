@@ -22,12 +22,12 @@ jobs:
 
       - name: Write design version timestamp
         run: |
-          echo '{"design_updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}' > "Shalev's_Projects/1_chadshani/version.json"
+          echo '{"design_updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}' > "Shalev's_Projects/2_Chadshani/version.json"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "Shalev's_Projects/1_chadshani"
+          path: "Shalev's_Projects/2_Chadshani"
 
       - name: Deploy to GitHub Pages
         id: deploy
