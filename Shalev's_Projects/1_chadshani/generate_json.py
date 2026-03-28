@@ -66,17 +66,17 @@ JSON_PROMPT = """
     {"title": "כותרת חדשה 6", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"}
   ],
   "section_3_sectors": [
-    {"etf": "XLK", "name": "טכנולוגיה", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "סיבה עיקרית — אנליזה קצרה"},
-    {"etf": "XLV", "name": "בריאות", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."},
-    {"etf": "XLU", "name": "תשתיות", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
-    {"etf": "XLF", "name": "פיננסים", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."},
-    {"etf": "XLE", "name": "אנרגיה", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
-    {"etf": "XLY", "name": "צריכה מחזורית", "change": "-X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
-    {"etf": "XLI", "name": "תעשייה", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."},
-    {"etf": "XLB", "name": "חומרי גלם", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
-    {"etf": "XLRE", "name": "נדל\"ן", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
-    {"etf": "XLP", "name": "צריכה בסיסית", "change": "+X.X%", "flow_direction": "neutral", "flow_amount": "$0B", "note": "..."},
-    {"etf": "XLC", "name": "תקשורת", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."}
+    {"etf": "XLK", "name": "טכנולוגיה", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$3.2B", "note": "סיבה עיקרית — אנליזה קצרה"},
+    {"etf": "XLV", "name": "בריאות", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$1.8B", "note": "..."},
+    {"etf": "XLU", "name": "תשתיות", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$0.9B", "note": "..."},
+    {"etf": "XLF", "name": "פיננסים", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$2.1B", "note": "..."},
+    {"etf": "XLE", "name": "אנרגיה", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$1.3B", "note": "..."},
+    {"etf": "XLY", "name": "צריכה מחזורית", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$2.0B", "note": "..."},
+    {"etf": "XLI", "name": "תעשייה", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$1.1B", "note": "..."},
+    {"etf": "XLB", "name": "חומרי גלם", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$0.7B", "note": "..."},
+    {"etf": "XLRE", "name": "נדל\"ן", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$0.5B", "note": "..."},
+    {"etf": "XLP", "name": "צריכה בסיסית", "change": "YFINANCE", "flow_direction": "neutral", "flow_amount": "$0.1B", "note": "..."},
+    {"etf": "XLC", "name": "תקשורת", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$1.5B", "note": "..."}
   ],
   "section_4_crypto": [
     {"ticker": "BTC", "price": "$...", "change_24h": "+X.X%", "note": "..."},
@@ -156,7 +156,8 @@ JSON_PROMPT = """
 - section_4_crypto_brief: כל שדה חייב להיות לפחות 2-3 משפטים עם מידע ממשי.
 - section_1_situation gauges: חפש את ערכי CNN Fear & Greed ו-Crypto Fear & Greed האחרונים דרך Google Search. VIX יוחלף אוטומטית על ידי yfinance.
 - gauges zone: "extreme_fear" (0-24) / "fear" (25-44) / "neutral" (45-54) / "greed" (55-74) / "extreme_greed" (75-100) עבור F&G. VIX zone: "low" (<15) / "medium" (15-20) / "high" (20-30) / "extreme" (>30).
-- section_3_sectors: כל סקטור כולל flow_direction ("in"/"out"/"neutral"), flow_amount (פורמט "+$X.XB" / "-$X.XB"), ו-note אנליטי. אמוד לפי סנטימנט הסקטור.
+- section_3_sectors flow_amount: חובה להחליף בסכום ממשי (לדוגמה: "+$3.2B", "-$1.8B", "$0.1B"). אסור להשאיר "X.X" — זה placeholder בלבד לצורך הדוגמה. אמוד לפי סנטימנט הסקטור ביום זה.
+- section_3_sectors change: שדה change יוחלף אוטומטית על ידי yfinance — כתוב "YFINANCE" בלבד.
 - generated_at: timestamp ISO עכשווי בדיוק עם Z בסיום.
 - section_8_watchlist: בחר 6 טיקרים עם פוטנציאל עלייה (rising) ו-6 עם פוטנציאל ירידה (falling) לשבוע הקרוב. לכל טיקר: note (למה לעקוב, מה הקטליסט), signal (BUY/SELL), reason (סיבה טכנית/פונדמנטלית קצרה ומדויקת). בחר לפי החדשות שמצאת בלבד.
 - החזר JSON בלבד. אין טקסט לפני או אחרי.
@@ -325,6 +326,11 @@ def validate(data):
                 issues.append(f"section_8_watchlist.{side} has {count} items (need 6)")
     else:
         issues.append("section_8_watchlist must be an object with rising/falling arrays")
+    # Sector flow_amount must not contain placeholder "X.X"
+    for s in data.get("section_3_sectors", []):
+        amt = s.get("flow_amount", "")
+        if "X.X" in amt or amt in ("", None):
+            issues.append(f"section_3_sectors {s.get('etf')} flow_amount is placeholder: {amt!r}")
     # Markets block must exist
     if not data.get("markets"):
         issues.append("markets block missing")
