@@ -5,8 +5,14 @@ name: Chadshani — Auto Update (DATA+DEPLOY)
 on:
   workflow_dispatch:
   schedule:
-    - cron: '54 3 * * *'   # 06:54 Israel (UTC+3) — 6 min before 07:00
-    - cron: '54 15 * * *'  # 18:54 Israel (UTC+3) — 6 min before 19:00
+    # Morning: 06:45 Israel = 03:45 UTC (summer/DST, UTC+3) — 15 min before 07:00
+    - cron: '45 3 * * *'
+    # Morning: 06:45 Israel = 04:45 UTC (winter, UTC+2) — 15 min before 07:00
+    - cron: '45 4 * * *'
+    # Evening: 19:45 Israel = 16:45 UTC (summer/DST, UTC+3) — 15 min before 20:00
+    - cron: '45 16 * * *'
+    # Evening: 19:45 Israel = 17:45 UTC (winter, UTC+2) — 15 min before 20:00
+    - cron: '45 17 * * *'
 
 permissions:
   contents: write
