@@ -74,26 +74,45 @@ def scan_agents():
 def scan_skills():
     skills_dir = CLAUDE_DIR / 'skills'
     result = []
+    seen = set()
     if not skills_dir.exists():
         return result
-    status_map = {'active': 'active', 'experimental': 'experimental', 'deprecated': 'deprecated'}
-    for status_folder in ['active', 'experimental', 'deprecated']:
-        folder = skills_dir / status_folder
-        if not folder.exists():
+
+    def _add_skill(name, text, status):
+        if name in seen or name.lower() in ('readme', 'index'):
+            return
+        seen.add(name)
+        fm = parse_frontmatter(text)
+        purpose = fm.get('description', '') or fm.get('purpose', '') or fm.get('title', '') or first_non_empty_line(text)
+        result.append({'name': name, 'purpose': purpose[:120], 'status': status})
+
+    # Pattern 1: skills/NAME/SKILL.md (most common)
+    for skill_dir in sorted(skills_dir.iterdir()):
+        if not skill_dir.is_dir():
             continue
-        for f in sorted(folder.glob('*.md')):
-            text = read_text(f)
-            fm = parse_frontmatter(text)
-            name = f.stem
-            purpose = fm.get('description', '') or fm.get('purpose', '') or first_non_empty_line(text)
-            result.append({'name': name, 'purpose': purpose[:120], 'status': status_map.get(status_folder, 'active')})
-    # Also check top-level skills/*.md
+        status = 'active'
+        if skill_dir.name in ('active', 'experimental', 'deprecated'):
+            # These are status folders — scan inside them
+            inner_status = skill_dir.name
+            for f in sorted(skill_dir.glob('*.md')):
+                _add_skill(f.stem, read_text(f), inner_status)
+            for sub in sorted(skill_dir.iterdir()):
+                if sub.is_dir():
+                    skill_md = sub / 'SKILL.md'
+                    if not skill_md.exists():
+                        skill_md = next(sub.glob('*.md'), None)
+                    if skill_md:
+                        _add_skill(sub.name, read_text(skill_md), inner_status)
+            continue
+        skill_md = skill_dir / 'SKILL.md'
+        if not skill_md.exists():
+            skill_md = next(skill_dir.glob('*.md'), None)
+        if skill_md:
+            _add_skill(skill_dir.name, read_text(skill_md), status)
+
+    # Pattern 2: top-level skills/*.md
     for f in sorted(skills_dir.glob('*.md')):
-        if not any(f.stem == r['name'] for r in result):
-            text = read_text(f)
-            fm = parse_frontmatter(text)
-            purpose = fm.get('description', '') or first_non_empty_line(text)
-            result.append({'name': f.stem, 'purpose': purpose[:120], 'status': 'active'})
+        _add_skill(f.stem, read_text(f), 'active')
     print(f'[SKILLS] Found {len(result)}')
     return result
 

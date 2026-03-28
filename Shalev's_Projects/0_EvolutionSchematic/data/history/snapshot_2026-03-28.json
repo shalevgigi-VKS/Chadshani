@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-28T10:46:38.430141+00:00",
+  "generated_at": "2026-03-28T10:55:13.432571+00:00",
   "version": "1.1",
   "claude_global": {
     "agents": [
@@ -134,8 +134,88 @@
     ],
     "skills": [
       {
-        "name": "README",
-        "purpose": "Skills",
+        "name": "ai-regression-testing",
+        "purpose": "Regression testing strategies for AI-assisted development. Sandbox-mode API testing without database dependencies, autom",
+        "status": "active"
+      },
+      {
+        "name": "configure-ecc",
+        "purpose": "Interactive installer for Everything Claude Code — guides users through selecting and installing skills and rules to use",
+        "status": "active"
+      },
+      {
+        "name": "continuous-learning",
+        "purpose": "Automatically extract reusable patterns from Claude Code sessions and save them as learned skills for future use.",
+        "status": "active"
+      },
+      {
+        "name": "continuous-learning-v2",
+        "purpose": "Instinct-based learning system that observes sessions via hooks, creates atomic instincts with confidence scoring, and e",
+        "status": "active"
+      },
+      {
+        "name": "e2e-testing",
+        "purpose": "Playwright E2E testing patterns, Page Object Model, configuration, CI/CD integration, artifact management, and flaky tes",
+        "status": "active"
+      },
+      {
+        "name": "eval-harness",
+        "purpose": "Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles",
+        "status": "active"
+      },
+      {
+        "name": "frontend-design",
+        "purpose": "Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to ",
+        "status": "active"
+      },
+      {
+        "name": "gemini-api-dev",
+        "purpose": "Use this skill when building applications with Gemini models, Gemini API, working with multimodal content (text, images,",
+        "status": "active"
+      },
+      {
+        "name": "ideation",
+        "purpose": "Transform raw brain dumps (dictated freestyle) into structured implementation artifacts. Use when user has messy ideas, ",
+        "status": "active"
+      },
+      {
+        "name": "iterative-retrieval",
+        "purpose": "Pattern for progressively refining context retrieval to solve the subagent context problem",
+        "status": "active"
+      },
+      {
+        "name": "plankton-code-quality",
+        "purpose": "\"Write-time code quality enforcement using Plankton — auto-formatting, linting, and Claude-powered fixes on every file e",
+        "status": "active"
+      },
+      {
+        "name": "project-guidelines-example",
+        "purpose": "\"Example project-specific skill template based on a real production application.\"",
+        "status": "active"
+      },
+      {
+        "name": "skill-creator",
+        "purpose": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a sk",
+        "status": "active"
+      },
+      {
+        "name": "skill-stocktake",
+        "purpose": "\"Use when auditing Claude skills and commands for quality. Supports Quick Scan (changed skills only) and Full Stocktake ",
+        "status": "active"
+      },
+      {
+        "name": "strategic-compact",
+        "purpose": "Suggests manual context compaction at logical intervals to preserve context through task phases rather than arbitrary au",
+        "status": "active"
+      },
+      {
+        "name": "tdd-workflow",
+        "purpose": "Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ c",
+        "status": "active"
+      },
+      {
+        "name": "verification-loop",
+        "purpose": "\"A comprehensive verification system for Claude Code sessions.\"",
         "status": "active"
       }
     ],
@@ -154,6 +234,11 @@
         "type": "PostToolUse",
         "trigger": "Write|Edit|MultiEdit",
         "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/project-guard.sh\" \"$CLAUDE_TOOL_IN"
+      },
+      {
+        "type": "PostToolUse",
+        "trigger": "Write|Edit|MultiEdit",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/secret-scan.sh\" \"$CLAUDE_TOOL_INPU"
       },
       {
         "type": "PreCompact",
@@ -637,8 +722,8 @@
         "Python"
       ],
       "status": "active",
-      "files_count": 8,
-      "last_modified": "2026-03-28T10:44:25.866406+00:00"
+      "files_count": 10,
+      "last_modified": "2026-03-28T10:54:43.495809+00:00"
     },
     {
       "id": 1,
@@ -662,7 +747,7 @@
       ],
       "status": "complete",
       "files_count": 23,
-      "last_modified": "2026-03-28T09:27:16.413629+00:00"
+      "last_modified": "2026-03-28T10:51:17.326805+00:00"
     },
     {
       "id": 3,
@@ -707,7 +792,7 @@
       ],
       "status": "active",
       "files_count": 60,
-      "last_modified": "2026-03-28T08:23:25.531331+00:00"
+      "last_modified": "2026-03-28T10:50:56.243501+00:00"
     },
     {
       "id": 7,
