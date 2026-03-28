@@ -218,6 +218,26 @@ def fmt_change(c):
     return f"{sign}{c:.2f}%"
 
 
+def fetch_crypto_price(yf_sym):
+    """Fetch crypto price and 24h change using fast_info (lastPrice / previousClose).
+    Avoids the partial-candle problem that causes 0.00% change with daily interval."""
+    try:
+        fi = yf.Ticker(yf_sym).fast_info
+        price = fi.get("lastPrice") or fi.get("last_price")
+        prev  = fi.get("previousClose") or fi.get("previous_close")
+        if price and prev and prev > 0:
+            return float(price), (float(price) - float(prev)) / float(prev) * 100
+        # Fallback: try history with 5d period to guarantee 2 complete candles
+        hist = yf.Ticker(yf_sym).history(period="5d", interval="1d")
+        hist = hist["Close"].dropna()
+        if len(hist) >= 2:
+            p_now, p_prev = float(hist.iloc[-1]), float(hist.iloc[-2])
+            return p_now, (p_now - p_prev) / p_prev * 100
+    except Exception as e:
+        print(f"[PRICE WARN] crypto {yf_sym}: {e}")
+    return None, 0.0
+
+
 def patch_prices(data):
     """Replace 'לא זמין' / placeholder prices with real yfinance data."""
     # Collect all symbols needed
@@ -228,15 +248,8 @@ def patch_prices(data):
             if sym:
                 stock_symbols.add(sym)
 
-    crypto_symbols = set()
-    for item in data.get("section_4_crypto", []):
-        sym = CRYPTO_MAP.get(item.get("ticker", ""))
-        if sym:
-            crypto_symbols.add(sym)
-
-    # Fetch
+    # Fetch stocks (batch download — works reliably for exchange-traded assets)
     stock_prices = fetch_prices(stock_symbols)
-    crypto_prices = fetch_prices(crypto_symbols)
 
     # Patch section_3_sectors
     for item in data.get("section_3_sectors", []):
@@ -254,11 +267,13 @@ def patch_prices(data):
                 item["price"] = fmt_price(p)
                 item["change"] = fmt_change(c)
 
-    # Patch section_4_crypto
+    # Patch section_4_crypto — use fast_info to get true 24h change
     for item in data.get("section_4_crypto", []):
         yf_sym = CRYPTO_MAP.get(item.get("ticker", ""))
-        if yf_sym and yf_sym in crypto_prices:
-            p, c = crypto_prices[yf_sym]
+        if not yf_sym:
+            continue
+        p, c = fetch_crypto_price(yf_sym)
+        if p is not None:
             item["price"] = fmt_price(p, is_crypto=True)
             item["change_24h"] = fmt_change(c)
 
