@@ -312,10 +312,19 @@ def validate(data):
     # Required sections must be present and non-empty
     for section, min_items in [("section_2_news", 4), ("section_3_sectors", 11),
                                 ("section_5_semis", 10), ("section_6_software", 10),
-                                ("section_7_ai", 4), ("section_8_watchlist", 8)]:
+                                ("section_7_ai", 4)]:
         count = len(data.get(section, []))
         if count < min_items:
             issues.append(f"{section} has {count} items (need {min_items})")
+    # Watchlist: {rising:[], falling:[]} — each must have 6 items
+    wl = data.get("section_8_watchlist", {})
+    if isinstance(wl, dict):
+        for side in ("rising", "falling"):
+            count = len(wl.get(side, []))
+            if count < 6:
+                issues.append(f"section_8_watchlist.{side} has {count} items (need 6)")
+    else:
+        issues.append("section_8_watchlist must be an object with rising/falling arrays")
     # Markets block must exist
     if not data.get("markets"):
         issues.append("markets block missing")
