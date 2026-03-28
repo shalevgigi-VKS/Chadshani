@@ -5,14 +5,10 @@ name: Chadshani — Auto Update (DATA+DEPLOY)
 on:
   workflow_dispatch:
   schedule:
-    # Morning: 06:45 Israel = 03:45 UTC (summer/DST, UTC+3) — 15 min before 07:00
-    - cron: '45 3 * * *'
-    # Morning: 06:45 Israel = 04:45 UTC (winter, UTC+2) — 15 min before 07:00
-    - cron: '45 4 * * *'
-    # Evening: 19:45 Israel = 16:45 UTC (summer/DST, UTC+3) — 15 min before 20:00
-    - cron: '45 16 * * *'
-    # Evening: 19:45 Israel = 17:45 UTC (winter, UTC+2) — 15 min before 20:00
-    - cron: '45 17 * * *'
+    # 08:00 IL summer (UTC+3) / 07:00 IL winter (UTC+2) — one cron, works year-round
+    - cron: '0 5 * * *'
+    # 20:00 IL summer (UTC+3) / 19:00 IL winter (UTC+2) — one cron, works year-round
+    - cron: '0 17 * * *'
 
 permissions:
   contents: write
@@ -59,6 +55,80 @@ jobs:
             git commit -m "update $(TZ=Asia/Jerusalem date +'%Y-%m-%d %H:%M IL')"
           git push
 
+      - name: Validate generated data
+        id: validate
+        run: |
+          python - <<'EOF'
+          import json, sys, os
+
+          PLACEHOLDERS = ("לא זמין", "$...", None, "", "אין חדשות חדשות מהשבוע האחרון.",
+                          "עדכון ידוע: לא זמין", "לא זמין.", "אין עדכון")
+
+          path = "Shalev's_Projects/2_Chadshani/data/latest.json"
+          if not os.path.exists(path):
+              print("[VALIDATE] FAIL: latest.json not found"); sys.exit(1)
+
+          with open(path, encoding="utf-8") as f:
+              data = json.load(f)
+
+          issues = []
+
+          if not data.get("generated_at"):
+              issues.append("generated_at missing")
+
+          headline = data.get("section_1_situation", {}).get("headline", "")
+          if not headline or headline in PLACEHOLDERS:
+              issues.append("section_1_situation.headline missing or placeholder")
+
+          markets = data.get("markets", {})
+          for key in ("sp500", "nasdaq", "vix"):
+              if key not in markets:
+                  issues.append(f"markets.{key} missing")
+
+          for section in ("section_5_semis", "section_6_software"):
+              for item in data.get(section, []):
+                  if item.get("price") in PLACEHOLDERS:
+                      issues.append(f"{section}.{item.get('ticker')} price placeholder")
+
+          for item in data.get("section_4_crypto", []):
+              if item.get("price") in PLACEHOLDERS:
+                  issues.append(f"section_4_crypto.{item.get('ticker')} price placeholder")
+
+          if len(data.get("section_2_news", [])) < 4:
+              issues.append(f"section_2_news has {len(data.get('section_2_news',[]))} items (need 4)")
+
+          if len(data.get("section_7_ai", [])) < 3:
+              issues.append(f"section_7_ai has {len(data.get('section_7_ai',[]))} items (need 3)")
+
+          for s in data.get("section_3_sectors", []):
+              amt = s.get("flow_amount", "")
+              if "X.X" in str(amt) or amt in ("", None):
+                  issues.append(f"section_3_sectors.{s.get('etf')} flow_amount placeholder: {amt!r}")
+
+          vix_val = data.get("section_1_situation", {}).get("gauges", {}).get("vix", {}).get("value", "")
+          try:
+              float(str(vix_val).replace("%", ""))
+          except (ValueError, TypeError):
+              issues.append(f"gauges.vix not numeric: {vix_val!r}")
+
+          # Reject "אין חדשות" appearing in news or AI sections
+          for item in data.get("section_2_news", []):
+              s = item.get("summary", "")
+              if "אין חדשות" in s or s.strip() in PLACEHOLDERS:
+                  issues.append(f"section_2_news item has placeholder summary: {s[:40]!r}")
+          for item in data.get("section_7_ai", []):
+              u = item.get("update", "") or item.get("summary", "")
+              if "אין חדשות" in u or "לא זמין" in u or u.strip() in PLACEHOLDERS:
+                  issues.append(f"section_7_ai item has placeholder update: {u[:40]!r}")
+
+          if issues:
+              print("[VALIDATE] FAIL — data quality issues:")
+              for i in issues: print(f"  - {i}")
+              sys.exit(1)
+          else:
+              print(f"[VALIDATE] PASS — {len(data)} keys, no placeholders")
+          EOF
+
       - name: Inject dynamic meta into index.html
         run: |
           python - <<'EOF'
@@ -66,7 +136,6 @@ jobs:
           with open("Shalev's_Projects/2_Chadshani/data/latest.json", encoding="utf-8") as f:
               data = json.load(f)
           headline = data.get("section_1_situation", {}).get("headline", "")
-          ts = data.get("generated_at", "")[:10]
           if headline:
               desc = headline[:200]
               title = f"חדשני | {headline[:80]}"
@@ -93,20 +162,24 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Notify success
+        if: success()
         run: |
           NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
           curl -s -X POST https://ntfy.sh/CloudeCode \
-            -H "Title: חדשני — נתונים ועיצוב עודכנו ✅" \
+            -H "Title: חדשני — נתונים עודכנו ואומתו ✅" \
             -H "Tags: newspaper" \
             -H "Priority: default" \
-            -d "עדכון אוטומטי של נתוני שוק ועיצוב הושלם — $NOW"
+            -d "עדכון אוטומטי הושלם, נתונים עברו אימות ואתר פורסם — $NOW"
 
       - name: Notify failure
         if: failure()
         run: |
           NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          STEP="${{ steps.validate.outcome }}"
+          MSG="עדכון נכשל"
+          [ "$STEP" = "failure" ] && MSG="נתונים לא עברו אימות (placeholder / חסר)"
           curl -s -X POST https://ntfy.sh/CloudeCode \
-            -H "Title: חדשני — עדכון אוטומטי נכשל ⚠️" \
+            -H "Title: חדשני — עדכון נכשל ⚠️" \
             -H "Tags: x" \
             -H "Priority: high" \
-            -d "עדכון הנתונים נכשל — $NOW — בדוק GitHub Actions"
+            -d "$MSG — $NOW — בדוק GitHub Actions"

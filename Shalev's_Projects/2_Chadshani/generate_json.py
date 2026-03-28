@@ -166,7 +166,8 @@ JSON_PROMPT = """
 - החזר JSON בלבד. אין טקסט לפני או אחרי.
 """
 
-MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"]
+# Models: flash (2 attempts) → pro (1 attempt, expensive last resort)
+# Defined inline in generate() as MODEL_ATTEMPTS
 
 # Crypto ticker mapping: JSON ticker → yfinance symbol
 CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
@@ -638,24 +639,88 @@ def call_gemini(model, attempt, news_context, fear_greed):
     return response
 
 
+_CONTENT_PLACEHOLDERS = {
+    "אין חדשות חדשות מהשבוע האחרון.", "אין חדשות חדשות מהשבוע האחרון",
+    "עדכון ידוע: לא זמין", "לא זמין", "לא זמין.", "אין עדכון", "",
+}
+
+
+def _load_previous():
+    """Load the last written latest.json, or return empty dict."""
+    path = os.path.join(os.path.dirname(__file__), "data", "latest.json")
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+
+def merge_with_previous(data, prev):
+    """
+    For every section item where summary/update/note contains a placeholder,
+    replace the item with the matching entry from the previous run.
+    This prevents 'אין חדשות' from ever reaching the live site.
+    """
+    if not prev:
+        return data
+
+    def _is_placeholder(text):
+        if not text:
+            return True
+        t = str(text).strip()
+        return t in _CONTENT_PLACEHOLDERS or "אין חדשות" in t or "לא זמין" in t
+
+    # section_2_news — match by ticker or headline
+    prev_news = {item.get("ticker", ""): item for item in prev.get("section_2_news", []) if item.get("ticker")}
+    for i, item in enumerate(data.get("section_2_news", [])):
+        if _is_placeholder(item.get("summary", "")):
+            key = item.get("ticker", "")
+            if key and key in prev_news:
+                data["section_2_news"][i] = prev_news[key]
+                print(f"[MERGE] section_2_news {key}: replaced placeholder with previous data")
+
+    # section_7_ai — match by company name
+    prev_ai = {item.get("company", ""): item for item in prev.get("section_7_ai", []) if item.get("company")}
+    for i, item in enumerate(data.get("section_7_ai", [])):
+        update_text = item.get("update", "") or item.get("summary", "")
+        if _is_placeholder(update_text):
+            key = item.get("company", "")
+            if key and key in prev_ai:
+                data["section_7_ai"][i] = prev_ai[key]
+                print(f"[MERGE] section_7_ai {key}: replaced placeholder with previous data")
+
+    return data
+
+
 def generate():
     import time
+
+    # Load previous data before generating (for merge fallback)
+    prev = _load_previous()
 
     # Fetch free news context upfront (yfinance + HN + Fear&Greed APIs)
     news_context, fear_greed = build_news_context()
 
+    # Max attempts: 2 per model to reduce wasted API spend
+    MAX_ATTEMPTS = 2
+    # Only use Pro as last resort (1 attempt — expensive)
+    MODEL_ATTEMPTS = [("gemini-2.5-flash", 2), ("gemini-2.5-pro", 1)]
+
     data = None
-    for model in MODELS:
-        for attempt in range(3):
+    for model, max_att in MODEL_ATTEMPTS:
+        for attempt in range(max_att):
             try:
                 response = call_gemini(model, attempt, news_context, fear_greed)
                 raw = clean_raw(response.text)
                 candidate = json.loads(raw)
                 candidate = patch_prices(candidate)
+                candidate = merge_with_previous(candidate, prev)
                 issues = validate(candidate)
                 if issues:
                     print(f"[WARN] Validation failed attempt {attempt+1}: {issues[:3]}")
-                    if attempt < 2:
+                    if attempt < max_att - 1:
                         time.sleep(10)
                     continue
                 data = candidate
@@ -663,22 +728,20 @@ def generate():
                 break
             except json.JSONDecodeError as e:
                 print(f"[WARN] Invalid JSON attempt {attempt+1}: {e} — retrying")
-                if attempt < 2:
+                if attempt < max_att - 1:
                     time.sleep(10)
             except Exception as e:
                 print(f"[WARN] API error attempt {attempt+1}: {e}")
-                if attempt < 2:
+                if attempt < max_att - 1:
                     time.sleep(15)
         if data is not None:
             break
-        print(f"[SKIP] {model} failed after 3 attempts")
+        print(f"[SKIP] {model} failed after {max_att} attempts")
     if data is None:
         # Fallback: keep last known good data, just refresh generated_at
-        fallback_path = os.path.join(os.path.dirname(__file__), "data", "latest.json")
-        if os.path.exists(fallback_path):
+        if prev:
             print("[FALLBACK] Using last known good latest.json — refreshing timestamp only")
-            with open(fallback_path, encoding="utf-8") as f:
-                data = json.load(f)
+            data = prev
             data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
             data["_fallback"] = True
         else:

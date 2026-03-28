@@ -19,3 +19,29 @@
 2. `git push`
 3. GitHub Actions → run `chadshani-deploy-only.yml`
 4. קבל התראה ב-ClaudeCode כשסיים
+
+---
+
+## חוקי הפעלה קריטיים
+
+### כלל: התראה רק אחרי אימות מלא
+התראת "האתר מוכן" נשלחת ב-chadshani-2.yml **בלבד לאחר שעברו כל הבדיקות הבאות:**
+1. generate_json.py הסתיים ללא שגיאה
+2. אימות נתונים עבר (שלב `validate`) — כולל:
+   - `generated_at` קיים
+   - `section_1_situation.headline` לא ריק
+   - `markets.sp500`, `markets.nasdaq`, `markets.vix` קיימים
+   - כל מחירי המניות ב-section_5_semis / section_6_software לא placeholder
+   - כל מחירי הקריפטו ב-section_4_crypto לא placeholder
+   - section_2_news לפחות 4 פריטים
+   - section_3_sectors ללא "X.X" ב-flow_amount
+   - gauges.vix.value ערך מספרי
+3. GitHub Pages deployment הושלם
+
+אם האימות נכשל → נשלחת התראת **כישלון** (לא הצלחה), האתר עולה אך המשתמש מקבל אזהרה.
+
+### כלל: ניקוי deployments כושלים
+כל deployment ל-Vercel / Netlify / כל שירות חיצוני שנוצר כניסיון ונכשל — **חייב להימחק מיד** בסוף הניסיון.
+אין להשאיר stale deployments פעילים. בדוק עם `npx vercel list` / ממשק השירות הרלוונטי.
+
+היסטוריה: Vercel project `chadshani-2` נמחק ב-2026-03-28 — היה deployment שנותר פעיל מניסיון שנכשל.

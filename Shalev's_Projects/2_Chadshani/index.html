@@ -313,7 +313,7 @@
     </div>
 </div>
 
-<main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-20">
+<main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-6">
 
     <!-- Clock Bar -->
     <div id="clock-bar" class="grid grid-cols-3 text-center text-xs font-mono py-1" style="background:transparent;border:none;box-shadow:none">
@@ -966,38 +966,48 @@ function renderWatchlist(wl) {
     }
     const rising  = wl.rising  || [];
     const falling = wl.falling || [];
-    const col = (items, isRising) => {
-        const hdrColor = isRising ? 'text-emerald-600' : 'text-rose-500';
-        const dotColor = isRising ? 'bg-emerald-500' : 'bg-rose-500';
-        const hdrText  = isRising ? '▲ עולות · BUY'  : '▼ יורדות · SELL';
+    const maxLen  = Math.max(rising.length, falling.length);
+
+    // Render as paired rows: each row has [rising[i], falling[i]] side by side
+    // CSS grid auto-stretches cells in the same row to equal height
+    const card = (w, isRising) => {
+        if (!w) return '<div></div>';
         const cardBg   = isRising ? 'bg-emerald-50 border-emerald-100 hover:border-emerald-300' : 'bg-rose-50 border-rose-100 hover:border-rose-300';
         const tkrColor = isRising ? 'text-emerald-700' : 'text-rose-700';
         const sigBg    = isRising ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+        const sig      = isRising ? '↑ BUY' : '↓ SELL';
         return `
-        <div>
-            <div class="flex items-center gap-1.5 mb-3">
-                <div class="w-2 h-2 rounded-full ${dotColor}"></div>
-                <span class="text-xs font-mono font-bold ${hdrColor} uppercase tracking-wider">${hdrText}</span>
+        <div class="border ${cardBg} rounded-xl p-3 transition-colors h-full">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-bold ${tkrColor} text-base font-mono">${w.ticker}</span>
+                <span class="text-xs font-bold ${sigBg} px-2 py-0.5 rounded-full">${sig}</span>
             </div>
-            <div class="space-y-2">
-                ${items.map(w => `
-                <div class="border ${cardBg} rounded-xl p-3 transition-colors">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold ${tkrColor} text-base font-mono">${w.ticker}</span>
-                        <span class="text-xs font-bold ${sigBg} px-2 py-0.5 rounded-full">${isRising ? '↑ BUY' : '↓ SELL'}</span>
-                    </div>
-                    <div class="text-xs text-slate-600 leading-snug">${w.note || ''}</div>
-                    ${w.reason ? `<div class="text-xs ${isRising ? 'text-emerald-700' : 'text-rose-700'} mt-1.5 font-medium border-t ${isRising ? 'border-emerald-100' : 'border-rose-100'} pt-1">${w.reason}</div>` : ''}
-                </div>`).join('')}
-            </div>
+            <div class="text-xs text-slate-600 leading-snug">${w.note || ''}</div>
+            ${w.reason ? `<div class="text-xs ${tkrColor} mt-1.5 font-medium border-t ${isRising ? 'border-emerald-100' : 'border-rose-100'} pt-1">${w.reason}</div>` : ''}
         </div>`;
     };
-    el.innerHTML = col(rising, true) + col(falling, false);
+
+    // Header row
+    let html = `
+        <div class="flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span class="text-xs font-mono font-bold text-emerald-600 uppercase tracking-wider">▲ עולות · BUY</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+            <span class="text-xs font-mono font-bold text-rose-500 uppercase tracking-wider">▼ יורדות · SELL</span>
+        </div>`;
+
+    // Paired item rows
+    for (let i = 0; i < maxLen; i++) {
+        html += card(rising[i], true) + card(falling[i], false);
+    }
+    el.innerHTML = html;
 }
 
 // ===== CLOCKS =====
 function getNextUpdateIL() {
-    const scheduleHours = [7, 19];
+    const scheduleHours = [8, 20];
     const now = new Date();
     const ilOffset = 3 * 3600; // UTC+3 (summer)
     const nowUtcSec = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
@@ -1012,7 +1022,7 @@ function getNextUpdateIL() {
             return `${hh}:${mm}:${ss}`;
         }
     }
-    const diff = (24 * 3600 - nowIlSec) + 7 * 3600; // next day 07:00
+    const diff = (24 * 3600 - nowIlSec) + 8 * 3600; // next day 08:00
     const hh = Math.floor(diff / 3600).toString().padStart(2, '0');
     const mm = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
     const ss = (diff % 60).toString().padStart(2, '0');
