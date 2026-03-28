@@ -1,0 +1,723 @@
+{
+  "generated_at": "2026-03-28T10:46:38.430141+00:00",
+  "version": "1.1",
+  "claude_global": {
+    "agents": [
+      {
+        "name": "architect",
+        "purpose": "Software architecture specialist for system design, scalability, and technical decision-making. Use PROACTIVELY when pla"
+      },
+      {
+        "name": "build-error-resolver",
+        "purpose": "Build and TypeScript error resolution specialist. Use PROACTIVELY when build fails or type errors occur. Fixes build/typ"
+      },
+      {
+        "name": "chief-of-staff",
+        "purpose": "Personal communication chief of staff that triages email, Slack, LINE, and Messenger. Classifies messages into 4 tiers ("
+      },
+      {
+        "name": "code-reviewer",
+        "purpose": "Expert code review specialist. Proactively reviews code for quality, security, and maintainability. Use immediately afte"
+      },
+      {
+        "name": "cpp-build-resolver",
+        "purpose": "C++ build, CMake, and compilation error resolution specialist. Fixes build errors, linker issues, and template errors wi"
+      },
+      {
+        "name": "cpp-reviewer",
+        "purpose": "Expert C++ code reviewer specializing in memory safety, modern C++ idioms, concurrency, and performance. Use for all C++"
+      },
+      {
+        "name": "database-reviewer",
+        "purpose": "PostgreSQL database specialist for query optimization, schema design, security, and performance. Use PROACTIVELY when wr"
+      },
+      {
+        "name": "doc-updater",
+        "purpose": "Documentation and codemap specialist. Use PROACTIVELY for updating codemaps and documentation. Runs /update-codemaps and"
+      },
+      {
+        "name": "docs-lookup",
+        "purpose": "When the user asks how to use a library, framework, or API or needs up-to-date code examples, use Context7 MCP to fetch "
+      },
+      {
+        "name": "e2e-runner",
+        "purpose": "End-to-end testing specialist using Vercel Agent Browser (preferred) with Playwright fallback. Use PROACTIVELY for gener"
+      },
+      {
+        "name": "flutter-reviewer",
+        "purpose": "Flutter and Dart code reviewer. Reviews Flutter code for widget best practices, state management patterns, Dart idioms, "
+      },
+      {
+        "name": "go-build-resolver",
+        "purpose": "Go build, vet, and compilation error resolution specialist. Fixes build errors, go vet issues, and linter warnings with "
+      },
+      {
+        "name": "go-reviewer",
+        "purpose": "Expert Go code reviewer specializing in idiomatic Go, concurrency patterns, error handling, and performance. Use for all"
+      },
+      {
+        "name": "harness-optimizer",
+        "purpose": "Analyze and improve the local agent harness configuration for reliability, cost, and throughput."
+      },
+      {
+        "name": "java-build-resolver",
+        "purpose": "Java/Maven/Gradle build, compilation, and dependency error resolution specialist. Fixes build errors, Java compiler erro"
+      },
+      {
+        "name": "java-reviewer",
+        "purpose": "Expert Java and Spring Boot code reviewer specializing in layered architecture, JPA patterns, security, and concurrency."
+      },
+      {
+        "name": "kotlin-build-resolver",
+        "purpose": "Kotlin/Gradle build, compilation, and dependency error resolution specialist. Fixes build errors, Kotlin compiler errors"
+      },
+      {
+        "name": "kotlin-reviewer",
+        "purpose": "Kotlin and Android/KMP code reviewer. Reviews Kotlin code for idiomatic patterns, coroutine safety, Compose best practic"
+      },
+      {
+        "name": "loop-operator",
+        "purpose": "Operate autonomous agent loops, monitor progress, and intervene safely when loops stall."
+      },
+      {
+        "name": "notice-manager",
+        "purpose": "Manages time-sensitive important notices displayed on the Chadshani website. Adds, removes, or updates notices with expi"
+      },
+      {
+        "name": "order-guard",
+        "purpose": "Agent: order-guard"
+      },
+      {
+        "name": "planner",
+        "purpose": "Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementati"
+      },
+      {
+        "name": "project-status",
+        "purpose": "Project status reporter for Shalev's projects. Scans all projects in Shalev's_Projects/, checks git history, reads index"
+      },
+      {
+        "name": "python-reviewer",
+        "purpose": "Expert Python code reviewer specializing in PEP 8 compliance, Pythonic idioms, type hints, security, and performance. Us"
+      },
+      {
+        "name": "pytorch-build-resolver",
+        "purpose": "PyTorch runtime, CUDA, and training error resolution specialist. Fixes tensor shape mismatches, device errors, gradient "
+      },
+      {
+        "name": "README",
+        "purpose": "Agents"
+      },
+      {
+        "name": "refactor-cleaner",
+        "purpose": "Dead code cleanup and consolidation specialist. Use PROACTIVELY for removing unused code, duplicates, and refactoring. R"
+      },
+      {
+        "name": "rust-build-resolver",
+        "purpose": "Rust build, compilation, and dependency error resolution specialist. Fixes cargo build errors, borrow checker issues, an"
+      },
+      {
+        "name": "rust-reviewer",
+        "purpose": "Expert Rust code reviewer specializing in ownership, lifetimes, error handling, unsafe usage, and idiomatic patterns. Us"
+      },
+      {
+        "name": "security-reviewer",
+        "purpose": "Security vulnerability detection and remediation specialist. Use PROACTIVELY after writing code that handles user input,"
+      },
+      {
+        "name": "tdd-guide",
+        "purpose": "Test-Driven Development specialist enforcing write-tests-first methodology. Use PROACTIVELY when writing new features, f"
+      },
+      {
+        "name": "typescript-reviewer",
+        "purpose": "Expert TypeScript/JavaScript code reviewer specializing in type safety, async correctness, Node/web security, and idioma"
+      }
+    ],
+    "skills": [
+      {
+        "name": "README",
+        "purpose": "Skills",
+        "status": "active"
+      }
+    ],
+    "hooks": [
+      {
+        "type": "PreToolUse",
+        "trigger": "Bash",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/pre-tool/security-check.sh\" \"$CLAUDE_TOOL_IN"
+      },
+      {
+        "type": "PostToolUse",
+        "trigger": "Write|Edit|MultiEdit",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/memory-heartbeat.sh\" \"$CLAUDE_TOOL"
+      },
+      {
+        "type": "PostToolUse",
+        "trigger": "Write|Edit|MultiEdit",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/project-guard.sh\" \"$CLAUDE_TOOL_IN"
+      },
+      {
+        "type": "PreCompact",
+        "trigger": "",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/pre-compact/context-save.sh\""
+      },
+      {
+        "type": "Notification",
+        "trigger": "",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/notification/ntfy-notify.sh\""
+      },
+      {
+        "type": "Stop",
+        "trigger": "",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/stop/ntfy-stop.sh\""
+      }
+    ],
+    "modes": [
+      {
+        "name": "architect_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "audit_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "build_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "consolidation_mode",
+        "version": "",
+        "trigger": "\"dream\" / \"גיבוש זיכרון\" / \"consolidate\""
+      },
+      {
+        "name": "document_ingestion_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "evolution_pathways_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "external_skill_intake_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "integration_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "knowledge_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "monthly_calibration_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "project_closure_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "project_status_review_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "security_scan_mode",
+        "version": "",
+        "trigger": ""
+      },
+      {
+        "name": "shadow_agent_mode",
+        "version": "",
+        "trigger": ""
+      }
+    ],
+    "rules": {
+      "languages": [
+        "cpp",
+        "csharp",
+        "golang",
+        "java",
+        "kotlin",
+        "perl",
+        "php",
+        "python",
+        "rust",
+        "swift",
+        "typescript"
+      ],
+      "common_count": 9,
+      "total": 65
+    },
+    "mcp_servers": [
+      {
+        "name": "[Integration Name]",
+        "tier": "",
+        "purpose": "**",
+        "status": "active"
+      },
+      {
+        "name": "Google Stitch MCP",
+        "tier": "",
+        "purpose": "** AI UI design tool (Google Labs, Gemini 2.5 Pro). Generates UI from natural language, exports HTML",
+        "status": "active"
+      },
+      {
+        "name": "mcp2cli",
+        "tier": "",
+        "purpose": "** Routes MCP calls through CLI to reduce token consumption. Aligns with token efficiency goals.",
+        "status": "active"
+      },
+      {
+        "name": "OrelliusAI / claudeusage-mcp",
+        "tier": "",
+        "purpose": "** Real-time Claude Pro/Max usage tracking inside Claude Code. Zero config, reads existing OAuth tok",
+        "status": "active"
+      },
+      {
+        "name": "lobehub / market-cli",
+        "tier": "",
+        "purpose": "** CLI for browsing and discovering MCP market tools.",
+        "status": "active"
+      },
+      {
+        "name": "buildwithclaude / mcp-builder",
+        "tier": "",
+        "purpose": "** Build custom MCP servers directly from Claude Code.",
+        "status": "active"
+      },
+      {
+        "name": "web-application-testing-toolkit (MCP Market)",
+        "tier": "",
+        "purpose": "** Web application testing toolkit. Evaluate against existing Playwright MCP for overlap.",
+        "status": "active"
+      },
+      {
+        "name": "tradingview-mcp",
+        "tier": "TIER 2",
+        "purpose": "** TradingView data access via MCP. Relevant for finance/trading projects.",
+        "status": "active"
+      },
+      {
+        "name": "OrelliusAI / Thunder Dome",
+        "tier": "TIER 1",
+        "purpose": "** MCP gateway with auth, rate limiting, logging. Sits between Claude Code and all MCP servers.",
+        "status": "active"
+      },
+      {
+        "name": "OrelliusAI / Thunder Thinking",
+        "tier": "",
+        "purpose": "** Structured sequential thinking MCP server.",
+        "status": "active"
+      },
+      {
+        "name": "OrelliusAI / Thunder Eye",
+        "tier": "",
+        "purpose": "** Desktop app vision (screenshots, windows, screen).",
+        "status": "active"
+      },
+      {
+        "name": "fastmcp / ui-ux-pro-max",
+        "tier": "",
+        "purpose": "** UI/UX skill from MCP market.",
+        "status": "active"
+      },
+      {
+        "name": "Ruflo (claude-flow)",
+        "tier": "",
+        "purpose": "** Multi-agent swarm orchestration (259 MCP tools, 64 agents, SQLite memory).",
+        "status": "active"
+      },
+      {
+        "name": "Playwright CLI",
+        "tier": "",
+        "purpose": "** Browser automation and end-to-end testing.",
+        "status": "active"
+      },
+      {
+        "name": "mcpmarket / figma-to-code",
+        "tier": "",
+        "purpose": "** Figma to code conversion.",
+        "status": "active"
+      }
+    ],
+    "commands": [
+      {
+        "name": "aside",
+        "category": "general"
+      },
+      {
+        "name": "build-fix",
+        "category": "general"
+      },
+      {
+        "name": "checkpoint",
+        "category": "general"
+      },
+      {
+        "name": "claw",
+        "category": "general"
+      },
+      {
+        "name": "code-review",
+        "category": "general"
+      },
+      {
+        "name": "context-budget",
+        "category": "general"
+      },
+      {
+        "name": "cpp-build",
+        "category": "general"
+      },
+      {
+        "name": "cpp-review",
+        "category": "general"
+      },
+      {
+        "name": "cpp-test",
+        "category": "general"
+      },
+      {
+        "name": "devfleet",
+        "category": "general"
+      },
+      {
+        "name": "docs",
+        "category": "general"
+      },
+      {
+        "name": "e2e",
+        "category": "general"
+      },
+      {
+        "name": "eval",
+        "category": "general"
+      },
+      {
+        "name": "evolve",
+        "category": "general"
+      },
+      {
+        "name": "go-build",
+        "category": "general"
+      },
+      {
+        "name": "go-review",
+        "category": "general"
+      },
+      {
+        "name": "go-test",
+        "category": "general"
+      },
+      {
+        "name": "gradle-build",
+        "category": "general"
+      },
+      {
+        "name": "harness-audit",
+        "category": "general"
+      },
+      {
+        "name": "instinct-export",
+        "category": "general"
+      },
+      {
+        "name": "instinct-import",
+        "category": "general"
+      },
+      {
+        "name": "instinct-status",
+        "category": "general"
+      },
+      {
+        "name": "kotlin-build",
+        "category": "general"
+      },
+      {
+        "name": "kotlin-review",
+        "category": "general"
+      },
+      {
+        "name": "kotlin-test",
+        "category": "general"
+      },
+      {
+        "name": "learn-eval",
+        "category": "general"
+      },
+      {
+        "name": "learn",
+        "category": "general"
+      },
+      {
+        "name": "loop-start",
+        "category": "general"
+      },
+      {
+        "name": "loop-status",
+        "category": "general"
+      },
+      {
+        "name": "model-route",
+        "category": "general"
+      },
+      {
+        "name": "multi-backend",
+        "category": "general"
+      },
+      {
+        "name": "multi-execute",
+        "category": "general"
+      },
+      {
+        "name": "multi-frontend",
+        "category": "general"
+      },
+      {
+        "name": "multi-plan",
+        "category": "general"
+      },
+      {
+        "name": "multi-workflow",
+        "category": "general"
+      },
+      {
+        "name": "orchestrate",
+        "category": "general"
+      },
+      {
+        "name": "plan",
+        "category": "general"
+      },
+      {
+        "name": "pm2",
+        "category": "general"
+      },
+      {
+        "name": "projects",
+        "category": "general"
+      },
+      {
+        "name": "promote",
+        "category": "general"
+      },
+      {
+        "name": "prompt-optimize",
+        "category": "general"
+      },
+      {
+        "name": "prune",
+        "category": "general"
+      },
+      {
+        "name": "python-review",
+        "category": "general"
+      },
+      {
+        "name": "quality-gate",
+        "category": "general"
+      },
+      {
+        "name": "refactor-clean",
+        "category": "general"
+      },
+      {
+        "name": "resume-session",
+        "category": "general"
+      },
+      {
+        "name": "rules-distill",
+        "category": "general"
+      },
+      {
+        "name": "rust-build",
+        "category": "general"
+      },
+      {
+        "name": "rust-review",
+        "category": "general"
+      },
+      {
+        "name": "rust-test",
+        "category": "general"
+      },
+      {
+        "name": "save-session",
+        "category": "general"
+      },
+      {
+        "name": "sessions",
+        "category": "general"
+      },
+      {
+        "name": "setup-pm",
+        "category": "general"
+      },
+      {
+        "name": "skill-create",
+        "category": "general"
+      },
+      {
+        "name": "skill-health",
+        "category": "general"
+      },
+      {
+        "name": "tdd",
+        "category": "general"
+      },
+      {
+        "name": "test-coverage",
+        "category": "general"
+      },
+      {
+        "name": "update-codemaps",
+        "category": "general"
+      },
+      {
+        "name": "update-docs",
+        "category": "general"
+      },
+      {
+        "name": "verify",
+        "category": "general"
+      }
+    ],
+    "memory": [
+      {
+        "file": "feedback_cleanup_after_changes.md",
+        "name": "cleanup_after_changes",
+        "type": "feedback"
+      },
+      {
+        "file": "feedback_gemini_cost_display.md",
+        "name": "gemini_cost_display",
+        "type": "feedback"
+      },
+      {
+        "file": "feedback_project_naming.md",
+        "name": "project_naming_convention",
+        "type": "feedback"
+      },
+      {
+        "file": "project_anydesk_remote.md",
+        "name": "AnyDesk Remote Access Setup",
+        "type": "project"
+      },
+      {
+        "file": "project_chadshani.md",
+        "name": "project_chadshani",
+        "type": "project"
+      },
+      {
+        "file": "project_ntfy_hooks.md",
+        "name": "ntfy Notification Hooks",
+        "type": "project"
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": 0,
+      "name": "אבולוציה סכמטית",
+      "folder": "0_EvolutionSchematic",
+      "description": "מפת מערכת שבועית — Claude Code ויזואלי",
+      "tech_stack": [
+        "Python"
+      ],
+      "status": "active",
+      "files_count": 8,
+      "last_modified": "2026-03-28T10:44:25.866406+00:00"
+    },
+    {
+      "id": 1,
+      "name": "גלגל הרגשות",
+      "folder": "1_EmotionWheel",
+      "description": "ויזואליזציה אינטראקטיבית של גלגל הרגשות",
+      "tech_stack": [
+        "HTML/JS"
+      ],
+      "status": "active",
+      "files_count": 6,
+      "last_modified": "2026-03-27T08:57:08.846267+00:00"
+    },
+    {
+      "id": 2,
+      "name": "חדשני",
+      "folder": "2_Chadshani",
+      "description": "אתר ניתוח שוק הון ישראלי",
+      "tech_stack": [
+        "Python"
+      ],
+      "status": "complete",
+      "files_count": 23,
+      "last_modified": "2026-03-28T09:27:16.413629+00:00"
+    },
+    {
+      "id": 3,
+      "name": "התראות",
+      "folder": "3_Notifications",
+      "description": "מערכת ניהול התראות ntfy.sh",
+      "tech_stack": [],
+      "status": "active",
+      "files_count": 1,
+      "last_modified": "2026-03-27T08:49:29.810604+00:00"
+    },
+    {
+      "id": 4,
+      "name": "שליטה מרחוק",
+      "folder": "4_RemoteAccess",
+      "description": "גישה ושליטה מרחוק",
+      "tech_stack": [],
+      "status": "active",
+      "files_count": 1,
+      "last_modified": "2026-03-27T08:49:42.289517+00:00"
+    },
+    {
+      "id": 5,
+      "name": "סטיקר בוט",
+      "folder": "5_StickerBot",
+      "description": "בוט WhatsApp ליצירת מדבקות",
+      "tech_stack": [
+        "Node.js",
+        "Python"
+      ],
+      "status": "active",
+      "files_count": 367,
+      "last_modified": "2026-03-28T09:27:15.150510+00:00"
+    },
+    {
+      "id": 6,
+      "name": "גיגיז",
+      "folder": "6_Gigiz",
+      "description": "פלטפורמת גיג עבודה",
+      "tech_stack": [
+        "Python"
+      ],
+      "status": "active",
+      "files_count": 60,
+      "last_modified": "2026-03-28T08:23:25.531331+00:00"
+    },
+    {
+      "id": 7,
+      "name": "WhaleWatcher",
+      "folder": "7_WhaleWatcher",
+      "description": "מעקב עסקאות לווייתנים בשוק ההון",
+      "tech_stack": [],
+      "status": "active",
+      "files_count": 0,
+      "last_modified": "2026-03-27T12:07:28.765540+00:00"
+    }
+  ]
+}

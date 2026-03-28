@@ -1,0 +1,51 @@
+name: Schematic Evolution — Notify & Deploy
+
+on:
+  push:
+    paths:
+      - "Shalev's_Projects/0_EvolutionSchematic/data/snapshot.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send update to iPhone via ntfy.sh
+        run: |
+          curl -s \
+            -H "Title: אבולוציה סכמטית עודכנה" \
+            -H "Priority: 3" \
+            -H "Tags: brain,sparkles" \
+            -d "מפת המערכת השבועית עודכנה — לחצו לצפות" \
+            https://ntfy.sh/CLA0511
+
+  deploy:
+    needs: notify
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload schematic site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "Shalev's_Projects/0_EvolutionSchematic"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

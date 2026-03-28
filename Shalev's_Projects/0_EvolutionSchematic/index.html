@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אבולוציה סכמטית — מפת מערכת Claude</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <header id="header">
+    <button class="btn-icon" id="btnHamburger" onclick="toggleSidebar()" title="תפריט">☰</button>
+    <span class="logo">🧠</span>
+    <span class="header-title">אבולוציה סכמטית</span>
+    <span id="viewTitle">מפת המערכת הגלובלית</span>
+    <span class="last-updated" id="headerTimestamp">טוען…</span>
+    <div class="header-controls">
+      <button class="btn-icon" onclick="expandAll()" title="פתח הכל">⊞ פתח</button>
+      <button class="btn-icon" onclick="collapseAll()" title="סגור הכל">⊟ סגור</button>
+      <button class="btn-icon" onclick="resetZoom()" title="אפס תצוגה">⊙ אפס</button>
+      <button class="btn-icon" id="btnRefresh" onclick="refreshData()" title="עדכן נתונים">↻ עדכן</button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <div id="main">
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-header">ניווט</div>
+
+      <div id="globalViewItem" class="active" data-view="global" onclick="setView('global')">
+        <span class="sidebar-badge" style="background:#38BDF822;color:#38BDF8;border:1px solid #38BDF840">🗺</span>
+        <span class="sidebar-label">מפת המערכת הגלובלית</span>
+      </div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-header">פרויקטים</div>
+      <div id="projectList"></div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-bottom last-updated" id="sidebarTimestamp">טוען…</div>
+    </aside>
+
+    <!-- Canvas -->
+    <div id="canvas">
+      <!-- Loading -->
+      <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">טוען מפת מערכת…</div>
+      </div>
+      <!-- Error -->
+      <div id="errorMsg"></div>
+      <!-- Canvas controls -->
+      <div id="canvasControls">
+        <button class="canvas-btn" onclick="mindmap?.zoom.scaleBy(mindmap.svg.transition().duration(200), 1.3)" title="הגדל">+</button>
+        <button class="canvas-btn" onclick="mindmap?.zoom.scaleBy(mindmap.svg.transition().duration(200), 0.77)" title="הקטן">−</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- Tooltip -->
+<div id="tooltip"></div>
+
+<!-- Legend -->
+<div id="legend"></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="js/colors.js"></script>
+<script src="js/mindmap.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

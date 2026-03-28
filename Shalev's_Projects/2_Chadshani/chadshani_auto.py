@@ -7,6 +7,7 @@ Called by Windows Task Scheduler (chadshani-0600, chadshani-1200, chadshani-2030
 import subprocess
 import sys
 import os
+import json
 import urllib.request
 from datetime import datetime
 
@@ -14,16 +15,24 @@ NTFY_TOPIC = "CHA0511"
 
 
 def notify(title, message, tags="white_check_mark"):
+    """שליחת התראה דרך ntfy.sh JSON API — תמיכה מלאה בעברית."""
     try:
+        payload = json.dumps({
+            "topic": NTFY_TOPIC,
+            "title": title,
+            "message": message,
+            "tags": [tags],
+            "priority": 3
+        }).encode("utf-8")
         req = urllib.request.Request(
-            f"https://ntfy.sh/{NTFY_TOPIC}",
-            data=message.encode("utf-8"),
-            headers={"Title": title, "Tags": tags, "Priority": "default"},
+            "https://ntfy.sh",
+            data=payload,
+            headers={"Content-Type": "application/json"},
             method="POST"
         )
         urllib.request.urlopen(req, timeout=10)
     except Exception as e:
-        print(f"[NTFY] Failed to send notification: {e}")
+        print(f"[NTFY] שגיאה בשליחת התראה: {e}")
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(PROJECT_DIR, "..", ".."))
