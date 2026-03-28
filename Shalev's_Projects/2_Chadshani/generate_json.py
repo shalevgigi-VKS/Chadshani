@@ -189,7 +189,10 @@ def fetch_fear_greed():
     try:
         req = urllib.request.Request(
             "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
-            headers={"User-Agent": "Mozilla/5.0"}
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Referer": "https://edition.cnn.com/markets/fear-and-greed",
+            }
         )
         with urllib.request.urlopen(req, timeout=8) as r:
             d = json.loads(r.read())
@@ -214,8 +217,11 @@ def fetch_yfinance_news_batch(tickers, max_per=2):
             news = yf.Ticker(sym).news or []
             count = 0
             for item in news:
-                title = (item.get("title") or "").strip()
-                summary = (item.get("summary") or item.get("description") or "").strip()
+                # yfinance ≥0.2.54 wraps content under item["content"]
+                content = item.get("content") or item
+                title = (content.get("title") or item.get("title") or "").strip()
+                summary = (content.get("summary") or content.get("description")
+                           or item.get("summary") or item.get("description") or "").strip()
                 if title and title not in seen and count < max_per:
                     seen.add(title)
                     line = f"[{sym}] {title}"
