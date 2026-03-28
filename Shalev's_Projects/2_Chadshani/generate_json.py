@@ -190,7 +190,10 @@ def fetch_fear_greed():
         req = urllib.request.Request(
             "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
             headers={
-                "User-Agent": "Mozilla/5.0",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Origin": "https://edition.cnn.com",
                 "Referer": "https://edition.cnn.com/markets/fear-and-greed",
             }
         )
