@@ -571,13 +571,15 @@
     <!-- About -->
     <section class="card about-section p-8 md:p-10">
         <div class="flex flex-row items-start gap-8">
-            <div class="flex-shrink-0">
+            <!-- Right (RTL first child): name + photo + title -->
+            <div class="flex flex-col items-center text-center flex-shrink-0">
+                <h2 class="text-xl font-bold text-brand-text mb-3">שלו גיגי</h2>
                 <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-40 md:w-52 rounded-2xl object-cover shadow-md border-2 border-white">
+                <p class="text-xs font-mono text-brand-accent mt-3 uppercase tracking-wider">״אנליסט״ פיננסי-טכנולוגי</p>
             </div>
-            <div class="text-right">
-                <div class="section-label label-blue mb-2">אודותי</div>
-                <h2 class="text-2xl font-bold text-brand-text mb-1">שלו גיגי</h2>
-                <p class="text-sm font-mono text-brand-accent mb-4 uppercase tracking-wider">״אנליסט״ פיננסי-טכנולוגי</p>
+            <!-- Left (RTL second child): bio -->
+            <div class="text-right flex-1">
+                <div class="section-label label-blue mb-3">אודותי</div>
                 <p class="text-sm md:text-base text-slate-600 leading-relaxed max-w-2xl">
                     בעולם שבו המידע זורם ללא הפסקה, האתגר האמיתי הוא למצוא את הסיגנל המדויק בתוך הרעש. מעבר לכותרות המרעישות ולתנודות היומיומיות, אני מאמין שהבנת המציאות הגלובלית והכלכלית דורשת פרספקטיבה עמוקה יותר.
                 </p>
