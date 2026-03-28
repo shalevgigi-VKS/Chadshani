@@ -777,8 +777,16 @@
       "out_tokens": 7611,
       "cost_usd": 0.0029,
       "cost_ils": 0.0106
+    },
+    {
+      "ts": "2026-03-28T17:58:30Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8212,
+      "out_tokens": 7350,
+      "cost_usd": 0.00282,
+      "cost_ils": 0.0103
     }
   ],
-  "total_usd": 4.07962,
-  "total_ils": 14.8897
+  "total_usd": 4.08244,
+  "total_ils": 14.9
 }
