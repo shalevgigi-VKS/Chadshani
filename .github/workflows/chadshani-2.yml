@@ -6,8 +6,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '54 3 * * *'   # 06:54 Israel (UTC+3) — 6 min before 07:00
-    - cron: '54 9 * * *'   # 12:54 Israel (UTC+3) — 6 min before 13:00
-    - cron: '54 16 * * *'  # 19:54 Israel (UTC+3) — 6 min before 20:00
+    - cron: '54 15 * * *'  # 18:54 Israel (UTC+3) — 6 min before 19:00
 
 permissions:
   contents: write

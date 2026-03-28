@@ -464,21 +464,19 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="s2-news"></div>
     </section>
 
-    <!-- Section 3: Sectors + Capital Flow -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mobile-stack">
-        <!-- Sectors -->
-        <div class="card lg:col-span-1 p-6">
-            <div class="section-label label-blue">מפת סקטורים</div>
-            <div class="space-y-2 text-sm" id="s3-sectors"></div>
-        </div>
-        <!-- Capital Flow -->
-        <div class="card lg:col-span-2 p-7">
+    <!-- Section 3: Sectors + Capital Flow — Merged, sorted by capital flow -->
+    <section>
+        <div class="card p-7">
             <div class="flex justify-between items-center mb-6">
-                <div class="section-label label-emerald mb-0">זרימת הון — 30 יום</div>
-                <span class="text-xs font-mono text-brand-muted uppercase tracking-widest">Global Sector Exposure</span>
+                <div class="section-label label-emerald mb-0">זרימת הון ומפת סקטורים</div>
+                <span class="text-xs font-mono text-brand-muted uppercase tracking-widest">Global Sector Exposure · 30D</span>
             </div>
-            <div class="space-y-3" id="s3-capital-flow">
-                <!-- populated by JS -->
+            <!-- Capital flow bars: sorted inflow first → outflow last -->
+            <div class="space-y-3 mb-7" id="s3-capital-flow"></div>
+            <!-- ETF grid below -->
+            <div class="border-t border-slate-100 pt-5">
+                <div class="text-xs font-mono text-brand-muted uppercase tracking-widest mb-3">ETF Performance</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 text-sm" id="s3-sectors"></div>
             </div>
         </div>
     </section>
@@ -563,8 +561,8 @@
         </div>
         <div class="card p-7">
             <div class="section-label label-blue">Watchlist — טיקרים למעקב</div>
-            <div class="grid grid-cols-2 gap-3" id="s8-watchlist">
-                <!-- populated by JS -->
+            <div class="grid grid-cols-2 gap-4" id="s8-watchlist">
+                <!-- populated by JS: rising (left) | falling (right) -->
             </div>
             <div class="mt-5 pt-5 border-t border-slate-100 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-xs font-mono text-brand-muted">
@@ -578,14 +576,14 @@
 
     <!-- About -->
     <section class="card about-section p-8 md:p-10">
-        <div class="flex flex-col md:flex-row items-center gap-8">
+        <div class="flex flex-row items-center gap-8">
             <div class="flex-shrink-0">
-                <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-32 md:w-44 rounded-2xl object-cover shadow-md border-2 border-white">
+                <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-40 md:w-52 rounded-2xl object-cover shadow-md border-2 border-white">
             </div>
-            <div class="text-center md:text-right">
+            <div class="text-right">
                 <div class="section-label label-blue mb-2">אודותי</div>
                 <h2 class="text-2xl font-bold text-brand-text mb-1">שלו גיגי</h2>
-                <p class="text-sm font-mono text-brand-accent mb-4 uppercase tracking-wider">אנליסט פיננסי-טכנולוגי</p>
+                <p class="text-sm font-mono text-brand-accent mb-4 uppercase tracking-wider">״אנליסט״ פיננסי-טכנולוגי</p>
                 <p class="text-sm md:text-base text-slate-600 leading-relaxed max-w-2xl">
                     בעולם שבו המידע זורם ללא הפסקה, האתגר האמיתי הוא למצוא את הסיגנל המדויק בתוך הרעש. מעבר לכותרות המרעישות ולתנודות היומיומיות, אני מאמין שהבנת המציאות הגלובלית והכלכלית דורשת פרספקטיבה עמוקה יותר.
                 </p>
@@ -610,7 +608,7 @@
         <div class="text-slate-400">עדכון אחרון: <span id="footer-last-update">—</span> | © 2026 Shalev Gigi</div>
         <div class="flex items-center gap-1">
             <div class="pulse-dot" style="width:6px;height:6px;background:#10b981"></div>
-            <span>AUTO-UPDATE 07:00 · 13:00 · 20:00 IL</span>
+            <span>AUTO-UPDATE 07:00 · 19:00 IL</span>
         </div>
     </div>
 </footer>
@@ -681,10 +679,11 @@ function renderAll(d) {
             </div>`).join('');
     }
 
-    // Section 3: Sectors
+    // Section 3: Sectors — sorted by change% descending
     const secEl = document.getElementById('s3-sectors');
     if (secEl && d.section_3_sectors) {
-        secEl.innerHTML = d.section_3_sectors.map(s => {
+        const sortedSec = [...d.section_3_sectors].sort((a,b) => parseFloat(b.change) - parseFloat(a.change));
+        secEl.innerHTML = sortedSec.map(s => {
             const flowClass = s.flow === 'Inflow' ? 'flow-in' : s.flow === 'Outflow' ? 'flow-out' : 'flow-neutral';
             const chg = parseFloat(s.change) >= 0;
             return `
@@ -930,13 +929,18 @@ function renderNotices() {
         </div>`).join('');
 }
 
-// ===== CAPITAL FLOW =====
+// ===== CAPITAL FLOW — sorted: inflow desc → outflow desc =====
 function renderCapitalFlow(arr) {
     const el = document.getElementById('s3-capital-flow');
     if (!el || !arr || !arr.length) return;
-    const amounts = arr.map(r => Math.abs(parseFloat(r.amount.replace(/[^0-9.]/g,''))));
+    const sorted = [...arr].sort((a, b) => {
+        if (a.direction !== b.direction) return a.direction === 'in' ? -1 : 1;
+        return Math.abs(parseFloat(b.amount.replace(/[^0-9.]/g,''))) -
+               Math.abs(parseFloat(a.amount.replace(/[^0-9.]/g,'')));
+    });
+    const amounts = sorted.map(r => Math.abs(parseFloat(r.amount.replace(/[^0-9.]/g,''))));
     const maxAmt = Math.max(...amounts) || 1;
-    el.innerHTML = arr.map((r, i) => {
+    el.innerHTML = sorted.map((r, i) => {
         const isIn = r.direction === 'in';
         const pct = Math.min(95, (amounts[i] / maxAmt) * 95);
         const barColor = isIn ? 'bg-emerald-500' : 'bg-rose-400';
@@ -952,20 +956,53 @@ function renderCapitalFlow(arr) {
     }).join('');
 }
 
-// ===== WATCHLIST =====
-function renderWatchlist(arr) {
+// ===== WATCHLIST — supports {rising:[],falling:[]} or legacy array =====
+function renderWatchlist(wl) {
     const el = document.getElementById('s8-watchlist');
-    if (!el || !arr || !arr.length) return;
-    el.innerHTML = arr.map(w => `
-        <div class="ticker-chip">
-            <div class="font-bold text-brand-accent text-lg">${w.ticker}</div>
-            <div class="text-xs text-brand-muted">${w.note}</div>
-        </div>`).join('');
+    if (!el || !wl) return;
+    // Legacy: flat array
+    if (Array.isArray(wl)) {
+        el.innerHTML = wl.map(w => `
+            <div class="ticker-chip">
+                <div class="font-bold text-brand-accent text-lg">${w.ticker}</div>
+                <div class="text-xs text-brand-muted">${w.note}</div>
+            </div>`).join('');
+        return;
+    }
+    const rising  = wl.rising  || [];
+    const falling = wl.falling || [];
+    const col = (items, isRising) => {
+        const hdrColor = isRising ? 'text-emerald-600' : 'text-rose-500';
+        const dotColor = isRising ? 'bg-emerald-500' : 'bg-rose-500';
+        const hdrText  = isRising ? '▲ עולות · BUY'  : '▼ יורדות · SELL';
+        const cardBg   = isRising ? 'bg-emerald-50 border-emerald-100 hover:border-emerald-300' : 'bg-rose-50 border-rose-100 hover:border-rose-300';
+        const tkrColor = isRising ? 'text-emerald-700' : 'text-rose-700';
+        const sigBg    = isRising ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+        return `
+        <div>
+            <div class="flex items-center gap-1.5 mb-3">
+                <div class="w-2 h-2 rounded-full ${dotColor}"></div>
+                <span class="text-xs font-mono font-bold ${hdrColor} uppercase tracking-wider">${hdrText}</span>
+            </div>
+            <div class="space-y-2">
+                ${items.map(w => `
+                <div class="border ${cardBg} rounded-xl p-3 transition-colors">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold ${tkrColor} text-base font-mono">${w.ticker}</span>
+                        <span class="text-xs font-bold ${sigBg} px-2 py-0.5 rounded-full">${isRising ? '↑ BUY' : '↓ SELL'}</span>
+                    </div>
+                    <div class="text-xs text-slate-600 leading-snug">${w.note || ''}</div>
+                    ${w.reason ? `<div class="text-xs ${isRising ? 'text-emerald-700' : 'text-rose-700'} mt-1.5 font-medium border-t ${isRising ? 'border-emerald-100' : 'border-rose-100'} pt-1">${w.reason}</div>` : ''}
+                </div>`).join('')}
+            </div>
+        </div>`;
+    };
+    el.innerHTML = col(rising, true) + col(falling, false);
 }
 
 // ===== CLOCKS =====
 function getNextUpdateIL() {
-    const scheduleHours = [7, 13, 20];
+    const scheduleHours = [7, 19];
     const now = new Date();
     const ilOffset = 3 * 3600; // UTC+3 (summer)
     const nowUtcSec = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();

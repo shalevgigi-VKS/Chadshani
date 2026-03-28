@@ -3,8 +3,7 @@ name: Chadshani — Watchdog
 on:
   schedule:
     - cron: '20 4 * * *'   # 07:20 Israel — checks 07:00 run
-    - cron: '20 10 * * *'  # 13:20 Israel — checks 13:00 run
-    - cron: '20 17 * * *'  # 20:20 Israel — checks 20:00 run
+    - cron: '20 16 * * *'  # 19:20 Israel — checks 19:00 run
   workflow_dispatch:
 
 permissions:

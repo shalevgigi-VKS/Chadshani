@@ -141,18 +141,24 @@ JSON_PROMPT = """
     "opportunities": "הזדמנויות ספציפיות לשבוע הקרוב",
     "action": "משפט מסכם — מה הפעולה הנכונה עכשיו"
   },
-  "section_8_watchlist": [
-    {"ticker": "NVDA", "note": "CoWoS-L Supply Chain"},
-    {"ticker": "TSM", "note": "2nm Performance Hub"},
-    {"ticker": "VRT", "note": "Cooling & Grid Infra"},
-    {"ticker": "MSTR", "note": "Crypto High Beta"},
-    {"ticker": "SOL", "note": "Firedancer Catalyst"},
-    {"ticker": "MU", "note": "HBM4 Market Share"},
-    {"ticker": "PLTR", "note": "AI Government Contracts"},
-    {"ticker": "ARM", "note": "Custom Silicon Royalties"},
-    {"ticker": "LINK", "note": "DeFi Oracle Leader"},
-    {"ticker": "AVGO", "note": "AI Networking ASIC"}
-  ]
+  "section_8_watchlist": {
+    "rising": [
+      {"ticker": "NVDA", "note": "למה לעקוב — מה הקטליסט", "signal": "BUY", "reason": "סיבה טכנית/פונדמנטלית לכניסה"},
+      {"ticker": "TSM",  "note": "...", "signal": "BUY", "reason": "..."},
+      {"ticker": "VRT",  "note": "...", "signal": "BUY", "reason": "..."},
+      {"ticker": "PLTR", "note": "...", "signal": "BUY", "reason": "..."},
+      {"ticker": "MU",   "note": "...", "signal": "BUY", "reason": "..."},
+      {"ticker": "AVGO", "note": "...", "signal": "BUY", "reason": "..."}
+    ],
+    "falling": [
+      {"ticker": "META", "note": "למה לעקוב — מה הקטליסט", "signal": "SELL", "reason": "סיבה טכנית/פונדמנטלית לכניסה"},
+      {"ticker": "SNOW", "note": "...", "signal": "SELL", "reason": "..."},
+      {"ticker": "ADBE", "note": "...", "signal": "SELL", "reason": "..."},
+      {"ticker": "CRM",  "note": "...", "signal": "SELL", "reason": "..."},
+      {"ticker": "MSTR", "note": "...", "signal": "SELL", "reason": "..."},
+      {"ticker": "XLY",  "note": "...", "signal": "SELL", "reason": "..."}
+    ]
+  }
 }
 
 כללים קריטיים:
@@ -166,7 +172,7 @@ JSON_PROMPT = """
 - section_3_capital_flow amounts: הערך ב-$XB פורמט — אמוד לפי סנטימנט הסקטור.
 - section_3_sectors flow: "Inflow" / "Outflow" / "נייטרלי" בלבד.
 - generated_at: timestamp ISO עכשווי בדיוק עם Z בסיום.
-- section_8_watchlist: בחר 10 טיקרים רלוונטיים לשבוע הקרוב לפי החדשות שמצאת.
+- section_8_watchlist: בחר 6 טיקרים עם פוטנציאל עלייה (rising) ו-6 עם פוטנציאל ירידה (falling) לשבוע הקרוב. לכל טיקר: note (למה לעקוב, מה הקטליסט), signal (BUY/SELL), reason (סיבה טכנית/פונדמנטלית קצרה ומדויקת). בחר לפי החדשות שמצאת בלבד.
 - החזר JSON בלבד. אין טקסט לפני או אחרי.
 """
 
