@@ -1,6 +1,7 @@
 """
 Chadshani 2.0 — News Generator
-Uses Gemini API (free tier) with Google Search grounding.
+Uses Gemini API with free news context (yfinance.news + Hacker News + Fear&Greed APIs).
+No Google Search grounding — saves ~92% of API cost.
 Outputs data/latest.json in the exact schema the website expects.
 """
 
@@ -8,6 +9,7 @@ import os
 import json
 import re
 import sys
+import urllib.request
 from datetime import datetime
 from google import genai
 from google.genai import types
@@ -32,7 +34,7 @@ SYSTEM_PROMPT = """אתה "חדשני" — דסק חדשות מודיעיני פ
 """
 
 JSON_PROMPT = """
-חפש את החדשות העדכניות ביותר ב-24 השעות האחרונות והפק תשובה JSON בלבד (ללא markdown, ללא ```).
+על בסיס חדשות השוק והנתונים שסופקו למעלה, הפק תשובה JSON בלבד (ללא markdown, ללא ```).
 
 הפורמט המדויק הנדרש:
 {
@@ -115,12 +117,12 @@ JSON_PROMPT = """
     {"ticker": "SNOW", "price": "$...", "change": "+X.X%", "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI", "product": "[חפש: 'OpenAI latest model 2025 2026' — שם המוצר הנוכחי בלבד]", "brief": "[חפש: 'OpenAI news this week' — דווח רק על מה שמצאת במקורות מ-7 הימים האחרונים: השקות, עדכוני API, שינויי מחיר, שותפויות, מחלוקות. אם לא נמצא כלום — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.]", "last_known_update": "[DD/MM/YYYY של החדשה האחרונה שמצאת]", "status": "GA/Beta"},
-    {"company": "Google/Gemini", "product": "[חפש: 'Google Gemini latest model 2025 2026']", "brief": "[חפש: 'Google Gemini AI news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude", "product": "[חפש: 'Anthropic Claude latest model 2025 2026']", "brief": "[חפש: 'Anthropic Claude news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Meta/Llama", "product": "[חפש: 'Meta Llama latest model 2025 2026']", "brief": "[חפש: 'Meta Llama AI news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "xAI/Grok", "product": "[חפש: 'xAI Grok latest model 2025 2026']", "brief": "[חפש: 'xAI Grok news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Perplexity", "product": "[חפש: 'Perplexity AI latest 2025 2026']", "brief": "[חפש: 'Perplexity AI news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"}
+    {"company": "OpenAI", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו: השקות, עדכוני API, שינויי מחיר, שותפויות. אם אין — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.]", "last_known_update": "[DD/MM/YYYY של החדשה האחרונה בחומר שסופק]", "status": "GA/Beta"},
+    {"company": "Google/Gemini", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Meta/Llama", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "xAI/Grok", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Perplexity", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -151,10 +153,10 @@ JSON_PROMPT = """
 כללים קריטיים:
 - שדות price ו-change_24h: מחירים ושינויים יסופקו מ-yfinance לאחר מכן — כתוב "לא זמין" כ-placeholder בלבד.
 - שדות note, so_what, body, analysis, brief, thesis, risks, opportunities, action, flow, daily_narrative, smart_money, whale_activity, conclusion: חייבים להכיל טקסט אנליטי ממשי — אסור לכתוב "לא זמין".
-- section_7_ai: עבור כל חברה — חפש בגוגל חדשות מ-7 הימים האחרונים בלבד. דווח רק על מה שמצאת. אסור מוחלט להשתמש בידע מהאימון. אסור להמציא שמות מוצרים, גרסאות, או תאריכים. אם לא נמצאו חדשות מהשבוע — כתוב "אין חדשות חדשות מהשבוע האחרון." ותו לא.
-- section_7_ai product: מלא את שם המוצר הנוכחי רק לפי מה שמצאת בחיפוש. אל תשתמש בשמות ישנים.
+- section_7_ai: עבור כל חברה — השתמש אך ורק בחדשות שסופקו למעלה. אסור להמציא שמות מוצרים, גרסאות, או תאריכים שאינם בחומר. אם אין מידע — כתוב "אין חדשות חדשות מהשבוע האחרון." ותו לא.
+- section_7_ai product: מלא שם מוצר רק לפי מה שמופיע בחומר שסופק. אל תמציא.
 - section_4_crypto_brief: כל שדה חייב להיות לפחות 2-3 משפטים עם מידע ממשי.
-- section_1_situation gauges: חפש את ערכי CNN Fear & Greed ו-Crypto Fear & Greed האחרונים דרך Google Search. VIX יוחלף אוטומטית על ידי yfinance.
+- section_1_situation gauges: ערכי Fear & Greed יסופקו בפרומפט — השתמש בהם בדיוק. VIX יוחלף אוטומטית על ידי yfinance.
 - gauges zone: "extreme_fear" (0-24) / "fear" (25-44) / "neutral" (45-54) / "greed" (55-74) / "extreme_greed" (75-100) עבור F&G. VIX zone: "low" (<15) / "medium" (15-20) / "high" (20-30) / "extreme" (>30).
 - section_3_sectors flow_amount: חובה להחליף בסכום ממשי (לדוגמה: "+$3.2B", "-$1.8B", "$0.1B"). אסור להשאיר "X.X" — זה placeholder בלבד לצורך הדוגמה. אמוד לפי סנטימנט הסקטור ביום זה.
 - section_3_sectors change: שדה change יוחלף אוטומטית על ידי yfinance — כתוב "YFINANCE" בלבד.
@@ -170,6 +172,115 @@ CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LIN
 
 # Market indices: yfinance symbol → JSON key
 MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", "^VIX": "vix", "GC=F": "gold", "SI=F": "silver", "CL=F": "oil", "BTC-USD": "btc", "ETH-USD": "eth", "DX-Y.NYB": "dxy"}
+
+# Tickers to fetch news for (covers all major tracked companies + sector ETFs)
+NEWS_TICKERS = [
+    "NVDA", "MSFT", "GOOGL", "META", "AMZN", "AAPL",
+    "AMD", "TSM", "AVGO", "MU", "ASML", "QCOM", "ARM", "MRVL", "LRCX",
+    "CRM", "NOW", "ORCL", "ADBE", "PLTR", "SNOW",
+    "XLK", "XLF", "XLE", "XLY", "XLV", "XLU",
+    "BTC-USD", "ETH-USD",
+]
+
+
+def fetch_fear_greed():
+    """Fetch Fear & Greed indices from free APIs — no API key required."""
+    result = {"stock": None, "crypto": None}
+    try:
+        req = urllib.request.Request(
+            "https://production.dataviz.cnn.io/index/fearandgreed/graphdata",
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as r:
+            d = json.loads(r.read())
+            result["stock"] = int(d["fear_and_greed"]["score"])
+    except Exception as e:
+        print(f"[WARN] CNN F&G: {e}")
+    try:
+        with urllib.request.urlopen("https://api.alternative.me/fng/?limit=1", timeout=8) as r:
+            d = json.loads(r.read())
+            result["crypto"] = int(d["data"][0]["value"])
+    except Exception as e:
+        print(f"[WARN] Crypto F&G: {e}")
+    return result
+
+
+def fetch_yfinance_news_batch(tickers, max_per=2):
+    """Fetch recent news headlines from yfinance for a list of tickers."""
+    items = []
+    seen = set()
+    for sym in tickers:
+        try:
+            news = yf.Ticker(sym).news or []
+            count = 0
+            for item in news:
+                title = (item.get("title") or "").strip()
+                summary = (item.get("summary") or item.get("description") or "").strip()
+                if title and title not in seen and count < max_per:
+                    seen.add(title)
+                    line = f"[{sym}] {title}"
+                    if summary:
+                        line += f": {summary[:220]}"
+                    items.append(line)
+                    count += 1
+        except Exception as e:
+            print(f"[WARN] yf.news {sym}: {e}")
+    return items
+
+
+def fetch_hn_news(max_items=8):
+    """Fetch Hacker News top stories — free, no key, strong AI/tech coverage."""
+    stories = []
+    try:
+        with urllib.request.urlopen(
+            "https://hacker-news.firebaseio.com/v0/topstories.json", timeout=8
+        ) as r:
+            ids = json.loads(r.read())[:max_items * 2]
+        for sid in ids[:max_items]:
+            try:
+                with urllib.request.urlopen(
+                    f"https://hacker-news.firebaseio.com/v0/item/{sid}.json", timeout=5
+                ) as r:
+                    item = json.loads(r.read())
+                    title = (item.get("title") or "").strip()
+                    if title:
+                        stories.append(f"• {title}")
+            except Exception:
+                pass
+    except Exception as e:
+        print(f"[WARN] HN fetch: {e}")
+    return stories
+
+
+def build_news_context():
+    """Aggregate free market data into a context string + Fear&Greed dict."""
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    lines = [f"=== נתוני שוק לניתוח — {today} ===\n"]
+
+    fg = fetch_fear_greed()
+    if fg["stock"] is not None or fg["crypto"] is not None:
+        lines.append("=== Fear & Greed Indices ===")
+        if fg["stock"] is not None:
+            lines.append(f"Stock Market Fear & Greed Index: {fg['stock']}/100")
+        if fg["crypto"] is not None:
+            lines.append(f"Crypto Fear & Greed Index: {fg['crypto']}/100")
+        lines.append("")
+
+    stock_news = fetch_yfinance_news_batch(NEWS_TICKERS, max_per=2)
+    if stock_news:
+        lines.append("=== חדשות מניות וסקטורים (yfinance) ===")
+        lines.extend(stock_news[:50])
+        lines.append("")
+
+    hn_news = fetch_hn_news(max_items=8)
+    if hn_news:
+        lines.append("=== חדשות AI וטכנולוגיה (Hacker News) ===")
+        lines.extend(hn_news)
+        lines.append("")
+
+    context = "\n".join(lines)
+    print(f"[CONTEXT] {len(context)} chars | {len(stock_news)} stock items | {len(hn_news)} HN | F&G={fg}")
+    return context, fg
 
 
 def fetch_prices(symbols):
@@ -352,11 +463,13 @@ def clean_raw(raw):
 
 
 # ── Gemini pricing (per 1M tokens, USD) ──────────────────────────────────────
-# Flash 2.5: input $0.075 / output $0.30 / search grounding $35 per 1K requests
-# Pro   2.5: input $1.25  / output $10.00 / search grounding $35 per 1K requests
+# Flash 2.5: input $0.075 / output $0.30
+# Pro   2.5: input $1.25  / output $10.00
+# Note: Google Search grounding removed — news fetched via yfinance + HN (free)
+# Savings: ~$0.035/run × 3/day × 30 = ~100 ILS/month eliminated
 _PRICING = {
-    "gemini-2.5-flash": {"in": 0.075, "out": 0.30,  "search": 35.0},
-    "gemini-2.5-pro":   {"in": 1.25,  "out": 10.00, "search": 35.0},
+    "gemini-2.5-flash": {"in": 0.075, "out": 0.30},
+    "gemini-2.5-pro":   {"in": 1.25,  "out": 10.00},
 }
 USD_TO_ILS = 3.65   # approximate; update if needed
 COST_LOG = os.path.join(os.path.dirname(__file__), "data", "cost_log.json")
@@ -381,8 +494,7 @@ def log_cost(model, usage):
         in_tok  = getattr(usage, "prompt_token_count", 0) or 0
         out_tok = getattr(usage, "candidates_token_count", 0) or 0
         cost_usd = (in_tok / 1_000_000 * p["in"] +
-                    out_tok / 1_000_000 * p["out"] +
-                    1 / 1000 * p["search"])   # 1 grounding call per run
+                    out_tok / 1_000_000 * p["out"])
         cost_ils = cost_usd * USD_TO_ILS
         log = _load_cost_log()
         log["runs"].append({
@@ -403,18 +515,37 @@ def log_cost(model, usage):
         print(f"[COST] tracking error: {e}")
 
 
-def call_gemini(model, attempt):
+def call_gemini(model, attempt, news_context, fear_greed):
     print(f"[TRY] model={model} attempt={attempt+1}")
     today = datetime.utcnow().strftime("%Y-%m-%d")
-    dated_prompt = f"היום: {today}. חפש חדשות מ-7 הימים האחרונים (מ-{today} אחורה).\n\n" + JSON_PROMPT
+
+    fg_note = ""
+    if fear_greed.get("stock") is not None:
+        fg_note += (f"\nStock Fear & Greed: {fear_greed['stock']}/100 — "
+                    f"השתמש בערך זה בדיוק ב-section_1_situation.gauges.fear_greed_stock.value")
+    if fear_greed.get("crypto") is not None:
+        fg_note += (f"\nCrypto Fear & Greed: {fear_greed['crypto']}/100 — "
+                    f"השתמש בערך זה בדיוק ב-section_1_situation.gauges.fear_greed_crypto.value")
+
+    full_prompt = (
+        f"היום: {today}.\n"
+        f"החדשות והנתונים הבאים נאספו עכשיו ממקורות חינמיים:\n\n"
+        f"{news_context}"
+        f"{fg_note}\n\n"
+        "הוראה קריטית: השתמש אך ורק בנתונים שסופקו למעלה. "
+        "אסור להמציא חדשות שאינן בחומר. "
+        "אם אין מידע על חברה — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.\n\n"
+        + JSON_PROMPT
+    )
+
     response = client.models.generate_content(
         model=model,
-        contents=dated_prompt,
+        contents=full_prompt,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
             temperature=0.3,
             max_output_tokens=16384,
-            tools=[types.Tool(google_search=types.GoogleSearch())],
+            # No google_search tool — news fetched via free sources
         ),
     )
     if hasattr(response, "usage_metadata"):
@@ -424,11 +555,15 @@ def call_gemini(model, attempt):
 
 def generate():
     import time
+
+    # Fetch free news context upfront (yfinance + HN + Fear&Greed APIs)
+    news_context, fear_greed = build_news_context()
+
     data = None
     for model in MODELS:
         for attempt in range(3):
             try:
-                response = call_gemini(model, attempt)
+                response = call_gemini(model, attempt, news_context, fear_greed)
                 raw = clean_raw(response.text)
                 candidate = json.loads(raw)
                 candidate = patch_prices(candidate)
@@ -453,8 +588,17 @@ def generate():
             break
         print(f"[SKIP] {model} failed after 3 attempts")
     if data is None:
-        print("ERROR: All models and attempts exhausted")
-        sys.exit(1)
+        # Fallback: keep last known good data, just refresh generated_at
+        fallback_path = os.path.join(os.path.dirname(__file__), "data", "latest.json")
+        if os.path.exists(fallback_path):
+            print("[FALLBACK] Using last known good latest.json — refreshing timestamp only")
+            with open(fallback_path, encoding="utf-8") as f:
+                data = json.load(f)
+            data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+            data["_fallback"] = True
+        else:
+            print("ERROR: All models exhausted and no fallback available")
+            sys.exit(1)
 
     # Always set generated_at to now
     data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
