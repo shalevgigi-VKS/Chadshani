@@ -66,30 +66,17 @@ JSON_PROMPT = """
     {"title": "כותרת חדשה 6", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"}
   ],
   "section_3_sectors": [
-    {"etf": "XLK", "name": "טכנולוגיה", "change": "+X.X%", "flow": "Inflow/Outflow/נייטרלי", "note": "סיבה"},
-    {"etf": "XLV", "name": "בריאות", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLU", "name": "תשתיות", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLF", "name": "פיננסים", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLE", "name": "אנרגיה", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLY", "name": "צריכה מחזורית", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLI", "name": "תעשייה", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLB", "name": "חומרי גלם", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLRE", "name": "נדל\"ן", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLP", "name": "צריכה בסיסית", "change": "+X.X%", "flow": "...", "note": "..."},
-    {"etf": "XLC", "name": "תקשורת", "change": "+X.X%", "flow": "...", "note": "..."}
-  ],
-  "section_3_capital_flow": [
-    {"label": "טכנולוגיה (תשתיות AI)", "amount": "+$X.XB", "direction": "in"},
-    {"label": "בריאות (GLP-1 / Biotech)", "amount": "+$X.XB", "direction": "in"},
-    {"label": "אנרגיה (גרעין/SMR)", "amount": "+$X.XB", "direction": "in"},
-    {"label": "פיננסים (בנקים גדולים)", "amount": "+$X.XB", "direction": "in"},
-    {"label": "תשתיות (Data Centers)", "amount": "+$X.XB", "direction": "in"},
-    {"label": "ביטחון / Aerospace", "amount": "+$X.XB", "direction": "in"},
-    {"label": "צריכה מחזורית", "amount": "-$X.XB", "direction": "out"},
-    {"label": "נדל\"ן מסחרי", "amount": "-$X.XB", "direction": "out"},
-    {"label": "קמעונאות מסורתית", "amount": "-$X.XB", "direction": "out"},
-    {"label": "תקשורת / Media", "amount": "-$X.XB", "direction": "out"},
-    {"label": "חומרי גלם", "amount": "-$X.XB", "direction": "out"}
+    {"etf": "XLK", "name": "טכנולוגיה", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "סיבה עיקרית — אנליזה קצרה"},
+    {"etf": "XLV", "name": "בריאות", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."},
+    {"etf": "XLU", "name": "תשתיות", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
+    {"etf": "XLF", "name": "פיננסים", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."},
+    {"etf": "XLE", "name": "אנרגיה", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
+    {"etf": "XLY", "name": "צריכה מחזורית", "change": "-X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
+    {"etf": "XLI", "name": "תעשייה", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."},
+    {"etf": "XLB", "name": "חומרי גלם", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
+    {"etf": "XLRE", "name": "נדל\"ן", "change": "+X.X%", "flow_direction": "out", "flow_amount": "-$X.XB", "note": "..."},
+    {"etf": "XLP", "name": "צריכה בסיסית", "change": "+X.X%", "flow_direction": "neutral", "flow_amount": "$0B", "note": "..."},
+    {"etf": "XLC", "name": "תקשורת", "change": "+X.X%", "flow_direction": "in", "flow_amount": "+$X.XB", "note": "..."}
   ],
   "section_4_crypto": [
     {"ticker": "BTC", "price": "$...", "change_24h": "+X.X%", "note": "..."},
@@ -169,8 +156,7 @@ JSON_PROMPT = """
 - section_4_crypto_brief: כל שדה חייב להיות לפחות 2-3 משפטים עם מידע ממשי.
 - section_1_situation gauges: חפש את ערכי CNN Fear & Greed ו-Crypto Fear & Greed האחרונים דרך Google Search. VIX יוחלף אוטומטית על ידי yfinance.
 - gauges zone: "extreme_fear" (0-24) / "fear" (25-44) / "neutral" (45-54) / "greed" (55-74) / "extreme_greed" (75-100) עבור F&G. VIX zone: "low" (<15) / "medium" (15-20) / "high" (20-30) / "extreme" (>30).
-- section_3_capital_flow amounts: הערך ב-$XB פורמט — אמוד לפי סנטימנט הסקטור.
-- section_3_sectors flow: "Inflow" / "Outflow" / "נייטרלי" בלבד.
+- section_3_sectors: כל סקטור כולל flow_direction ("in"/"out"/"neutral"), flow_amount (פורמט "+$X.XB" / "-$X.XB"), ו-note אנליטי. אמוד לפי סנטימנט הסקטור.
 - generated_at: timestamp ISO עכשווי בדיוק עם Z בסיום.
 - section_8_watchlist: בחר 6 טיקרים עם פוטנציאל עלייה (rising) ו-6 עם פוטנציאל ירידה (falling) לשבוע הקרוב. לכל טיקר: note (למה לעקוב, מה הקטליסט), signal (BUY/SELL), reason (סיבה טכנית/פונדמנטלית קצרה ומדויקת). בחר לפי החדשות שמצאת בלבד.
 - החזר JSON בלבד. אין טקסט לפני או אחרי.

@@ -464,20 +464,14 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="s2-news"></div>
     </section>
 
-    <!-- Section 3: Sectors + Capital Flow — Merged, sorted by capital flow -->
+    <!-- Section 3: Unified Sector Map — one row per sector with all data -->
     <section>
         <div class="card p-7">
             <div class="flex justify-between items-center mb-6">
                 <div class="section-label label-emerald mb-0">זרימת הון ומפת סקטורים</div>
                 <span class="text-xs font-mono text-brand-muted uppercase tracking-widest">Global Sector Exposure · 30D</span>
             </div>
-            <!-- Capital flow bars: sorted inflow first → outflow last -->
-            <div class="space-y-3 mb-7" id="s3-capital-flow"></div>
-            <!-- ETF grid below -->
-            <div class="border-t border-slate-100 pt-5">
-                <div class="text-xs font-mono text-brand-muted uppercase tracking-widest mb-3">ETF Performance</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 text-sm" id="s3-sectors"></div>
-            </div>
+            <div class="space-y-0" id="s3-sectors"></div>
         </div>
     </section>
 
@@ -576,7 +570,7 @@
 
     <!-- About -->
     <section class="card about-section p-8 md:p-10">
-        <div class="flex flex-row items-center gap-8">
+        <div class="flex flex-row items-start gap-8">
             <div class="flex-shrink-0">
                 <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-40 md:w-52 rounded-2xl object-cover shadow-md border-2 border-white">
             </div>
@@ -617,17 +611,30 @@
 // ===== LOAD DATA =====
 async function loadData() {
     try {
-        const r = await fetch('data/latest.json?v=' + Date.now());
-        const d = await r.json();
+        const [dataRes, versionRes] = await Promise.allSettled([
+            fetch('data/latest.json?v=' + Date.now()),
+            fetch('version.json?v=' + Date.now())
+        ]);
+        let d = {};
+        if (dataRes.status === 'fulfilled' && dataRes.value.ok) {
+            d = await dataRes.value.json();
+        }
+        let designTs = null;
+        if (versionRes.status === 'fulfilled' && versionRes.value.ok) {
+            const v = await versionRes.value.json();
+            designTs = v.design_updated || null;
+        }
+        // Show whichever deploy is more recent
+        const displayTs = (designTs && (!d.generated_at || designTs > d.generated_at))
+            ? designTs : (d.generated_at || null);
+        if (displayTs) setLastUpdateClock(displayTs);
         renderAll(d);
     } catch(e) {
-        console.warn('Could not load latest.json', e);
+        console.warn('Could not load data', e);
     }
 }
 
 function renderAll(d) {
-    // Last update — updates header, clock bar, and footer
-    if (d.generated_at) setLastUpdateClock(d.generated_at);
 
     // Staleness warning: data >2h old shows sticky banner above header
     if (d.generated_at) {
@@ -679,26 +686,8 @@ function renderAll(d) {
             </div>`).join('');
     }
 
-    // Section 3: Sectors — sorted by change% descending
-    const secEl = document.getElementById('s3-sectors');
-    if (secEl && d.section_3_sectors) {
-        const sortedSec = [...d.section_3_sectors].sort((a,b) => parseFloat(b.change) - parseFloat(a.change));
-        secEl.innerHTML = sortedSec.map(s => {
-            const flowClass = s.flow === 'Inflow' ? 'flow-in' : s.flow === 'Outflow' ? 'flow-out' : 'flow-neutral';
-            const chg = parseFloat(s.change) >= 0;
-            return `
-            <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0 gap-2">
-                <div class="flex items-center gap-2 min-w-0">
-                    <span class="font-mono text-xs font-bold text-brand-accent shrink-0">${s.etf}</span>
-                    <span class="text-xs text-brand-muted truncate">${s.name}</span>
-                </div>
-                <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs font-mono ${chg ? 'text-emerald-600' : 'text-rose-500'} font-bold">${s.change}</span>
-                    <span class="text-xs ${flowClass}">${s.flow}</span>
-                </div>
-            </div>`;
-        }).join('');
-    }
+    // Section 3: Unified sector map
+    renderSectors(d.section_3_sectors);
 
     // Section 4: Crypto
     const cryptoEl = document.getElementById('s4-crypto');
@@ -774,9 +763,6 @@ function renderAll(d) {
         document.getElementById('s8-opportunities').textContent = s8.opportunities || '';
         document.getElementById('s8-action').textContent = s8.action || '';
     }
-
-    // Capital flow
-    renderCapitalFlow(d.section_3_capital_flow);
 
     // Watchlist
     renderWatchlist(d.section_8_watchlist);
@@ -929,29 +915,39 @@ function renderNotices() {
         </div>`).join('');
 }
 
-// ===== CAPITAL FLOW — sorted: inflow desc → outflow desc =====
-function renderCapitalFlow(arr) {
-    const el = document.getElementById('s3-capital-flow');
+// ===== SECTOR MAP — unified: ETF + change + flow direction + amount + note =====
+function renderSectors(arr) {
+    const el = document.getElementById('s3-sectors');
     if (!el || !arr || !arr.length) return;
+    const getAmt = s => Math.abs(parseFloat((s.flow_amount || s.amount || '0').replace(/[^0-9.]/g, '')));
     const sorted = [...arr].sort((a, b) => {
-        if (a.direction !== b.direction) return a.direction === 'in' ? -1 : 1;
-        return Math.abs(parseFloat(b.amount.replace(/[^0-9.]/g,''))) -
-               Math.abs(parseFloat(a.amount.replace(/[^0-9.]/g,'')));
+        const aIn = a.flow_direction === 'in';
+        const bIn = b.flow_direction === 'in';
+        if (aIn !== bIn) return aIn ? -1 : 1;
+        return getAmt(b) - getAmt(a);
     });
-    const amounts = sorted.map(r => Math.abs(parseFloat(r.amount.replace(/[^0-9.]/g,''))));
-    const maxAmt = Math.max(...amounts) || 1;
-    el.innerHTML = sorted.map((r, i) => {
-        const isIn = r.direction === 'in';
-        const pct = Math.min(95, (amounts[i] / maxAmt) * 95);
-        const barColor = isIn ? 'bg-emerald-500' : 'bg-rose-400';
-        const amtColor = isIn ? 'text-emerald-600' : 'text-rose-500';
+    const maxAmt = Math.max(...sorted.map(getAmt)) || 1;
+    el.innerHTML = sorted.map(s => {
+        const isIn = s.flow_direction === 'in';
+        const isOut = s.flow_direction === 'out';
+        const chgUp = parseFloat((s.change || '0').replace(/[^0-9.\-]/g, '')) >= 0;
+        const pct = Math.min(95, (getAmt(s) / maxAmt) * 95);
+        const barColor = isIn ? 'bg-emerald-500' : isOut ? 'bg-rose-400' : 'bg-slate-300';
+        const amtColor = isIn ? 'text-emerald-600' : isOut ? 'text-rose-500' : 'text-slate-500';
+        const flowLabel = isIn ? 'Inflow' : isOut ? 'Outflow' : 'נייטרלי';
+        const flowClass = isIn ? 'flow-in' : isOut ? 'flow-out' : 'flow-neutral';
+        const amt = s.flow_amount || s.amount || '';
         return `
-        <div>
-            <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-700">${r.label}</span>
-                <span class="${amtColor} font-bold">${r.amount}</span>
+        <div class="py-3 border-b border-slate-100 last:border-0">
+            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span class="font-mono text-xs font-bold text-brand-accent w-12 shrink-0">${s.etf}</span>
+                <span class="text-sm font-semibold text-brand-text flex-1 min-w-0">${s.name}</span>
+                <span class="font-mono text-sm font-bold ${chgUp ? 'text-emerald-600' : 'text-rose-500'} shrink-0">${s.change}</span>
+                <span class="text-xs ${flowClass} shrink-0">${flowLabel}</span>
+                ${amt ? `<span class="${amtColor} font-bold text-xs shrink-0">${amt}</span>` : ''}
             </div>
-            <div class="bar-track"><div class="bar-fill ${barColor}" style="width:${pct}%"></div></div>
+            ${amt ? `<div class="bar-track mb-1.5"><div class="bar-fill ${barColor}" style="width:${pct}%"></div></div>` : ''}
+            ${s.note ? `<p class="text-xs text-brand-muted leading-relaxed">${s.note}</p>` : ''}
         </div>`;
     }).join('');
 }
