@@ -88,18 +88,19 @@ jobs:
 
       - name: Notify success
         run: |
-          NOW=$(TZ=Asia/Jerusalem date +'%H:%M IL')
-          curl -s -X POST https://ntfy.sh/CHA0511 \
-            -H "Title: Chadshani Updated" \
-            -H "Tags: white_check_mark" \
-            -d "האתר עודכן בהצלחה — $NOW"
+          NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          curl -s -X POST https://ntfy.sh/CloudeCode \
+            -H "Title: חדשני — נתונים ועיצוב עודכנו ✅" \
+            -H "Tags: newspaper" \
+            -H "Priority: default" \
+            -d "עדכון אוטומטי של נתוני שוק ועיצוב הושלם — $NOW"
 
       - name: Notify failure
         if: failure()
         run: |
-          NOW=$(TZ=Asia/Jerusalem date +'%H:%M IL')
-          curl -s -X POST https://ntfy.sh/CHA0511 \
-            -H "Title: Chadshani FAILED" \
+          NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          curl -s -X POST https://ntfy.sh/CloudeCode \
+            -H "Title: חדשני — עדכון אוטומטי נכשל ⚠️" \
             -H "Tags: x" \
             -H "Priority: high" \
-            -d "עדכון נכשל — $NOW — בדוק GitHub Actions"
+            -d "עדכון הנתונים נכשל — $NOW — בדוק GitHub Actions"

@@ -21,13 +21,13 @@ jobs:
     steps:
       - name: Send update to iPhone via ntfy.sh
         run: |
-          curl -s \
-            -H "Title: אבולוציה סכמטית עודכנה" \
-            -H "Priority: 3" \
+          NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          curl -s -X POST https://ntfy.sh/CloudeCode \
+            -H "Title: אבולוציה סכמטית — מפת מערכת עודכנה 🧠" \
+            -H "Priority: default" \
             -H "Tags: brain,sparkles" \
-            -d "מפת המערכת השבועית עודכנה — לחצו לצפות" \
             -H "Click: https://shalevgigi-vks.github.io/Claude-Schematic/" \
-            https://ntfy.sh/CHA0511
+            -d "מפת המערכת השבועית עודכנה — $NOW"
 
   deploy:
     needs: notify

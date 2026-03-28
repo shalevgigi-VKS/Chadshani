@@ -11,7 +11,7 @@ import json
 import urllib.request
 from datetime import datetime
 
-NTFY_TOPIC = "ClaudeCode"
+NTFY_TOPIC = "CloudeCode"
 
 
 def notify(title, message, tags="white_check_mark"):

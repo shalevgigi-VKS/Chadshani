@@ -63,9 +63,9 @@ jobs:
       - name: Notify iPhone — design updated
         if: success()
         run: |
-          DEPLOY_TIME=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M')
-          curl -s -X POST https://ntfy.sh/CHA0511 \
-            -H "Title: חדשני — עיצוב עודכן ✅" \
+          DEPLOY_TIME=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          curl -s -X POST https://ntfy.sh/CloudeCode \
+            -H "Title: חדשני — עיצוב חדש נפרס ✅" \
             -H "Priority: default" \
             -H "Tags: art" \
-            -d "האתר עודכן בהצלחה — ${DEPLOY_TIME} IL"
+            -d "שינויי עיצוב נפרסו ל-GitHub Pages — ${DEPLOY_TIME}"

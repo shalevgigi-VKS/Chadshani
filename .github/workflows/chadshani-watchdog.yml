@@ -69,8 +69,8 @@ jobs:
               --repo ${{ github.repository }} \
               --ref master && RETRY_STATUS="✅ הפעלה חוזרת הושקה" || RETRY_STATUS="❌ הפעלה חוזרת נכשלה — טעון טיפול ידני"
 
-            curl -s -X POST https://ntfy.sh/CHA0511 \
-              -H "Title: Chadshani — טעון טיפול" \
+            curl -s -X POST https://ntfy.sh/CloudeCode \
+              -H "Title: חדשני — ניטור: טעון טיפול ⚠️" \
               -H "Tags: warning" \
               -H "Priority: high" \
               -d "$MSG | $RETRY_STATUS"
@@ -103,19 +103,19 @@ jobs:
 
           if [ "$SCOUT_CONC" = "failure" ]; then
             NOW_IL=$(TZ=Asia/Jerusalem date +'%H:%M IL')
-            curl -s -X POST https://ntfy.sh/CHA0511 \
-              -H "Title: Innovation Scout — נכשל" \
+            curl -s -X POST https://ntfy.sh/CloudeCode \
+              -H "Title: Innovation Scout — נכשל ⚠️" \
               -H "Tags: telescope,x" \
               -H "Priority: high" \
-              -d "Scout נכשל — $NOW_IL | בדוק GitHub Actions"
+              -d "סוכן החדשנות נכשל — $NOW_IL | בדוק GitHub Actions"
             echo "SCOUT ALERT SENT"
           elif [ "$SCOUT_DIFF" -gt 300 ]; then
             NOW_IL=$(TZ=Asia/Jerusalem date +'%H:%M IL')
-            curl -s -X POST https://ntfy.sh/CHA0511 \
-              -H "Title: Innovation Scout — לא רץ" \
+            curl -s -X POST https://ntfy.sh/CloudeCode \
+              -H "Title: Innovation Scout — לא פעיל ⚠️" \
               -H "Tags: telescope,warning" \
               -H "Priority: default" \
-              -d "Scout לא רץ כבר ${SCOUT_DIFF} דקות ($NOW_IL)"
+              -d "סוכן החדשנות לא רץ כבר ${SCOUT_DIFF} דקות — $NOW_IL"
             echo "SCOUT STALE ALERT SENT"
           else
             echo "✅ Scout last run: $SCOUT_CONC (${SCOUT_DIFF}m ago)"
