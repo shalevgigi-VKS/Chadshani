@@ -128,12 +128,12 @@ JSON_PROMPT = """
     {"ticker": "SNOW", "price": "$...", "change": "+X.X%", "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI", "product": "GPT-4o / o3", "brief": "פסקה מפורטת של לפחות 4 משפטים על המצב הנוכחי: מה השתנה לאחרונה, capabilities חדשות, עדכוני API, שינויי תמחור, מיקום תחרותי, אירועים אחרונים. אם לא השתנה כלום — תאר את המצב הנוכחי הידוע.", "last_known_update": "תאריך או 'אין עדכון חדש'", "status": "GA/Beta"},
-    {"company": "Google/Gemini", "product": "Gemini 2.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude", "product": "Claude 3.x / 4.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
-    {"company": "Meta/Llama", "product": "Llama 4.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
-    {"company": "xAI/Grok", "product": "Grok 3.x", "brief": "...", "last_known_update": "...", "status": "GA/Beta"},
-    {"company": "Perplexity", "product": "Perplexity AI", "brief": "...", "last_known_update": "...", "status": "GA/Beta"}
+    {"company": "OpenAI", "product": "[חפש: 'OpenAI latest model 2025 2026' — שם המוצר הנוכחי בלבד]", "brief": "[חפש: 'OpenAI news this week' — דווח רק על מה שמצאת במקורות מ-7 הימים האחרונים: השקות, עדכוני API, שינויי מחיר, שותפויות, מחלוקות. אם לא נמצא כלום — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.]", "last_known_update": "[DD/MM/YYYY של החדשה האחרונה שמצאת]", "status": "GA/Beta"},
+    {"company": "Google/Gemini", "product": "[חפש: 'Google Gemini latest model 2025 2026']", "brief": "[חפש: 'Google Gemini AI news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude", "product": "[חפש: 'Anthropic Claude latest model 2025 2026']", "brief": "[חפש: 'Anthropic Claude news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Meta/Llama", "product": "[חפש: 'Meta Llama latest model 2025 2026']", "brief": "[חפש: 'Meta Llama AI news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "xAI/Grok", "product": "[חפש: 'xAI Grok latest model 2025 2026']", "brief": "[חפש: 'xAI Grok news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Perplexity", "product": "[חפש: 'Perplexity AI latest 2025 2026']", "brief": "[חפש: 'Perplexity AI news this week' — דווח רק על מה שמצאת מ-7 הימים האחרונים.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -158,7 +158,8 @@ JSON_PROMPT = """
 כללים קריטיים:
 - שדות price ו-change_24h: מחירים ושינויים יסופקו מ-yfinance לאחר מכן — כתוב "לא זמין" כ-placeholder בלבד.
 - שדות note, so_what, body, analysis, brief, thesis, risks, opportunities, action, flow, daily_narrative, smart_money, whale_activity, conclusion: חייבים להכיל טקסט אנליטי ממשי — אסור לכתוב "לא זמין".
-- section_7_ai brief: חייב להיות לפחות 4 משפטים לכל חברה. אם אין עדכון חדש — תאר את המצב הידוע הנוכחי.
+- section_7_ai: עבור כל חברה — חפש בגוגל חדשות מ-7 הימים האחרונים בלבד. דווח רק על מה שמצאת. אסור מוחלט להשתמש בידע מהאימון. אסור להמציא שמות מוצרים, גרסאות, או תאריכים. אם לא נמצאו חדשות מהשבוע — כתוב "אין חדשות חדשות מהשבוע האחרון." ותו לא.
+- section_7_ai product: מלא את שם המוצר הנוכחי רק לפי מה שמצאת בחיפוש. אל תשתמש בשמות ישנים.
 - section_4_crypto_brief: כל שדה חייב להיות לפחות 2-3 משפטים עם מידע ממשי.
 - section_1_situation gauges: חפש את ערכי CNN Fear & Greed ו-Crypto Fear & Greed האחרונים דרך Google Search. VIX יוחלף אוטומטית על ידי yfinance.
 - gauges zone: "extreme_fear" (0-24) / "fear" (25-44) / "neutral" (45-54) / "greed" (55-74) / "extreme_greed" (75-100) עבור F&G. VIX zone: "low" (<15) / "medium" (15-20) / "high" (20-30) / "extreme" (>30).
@@ -397,9 +398,11 @@ def log_cost(model, usage):
 
 def call_gemini(model, attempt):
     print(f"[TRY] model={model} attempt={attempt+1}")
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    dated_prompt = f"היום: {today}. חפש חדשות מ-7 הימים האחרונים (מ-{today} אחורה).\n\n" + JSON_PROMPT
     response = client.models.generate_content(
         model=model,
-        contents=JSON_PROMPT,
+        contents=dated_prompt,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
             temperature=0.3,
