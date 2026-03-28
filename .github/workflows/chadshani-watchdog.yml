@@ -81,3 +81,43 @@ jobs:
           fi
 
           echo "✅ Last run was $CONCLUSION ($DIFF min ago) — all good"
+
+      - name: Check Innovation Scout last run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SCOUT_RUN=$(gh run list \
+            --repo ${{ github.repository }} \
+            --workflow innovation-scout.yml \
+            --limit 1 \
+            --json status,conclusion,createdAt \
+            --jq '.[0]')
+
+          SCOUT_STATUS=$(echo "$SCOUT_RUN" | jq -r '.status')
+          SCOUT_CONC=$(echo "$SCOUT_RUN" | jq -r '.conclusion')
+          SCOUT_CREATED=$(echo "$SCOUT_RUN" | jq -r '.createdAt')
+          SCOUT_TS=$(date -d "$SCOUT_CREATED" +%s 2>/dev/null || echo 0)
+          NOW_TS=$(date +%s)
+          SCOUT_DIFF=$(( (NOW_TS - SCOUT_TS) / 60 ))
+
+          echo "Scout: status=$SCOUT_STATUS conclusion=$SCOUT_CONC created=$SCOUT_CREATED (${SCOUT_DIFF}m ago)"
+
+          if [ "$SCOUT_CONC" = "failure" ]; then
+            NOW_IL=$(TZ=Asia/Jerusalem date +'%H:%M IL')
+            curl -s -X POST https://ntfy.sh/CHA0511 \
+              -H "Title: Innovation Scout — נכשל" \
+              -H "Tags: telescope,x" \
+              -H "Priority: high" \
+              -d "Scout נכשל — $NOW_IL | בדוק GitHub Actions"
+            echo "SCOUT ALERT SENT"
+          elif [ "$SCOUT_DIFF" -gt 300 ]; then
+            NOW_IL=$(TZ=Asia/Jerusalem date +'%H:%M IL')
+            curl -s -X POST https://ntfy.sh/CHA0511 \
+              -H "Title: Innovation Scout — לא רץ" \
+              -H "Tags: telescope,warning" \
+              -H "Priority: default" \
+              -d "Scout לא רץ כבר ${SCOUT_DIFF} דקות ($NOW_IL)"
+            echo "SCOUT STALE ALERT SENT"
+          else
+            echo "✅ Scout last run: $SCOUT_CONC (${SCOUT_DIFF}m ago)"
+          fi

@@ -178,7 +178,13 @@ def main():
     print(f"[scout] new items found: {len(new_items)}")
 
     if not new_items:
-        print("[scout] nothing new — no notification sent")
+        now_str = datetime.now(timezone.utc).strftime("%H:%M UTC")
+        send_ntfy(
+            "🔭 Innovation Scout — nothing new",
+            f"Ran at {now_str} — no new repos found (tracking {len(seen)} repos).",
+            priority="min",
+        )
+        print("[scout] heartbeat sent — nothing new")
         return
 
     # Deduplicate by repo name

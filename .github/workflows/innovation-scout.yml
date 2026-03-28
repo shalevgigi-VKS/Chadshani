@@ -6,7 +6,7 @@ on:
   workflow_dispatch:         # Manual trigger
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   scout:
@@ -30,3 +30,11 @@ jobs:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC_SCOUT || 'CHA0511' }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python .github/scripts/innovation_scout.py
+
+      - name: Commit scout state
+        run: |
+          git config user.name  "Innovation Scout"
+          git config user.email "scout@users.noreply.github.com"
+          git add .github/scripts/scout_state.json
+          git diff --staged --quiet && echo "[skip] state unchanged" || \
+            git commit -m "chore: scout state [skip ci]" && git push
