@@ -26,6 +26,7 @@ jobs:
             -H "Priority: 3" \
             -H "Tags: brain,sparkles" \
             -d "מפת המערכת השבועית עודכנה — לחצו לצפות" \
+            -H "Click: https://shalevgigi-vks.github.io/Claude-Schematic/" \
             https://ntfy.sh/CLA0511
 
   deploy:
