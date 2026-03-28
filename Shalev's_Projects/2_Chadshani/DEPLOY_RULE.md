@@ -18,4 +18,4 @@
 1. ערוך `index.html` מקומית
 2. `git push`
 3. GitHub Actions → run `chadshani-deploy-only.yml`
-4. קבל התראה ב-CHA0511 כשסיים
+4. קבל התראה ב-ClaudeCode כשסיים

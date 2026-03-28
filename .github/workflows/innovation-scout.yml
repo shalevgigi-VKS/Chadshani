@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Innovation Scout
         env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC_SCOUT || 'CHA0511' }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC_SCOUT || 'ClaudeCode' }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python .github/scripts/innovation_scout.py
 
