@@ -298,7 +298,8 @@ def patch_prices(data):
     if "vix" in markets and data.get("section_1_situation", {}).get("gauges", {}).get("vix"):
         data["section_1_situation"]["gauges"]["vix"]["value"] = markets["vix"]["value"]
 
-    print(f"[PRICES] patched {len(stock_prices)} stocks + {len(crypto_prices)} crypto + {len(market_prices)} indices")
+    crypto_count = len(data.get("section_4_crypto", []))
+    print(f"[PRICES] patched {len(stock_prices)} stocks + {crypto_count} crypto + {len(market_prices)} indices")
     return data
 
 
