@@ -5,527 +5,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>אבולוציה סכמטית — מפת מערכת Claude</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
-<script>tailwind.config={theme:{extend:{colors:{"primary":"#0053dc","primary-dim":"#0049c2","primary-container":"#acbfff","on-primary":"#faf8ff","on-primary-container":"#003592","secondary":"#742fe5","secondary-container":"#eaddff","on-secondary":"#fdf7ff","tertiary":"#006d4a","tertiary-container":"#69f6b8","on-tertiary":"#e6ffee","error":"#ac3434","error-container":"#f56965","surface":"#f7f9fb","surface-container-lowest":"#ffffff","surface-container-low":"#f1f4f6","surface-container":"#eaeef1","surface-container-high":"#e3e9ec","surface-container-highest":"#dde3e7","on-surface":"#2d3337","on-surface-variant":"#596063","outline":"#757c7f","outline-variant":"#acb3b7"},fontFamily:{"sans":["Heebo","sans-serif"]}}}}</script>
-<style>
-*{box-sizing:border-box}
-body{font-family:'Heebo',sans-serif;background:#f7f9fb;overflow:hidden;margin:0;height:100dvh;display:flex;flex-direction:column}
-.mso{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;font-size:20px;line-height:1;vertical-align:middle}
-
-/* Header */
-#hdr{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(247,249,251,.9);backdrop-filter:blur(16px);border-bottom:1px solid #e3e9ec;z-index:50}
-#hdr-title{font-size:17px;font-weight:700;color:#2d3337}
-#hdr-sub{font-size:12px;color:#757c7f;margin-top:1px}
-.hdr-btn{width:40px;height:40px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#596063;transition:.15s}
-.hdr-btn:hover{background:#eaeef1;color:#0053dc}
-
-/* Canvas */
-#canvas-wrap{flex:1;overflow:hidden;position:relative;touch-action:none}
-#canvas-inner{position:absolute;transform-origin:0 0;width:100%;height:100%}
-#svg-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-
-/* Nodes */
-.nd{position:absolute;transform:translate(-50%,-50%);cursor:pointer;transition:transform .25s,box-shadow .25s}
-.nd:hover{transform:translate(-50%,-50%) scale(1.06)}
-.nd.expanded{transform:translate(-50%,-50%) scale(1.1)}
-.nd-inner{background:#fff;border:1.5px solid #e3e9ec;border-radius:14px;padding:10px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.06);white-space:nowrap}
-.nd-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nd-label{font-size:14px;font-weight:600;color:#2d3337}
-.nd-count{font-size:18px;font-weight:800;color:#0053dc;min-width:28px;text-align:center}
-
-/* Root node */
-.nd-root .nd-inner{background:linear-gradient(135deg,#0053dc,#0049c2);border-color:#003592;color:#fff;padding:12px 22px;border-radius:18px;box-shadow:0 8px 28px rgba(0,83,220,.25)}
-.nd-root .nd-label{font-size:16px;color:#fff}
-
-/* Sub-nodes */
-.nd-sub{position:absolute;transform:translate(-50%,-50%);cursor:pointer;transition:opacity .25s,transform .25s}
-.nd-sub.hidden{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.7)}
-.nd-sub-inner{background:#fff;border:1px solid #e3e9ec;border-radius:10px;padding:6px 12px;box-shadow:0 2px 8px rgba(0,0,0,.05);white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
-.nd-sub-name{font-size:12px;font-weight:500;color:#2d3337}
-
-/* SVG */
-.bl{stroke:#acb3b7;stroke-width:1.5;fill:none;stroke-dasharray:5 3;opacity:.5}
-.bl.active{stroke:#0053dc;stroke-width:2;stroke-dasharray:none;opacity:1;filter:drop-shadow(0 0 3px #acbfff)}
-.bl.sub{stroke:#acb3b7;stroke-width:1;fill:none;stroke-dasharray:3 2;opacity:0;transition:opacity .25s}
-.bl.sub.vis{opacity:.6}
-
-/* Zoom controls */
-#zoom-btns{position:fixed;bottom:88px;left:16px;display:flex;flex-direction:column;gap:8px;z-index:40}
-.z-btn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border:1.5px solid #e3e9ec;box-shadow:0 2px 12px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#2d3337;font-size:20px;transition:.15s}
-.z-btn:hover{background:#fff;color:#0053dc}
-
-/* Info panel */
-#info-panel{position:fixed;bottom:88px;right:16px;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border:1.5px solid #e3e9ec;border-radius:16px;padding:14px;z-index:40;min-width:150px;max-width:200px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
-#info-panel p{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#757c7f;margin:0 0 8px}
-#info-count{font-size:22px;font-weight:800;color:#0053dc}
-#info-title{font-size:13px;font-weight:600;color:#2d3337;margin-top:2px}
-#info-time{font-size:11px;color:#757c7f;margin-top:6px;border-top:1px solid #e3e9ec;padding-top:6px}
-
-/* Bottom nav */
-#bottom-nav{height:72px;flex-shrink:0;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);border-top:1px solid #e3e9ec;display:flex;align-items:center;overflow-x:auto;padding:0 8px;gap:4px;z-index:50}
-.nav-btn{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:12px;border:none;background:transparent;cursor:pointer;color:#757c7f;font-family:'Heebo',sans-serif;font-size:10px;font-weight:500;transition:.15s;min-width:58px}
-.nav-btn:hover{background:#eaeef1;color:#0053dc}
-.nav-btn.active-nav{background:#eaf0ff;color:#0053dc}
-.nav-btn .mso{font-size:22px}
-
-/* Error toast */
-#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#ac3434;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:100;display:none}
-</style>
+<link rel="stylesheet" href="css/styles.css?v=3"/>
 </head>
-<body>
+<body class="dark-theme">
 
-<!-- Header -->
-<header id="hdr">
-  <div style="display:flex;flex-direction:column">
-    <div id="hdr-title">🧠 אבולוציה סכמטית</div>
-    <div id="hdr-sub">טוען...</div>
+<div id="app">
+
+  <!-- Header -->
+  <div id="header">
+    <button class="btn-icon hdr-btn" onclick="toggleSidebar()" title="תפריט">☰</button>
+    <span class="logo" style="font-size:22px;margin:0 6px">🧠</span>
+    <div style="flex:1;min-width:0">
+      <div class="header-title" id="viewTitle">מפת המערכת הגלובלית</div>
+      <div class="last-updated" id="lastUpdated" style="font-size:11px;color:#94A3B8;margin-top:1px"></div>
+    </div>
+    <button class="btn-icon hdr-btn" id="btnRefresh" onclick="refreshData()" title="רענן">↺</button>
   </div>
-  <div style="display:flex;gap:4px">
-    <button class="hdr-btn" id="btn-back" onclick="goBack()" title="חזרה" style="display:none">
-      <span class="mso">arrow_forward</span>
-    </button>
-    <button class="hdr-btn" onclick="window.location.reload(true)" title="עדכן">
-      <span class="mso">refresh</span>
-    </button>
-  </div>
-</header>
 
-<!-- Canvas -->
-<div id="canvas-wrap">
-  <div id="canvas-inner">
-    <svg id="svg-lines"></svg>
-    <div id="nodes-layer"></div>
-  </div>
-</div>
+  <div id="main">
 
-<!-- Zoom -->
-<div id="zoom-btns">
-  <button class="z-btn" onclick="zoom(0.2)"><span class="mso">add</span></button>
-  <button class="z-btn" onclick="zoom(-0.2)"><span class="mso">remove</span></button>
-  <button class="z-btn" onclick="resetView()"><span class="mso">center_focus_strong</span></button>
-</div>
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div style="padding:14px 16px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94A3B8">
+        פרויקטים
+      </div>
+      <div id="projectList">
+        <!-- populated by app.js -->
+      </div>
+      <div style="padding:8px 16px 14px;border-top:1px solid #1E3A5F;margin-top:8px">
+        <div class="sidebar-item" data-view="global" onclick="setView('global')" style="font-weight:700;color:#38BDF8">
+          <span style="font-size:16px">🌐</span>
+          <span class="sidebar-label">מפה גלובלית</span>
+        </div>
+      </div>
+    </div>
 
-<!-- Info -->
-<div id="info-panel">
-  <p>מצב מערכת</p>
-  <div id="info-count" style="color:#757c7f">—</div>
-  <div id="info-title" style="color:#757c7f">טוען נתונים...</div>
-  <div id="info-time"></div>
-</div>
+    <!-- Canvas -->
+    <div id="canvas">
+      <div id="contentArea"></div>
+      <div id="loadingOverlay" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:100;background:rgba(10,15,30,0.85)">
+        <div class="spinner" style="width:40px;height:40px;border:3px solid #1E3A5F;border-top-color:#38BDF8;border-radius:50%;animation:spin 0.8s linear infinite"></div>
+        <div class="loading-text" style="color:#94A3B8;font-size:14px">טוען נתונים...</div>
+      </div>
+      <div id="errorMsg" style="display:none"></div>
+    </div>
 
-<!-- Bottom nav -->
-<nav id="bottom-nav">
-  <button class="nav-btn active-nav" id="nav-global" onclick="showGlobal()">
-    <span class="mso">account_tree</span>מערכת
-  </button>
-</nav>
+  </div><!-- /main -->
 
-<div id="toast"></div>
+</div><!-- /app -->
 
-<script>
-const SNAP_URL = 'data/snapshot.json';
+<!-- Tooltip for leaf node details -->
+<div id="tooltip"></div>
 
-const CATS = [
-  { key:'agents',      label:'סוכנים',     icon:'smart_toy',   c1:'#0053dc', c2:'rgba(0,83,220,.12)' },
-  { key:'skills',      label:'מיומנויות',   icon:'bolt',        c1:'#006d4a', c2:'rgba(0,109,74,.12)' },
-  { key:'mcp_servers', label:'שרתי MCP',   icon:'dns',         c1:'#742fe5', c2:'rgba(116,47,229,.12)' },
-  { key:'modes',       label:'מצבים',      icon:'tune',        c1:'#596063', c2:'rgba(89,96,99,.10)' },
-  { key:'hooks',       label:'הוקים',      icon:'anchor',      c1:'#ac3434', c2:'rgba(172,52,52,.10)' },
-  { key:'rules',       label:'כללים',      icon:'gavel',       c1:'#795a00', c2:'rgba(121,90,0,.10)' },
-  { key:'memory',      label:'זיכרון',     icon:'memory_alt',  c1:'#006d4a', c2:'rgba(0,109,74,.10)' },
-  { key:'commands',    label:'פקודות',     icon:'terminal',    c1:'#742fe5', c2:'rgba(116,47,229,.10)' },
-];
+<!-- Expand / Collapse All button — fixed bottom-left -->
+<button id="btn-expand-all" onclick="toggleExpandAll()">הרחב הכל</button>
 
-let snap = null;
-let sc = 1, px = 0, py = 0;
-let activeKey = null;
-let currentView = 'global'; // 'global' | 'project'
-let canvasW = 0, canvasH = 0, cx = 0, cy = 0;
-let nodePositions = {}; // key -> {x,y}
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+#canvas { flex:1; overflow:auto; position:relative; padding:16px; }
+#contentArea { min-height: 400px; }
+.svg-wrap { overflow: auto; }
+.nav-bar { display:flex; align-items:center; gap:10px; padding:8px 14px; margin-bottom:10px; background:rgba(30,41,59,0.6); border-radius:10px; font-size:13px; }
+.btn-back-nav { background:none; border:none; cursor:pointer; color:#38BDF8; font-size:13px; font-family:Heebo,sans-serif; padding:4px 8px; border-radius:6px; }
+.btn-back-nav:hover { background:rgba(56,189,248,0.12); }
+.crumb-trail { color:#94A3B8; }
+.crumb { color:#64748B; }
+.d3lnk { pointer-events:none; }
+.d3nd { cursor:pointer; }
+.d3lf { cursor:default; }
+#sidebar { width:260px; flex-shrink:0; background:#111827; border-left:1px solid #1E3A5F; padding:8px 0; overflow-y:auto; display:flex; flex-direction:column; }
+.sidebar-item { display:flex; align-items:center; gap:10px; padding:9px 16px; cursor:pointer; font-size:14px; font-family:Heebo,sans-serif; color:#D1D5DB; border-radius:8px; margin:1px 6px; transition:background 0.14s; }
+.sidebar-item:hover { background:#1E293B; }
+.sidebar-item.active { background:rgba(56,189,248,0.10); color:#38BDF8; }
+.sidebar-label { flex:1; }
+.sidebar-badge { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; font-size:11px; font-weight:700; }
+#header { height:56px; background:rgba(17,24,39,0.95); border-bottom:1px solid #1E3A5F; display:flex; align-items:center; gap:8px; padding:0 14px; flex-shrink:0; }
+.header-title { font-size:16px; font-weight:700; color:#F1F5F9; font-family:Heebo,sans-serif; }
+.hdr-btn { width:36px; height:36px; border-radius:50%; border:none; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#94A3B8; font-size:18px; transition:0.15s; }
+.hdr-btn:hover { background:#1E293B; color:#38BDF8; }
+.logo { color:#38BDF8; }
+#app { display:flex; flex-direction:column; min-height:100vh; }
+#main { display:flex; flex:1; overflow:hidden; height:calc(100vh - 56px); }
+body { background:#0A0F1E; font-family:Heebo,sans-serif; direction:rtl; -webkit-font-smoothing:antialiased; }
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
+</style>
 
-// ---- Data helpers ----
-function getItems(catKey) {
-  if (!snap) return [];
-  const g = snap.claude_global;
-  if (catKey === 'agents') return g.agents || [];
-  if (catKey === 'skills') return g.skills || [];
-  if (catKey === 'mcp_servers') return g.mcp_servers || [];
-  if (catKey === 'modes') return g.modes || [];
-  if (catKey === 'hooks') return g.hooks || [];
-  if (catKey === 'memory') return g.memory || [];
-  if (catKey === 'commands') return g.commands || [];
-  if (catKey === 'rules') {
-    const r = g.rules;
-    if (!r) return [];
-    const langs = r.languages || [];
-    return langs.map(l => ({ name: l }));
-  }
-  return [];
-}
-
-function getCount(catKey) {
-  const items = getItems(catKey);
-  if (catKey === 'commands' && snap?.claude_global?.commands?.length) return snap.claude_global.commands.length;
-  return items.length;
-}
-
-function getItemName(item) {
-  return item.name || item.trigger || item.file || JSON.stringify(item).substring(0,30);
-}
-
-// ---- Rendering ----
-function clearCanvas() {
-  document.getElementById('nodes-layer').innerHTML = '';
-  document.getElementById('svg-lines').innerHTML = '';
-  nodePositions = {};
-  activeKey = null;
-}
-
-function makeEl(tag, attrs, html) {
-  const el = document.createElement(tag);
-  Object.assign(el.style, attrs.style || {});
-  if (attrs.className) el.className = attrs.className;
-  if (html) el.innerHTML = html;
-  return el;
-}
-
-function placeNode(el, x, y) {
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-  document.getElementById('nodes-layer').appendChild(el);
-}
-
-function drawBezier(x1,y1,x2,y2,cls) {
-  const svg = document.getElementById('svg-lines');
-  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
-  const mx = (x1+x2)/2;
-  p.setAttribute('d',`M${x1} ${y1} C${mx} ${y1},${mx} ${y2},${x2} ${y2}`);
-  p.setAttribute('class', cls);
-  svg.appendChild(p);
-  return p;
-}
-
-function renderGlobal() {
-  clearCanvas();
-  currentView = 'global';
-  document.getElementById('btn-back').style.display = 'none';
-  document.getElementById('hdr-sub').textContent = 'מפת המערכת הגלובלית';
-
-  const wrap = document.getElementById('canvas-wrap');
-  canvasW = wrap.offsetWidth;
-  canvasH = wrap.offsetHeight;
-  cx = canvasW / 2;
-  cy = canvasH / 2;
-
-  const R = Math.min(canvasW, canvasH) * 0.34;
-
-  // Root node
-  const root = document.createElement('div');
-  root.className = 'nd nd-root';
-  root.innerHTML = `<div class="nd-inner"><span class="mso" style="color:#fff;font-size:22px">hub</span><span class="nd-label">מערכת Claude</span></div>`;
-  root.onclick = () => { activeKey = null; clearSubNodes(); drawLines(); updateInfo(null); };
-  placeNode(root, cx, cy);
-  nodePositions['__root__'] = {x:cx, y:cy};
-
-  // Category nodes
-  CATS.forEach((cat, i) => {
-    const angle = (i / CATS.length) * 2 * Math.PI - Math.PI / 2;
-    const x = cx + R * Math.cos(angle);
-    const y = cy + R * Math.sin(angle);
-    nodePositions[cat.key] = {x, y};
-
-    const count = getCount(cat.key);
-    const nd = document.createElement('div');
-    nd.className = 'nd';
-    nd.id = 'nd-' + cat.key;
-    nd.dataset.key = cat.key;
-    nd.innerHTML = `<div class="nd-inner">
-      <div class="nd-icon" style="background:${cat.c2};color:${cat.c1}"><span class="mso">${cat.icon}</span></div>
-      <span class="nd-count" style="color:${cat.c1}">${count || '—'}</span>
-      <span class="nd-label">${cat.label}</span>
-    </div>`;
-    nd.onclick = () => toggleCat(cat);
-    placeNode(nd, x, y);
-  });
-
-  drawLines();
-  updateInfo(null);
-  buildBottomNav();
-}
-
-function drawLines() {
-  const svg = document.getElementById('svg-lines');
-  // Remove old main lines, keep sub lines
-  svg.querySelectorAll('.bl:not(.sub)').forEach(el => el.remove());
-
-  CATS.forEach(cat => {
-    const pos = nodePositions[cat.key];
-    if (!pos) return;
-    const active = cat.key === activeKey;
-    drawBezier(cx, cy, pos.x, pos.y, 'bl' + (active ? ' active' : ''));
-  });
-}
-
-function toggleCat(cat) {
-  if (activeKey === cat.key) {
-    activeKey = null;
-    clearSubNodes();
-    drawLines();
-    updateInfo(null);
-    document.getElementById('nd-' + cat.key)?.classList.remove('expanded');
-  } else {
-    if (activeKey) {
-      document.getElementById('nd-' + activeKey)?.classList.remove('expanded');
-      clearSubNodes();
-    }
-    activeKey = cat.key;
-    document.getElementById('nd-' + cat.key)?.classList.add('expanded');
-    drawLines();
-    showSubNodes(cat);
-    updateInfo(cat);
-  }
-}
-
-function showSubNodes(cat) {
-  clearSubNodes();
-  const items = getItems(cat.key);
-  if (!items.length) return;
-  const pos = nodePositions[cat.key];
-  const rSub = Math.min(canvasW, canvasH) * 0.16;
-  const visible = items.slice(0, 10);
-
-  visible.forEach((item, i) => {
-    const angle = (i / visible.length) * 2 * Math.PI - Math.PI / 2;
-    const x = pos.x + rSub * Math.cos(angle);
-    const y = pos.y + rSub * Math.sin(angle);
-    const name = getItemName(item);
-
-    const nd = document.createElement('div');
-    nd.className = 'nd-sub hidden';
-    nd.innerHTML = `<div class="nd-sub-inner" title="${name}"><span class="nd-sub-name">${name}</span></div>`;
-    nd.style.left = x + 'px';
-    nd.style.top = y + 'px';
-    nd.dataset.sub = '1';
-    document.getElementById('nodes-layer').appendChild(nd);
-
-    // Sub line
-    const ln = drawBezier(pos.x, pos.y, x, y, 'bl sub');
-    ln.dataset.sub = '1';
-
-    requestAnimationFrame(() => {
-      nd.classList.remove('hidden');
-      ln.classList.add('vis');
-    });
-  });
-}
-
-function clearSubNodes() {
-  document.querySelectorAll('[data-sub]').forEach(el => el.remove());
-  document.querySelectorAll('.bl.sub').forEach(el => el.remove());
-}
-
-function updateInfo(cat) {
-  const countEl = document.getElementById('info-count');
-  const titleEl = document.getElementById('info-title');
-  const timeEl = document.getElementById('info-time');
-
-  if (!cat) {
-    const totalAgents = getCount('agents') + getCount('skills') + getCount('mcp_servers') +
-      getCount('modes') + getCount('hooks') + getCount('rules') +
-      getCount('memory') + getCount('commands');
-    countEl.textContent = totalAgents;
-    countEl.style.color = '#0053dc';
-    titleEl.textContent = 'רכיבים במערכת';
-  } else {
-    const count = getCount(cat.key);
-    countEl.textContent = count || '—';
-    countEl.style.color = cat.c1;
-    titleEl.textContent = cat.label;
-  }
-
-  if (snap?.generated_at) {
-    const d = new Date(snap.generated_at);
-    timeEl.textContent = 'עודכן: ' + d.toLocaleDateString('he-IL') + ' ' + d.toLocaleTimeString('he-IL', {hour:'2-digit',minute:'2-digit'});
-  }
-}
-
-// ---- Projects ----
-function buildBottomNav() {
-  const nav = document.getElementById('bottom-nav');
-  nav.innerHTML = `<button class="nav-btn ${currentView==='global'?'active-nav':''}" id="nav-global" onclick="showGlobal()"><span class="mso">account_tree</span>מערכת</button>`;
-
-  if (!snap?.projects) return;
-  snap.projects.forEach(proj => {
-    const btn = document.createElement('button');
-    btn.className = 'nav-btn' + (currentView==='project' && currentView===proj.id ? ' active-nav' : '');
-    btn.innerHTML = `<span class="mso">folder_open</span>${proj.name}`;
-    btn.onclick = () => showProject(proj);
-    nav.appendChild(btn);
-  });
-}
-
-function showGlobal() {
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-  document.getElementById('nav-global')?.classList.add('active-nav');
-  renderGlobal();
-}
-
-function showProject(proj) {
-  clearCanvas();
-  currentView = 'project';
-  document.getElementById('btn-back').style.display = 'flex';
-  document.getElementById('hdr-sub').textContent = proj.name;
-
-  const wrap = document.getElementById('canvas-wrap');
-  canvasW = wrap.offsetWidth;
-  canvasH = wrap.offsetHeight;
-  cx = canvasW / 2;
-  cy = canvasH / 2;
-
-  // Root = project name
-  const root = document.createElement('div');
-  root.className = 'nd nd-root';
-  root.innerHTML = `<div class="nd-inner"><span class="mso" style="color:#fff">folder_open</span><span class="nd-label">${proj.name}</span></div>`;
-  placeNode(root, cx, cy);
-
-  // Project details as nodes
-  const details = [];
-  if (proj.description) details.push({ label: proj.description.substring(0, 40), icon: 'info' });
-  if (proj.status) details.push({ label: proj.status, icon: 'circle' });
-  if (proj.files_count) details.push({ label: proj.files_count + ' קבצים', icon: 'description' });
-  if (proj.tech_stack?.length) {
-    proj.tech_stack.slice(0, 5).forEach(t => details.push({ label: t, icon: 'code' }));
-  }
-  if (proj.last_modified) {
-    const d = new Date(proj.last_modified);
-    details.push({ label: d.toLocaleDateString('he-IL'), icon: 'schedule' });
-  }
-
-  const R = Math.min(canvasW, canvasH) * 0.3;
-  details.forEach((d, i) => {
-    const angle = (i / details.length) * 2 * Math.PI - Math.PI / 2;
-    const x = cx + R * Math.cos(angle);
-    const y = cy + R * Math.sin(angle);
-
-    const nd = document.createElement('div');
-    nd.className = 'nd';
-    nd.innerHTML = `<div class="nd-inner">
-      <div class="nd-icon" style="background:#eaeef1;color:#596063"><span class="mso">${d.icon}</span></div>
-      <span class="nd-label" style="font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis">${d.label}</span>
-    </div>`;
-    placeNode(nd, x, y);
-    drawBezier(cx, cy, x, y, 'bl');
-  });
-
-  // Info panel
-  document.getElementById('info-count').textContent = proj.files_count || '—';
-  document.getElementById('info-count').style.color = '#0053dc';
-  document.getElementById('info-title').textContent = proj.name;
-
-  // Nav highlight
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-}
-
-function goBack() {
-  showGlobal();
-}
-
-// ---- Zoom / Pan ----
-function zoom(delta) {
-  sc = Math.max(0.3, Math.min(3, sc + delta));
-  applyTransform();
-}
-
-function resetView() {
-  sc = 1; px = 0; py = 0;
-  applyTransform();
-}
-
-function applyTransform() {
-  document.getElementById('canvas-inner').style.transform = `scale(${sc}) translate(${px/sc}px, ${py/sc}px)`;
-}
-
-// Touch/wheel zoom-pan
-(function() {
-  const wrap = document.getElementById('canvas-wrap');
-  let lastDist = 0, dragging = false, startX, startY, startPX, startPY;
-
-  wrap.addEventListener('wheel', e => {
-    e.preventDefault();
-    zoom(e.deltaY < 0 ? 0.1 : -0.1);
-  }, {passive:false});
-
-  wrap.addEventListener('touchstart', e => {
-    if (e.touches.length === 2) {
-      lastDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-    } else if (e.touches.length === 1) {
-      dragging = true;
-      startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-      startPX = px; startPY = py;
-    }
-  }, {passive:true});
-
-  wrap.addEventListener('touchmove', e => {
-    if (e.touches.length === 2) {
-      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      zoom((d - lastDist) * 0.008);
-      lastDist = d;
-    } else if (dragging && e.touches.length === 1) {
-      px = startPX + (e.touches[0].clientX - startX);
-      py = startPY + (e.touches[0].clientY - startY);
-      applyTransform();
-    }
-  }, {passive:true});
-
-  wrap.addEventListener('touchend', () => { dragging = false; });
-
-  // Mouse drag
-  wrap.addEventListener('mousedown', e => {
-    if (e.target.closest('.nd') || e.target.closest('.nd-sub')) return;
-    dragging = true;
-    startX = e.clientX; startY = e.clientY;
-    startPX = px; startPY = py;
-    wrap.style.cursor = 'grabbing';
-  });
-  window.addEventListener('mousemove', e => {
-    if (!dragging) return;
-    px = startPX + (e.clientX - startX);
-    py = startPY + (e.clientY - startY);
-    applyTransform();
-  });
-  window.addEventListener('mouseup', () => { dragging = false; wrap.style.cursor = ''; });
-})();
-
-// ---- Init ----
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 4000);
-}
-
-async function init() {
-  document.getElementById('hdr-sub').textContent = 'טוען נתונים...';
-  try {
-    const res = await fetch(SNAP_URL + '?t=' + Date.now());
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    snap = await res.json();
-    renderGlobal();
-  } catch(e) {
-    document.getElementById('hdr-sub').textContent = 'שגיאה בטעינת נתונים';
-    document.getElementById('info-title').textContent = 'לא ניתן לטעון snapshot.json';
-    showToast('שגיאה: ' + e.message);
-    // Render with empty data
-    renderGlobal();
-  }
-}
-
-window.addEventListener('resize', () => {
-  if (currentView === 'global') renderGlobal();
-});
-
-init();
-</script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js/colors.js?v=3"></script>
+<script src="js/mindmap.js?v=3"></script>
+<script src="js/app.js?v=3"></script>
 </body>
 </html>

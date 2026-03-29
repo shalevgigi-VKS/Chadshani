@@ -374,3 +374,119 @@ body {
   .tree-children   { margin-right: 18px; }
   .tree-count      { font-size: 12px; padding: 2px 9px; }
 }
+
+/* ── Dark D3 Theme Override ─────────────────────────────── */
+body.dark-theme {
+  background: #0A0F1E;
+  color: #F1F5F9;
+  background-image: none;
+}
+body.dark-theme #app  { background: #0A0F1E; }
+body.dark-theme #header {
+  background: rgba(17,24,39,0.92);
+  border-bottom: 1px solid #1E3A5F;
+}
+body.dark-theme #header .logo { color: #38BDF8; }
+body.dark-theme #header .header-title { color: #F1F5F9; }
+body.dark-theme #header #viewTitle { color: #E0F2FE; }
+body.dark-theme #header .last-updated { color: #94A3B8; }
+body.dark-theme .hdr-btn, body.dark-theme .btn-icon { color: #94A3B8; }
+body.dark-theme .hdr-btn:hover, body.dark-theme .btn-icon:hover { background: #1E293B; color: #38BDF8; }
+body.dark-theme #sidebar {
+  background: #111827;
+  border-left: 1px solid #1E3A5F;
+}
+body.dark-theme .sidebar-section-title { color: #94A3B8; }
+body.dark-theme .sidebar-item { color: #D1D5DB; }
+body.dark-theme .sidebar-item:hover { background: #1E293B; }
+body.dark-theme .sidebar-item.active { background: rgba(56,189,248,0.08); color: #38BDF8; }
+body.dark-theme #canvas { background: #0A0F1E; }
+body.dark-theme #contentArea { background: #0A0F1E; }
+body.dark-theme .nav-bar { background: rgba(17,24,39,0.7); border-bottom: 1px solid #1E3A5F; }
+body.dark-theme .btn-back-nav { color: #38BDF8; }
+body.dark-theme .crumb-trail, body.dark-theme .crumb { color: #94A3B8; }
+body.dark-theme .svg-wrap svg { background: #0A0F1E; }
+
+/* ── Expand/Collapse All Button (fixed bottom-left) ─────── */
+#btn-expand-all {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 200;
+  padding: 10px 22px;
+  background: #111827;
+  border: 1.5px solid rgba(56,189,248,0.45);
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Heebo', sans-serif;
+  color: #38BDF8;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(15,26,80,0.22), 0 2px 8px rgba(56,189,248,0.14);
+  transition: all 0.18s;
+  direction: rtl;
+  letter-spacing: 0.3px;
+}
+#btn-expand-all:hover {
+  background: #38BDF8;
+  color: #0A0F1E;
+  border-color: #38BDF8;
+  box-shadow: 0 8px 28px rgba(56,189,248,0.40), 0 3px 10px rgba(56,189,248,0.25);
+  transform: translateY(-2px);
+}
+#btn-expand-all:active {
+  transform: translateY(0);
+}
+
+/* ── Tooltip (leaf node detail) ─────────────────────────── */
+#tooltip {
+  display: none;
+  position: fixed;
+  z-index: 500;
+  background: rgba(15,26,58,0.96);
+  border: 1px solid rgba(56,189,248,0.30);
+  border-radius: 14px;
+  padding: 14px 18px;
+  max-width: 260px;
+  min-width: 160px;
+  box-shadow: 0 14px 48px rgba(0,0,0,0.38), 0 4px 16px rgba(56,189,248,0.18);
+  pointer-events: none;
+  color: #F1F5F9;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  direction: rtl;
+}
+
+/* ── D3 Node Hover Effect ────────────────────────────────── */
+.d3nd {
+  cursor: pointer;
+}
+.d3nd:hover rect {
+  filter: brightness(1.12) drop-shadow(0 4px 14px rgba(0,0,0,0.22));
+}
+.d3nd rect {
+  transition: filter 0.18s;
+}
+
+/* ── Loading Overlay Dark ─────────────────────────────────── */
+body.dark-theme #loadingOverlay {
+  background: rgba(10,15,30,0.92);
+}
+body.dark-theme .spinner {
+  border-color: #1E3A5F;
+  border-top-color: #38BDF8;
+}
+body.dark-theme .loading-text { color: #94A3B8; }
+
+/* ── Error Message Dark ───────────────────────────────────── */
+body.dark-theme #errorMsg {
+  background: rgba(239,68,68,0.10);
+  border: 1px solid rgba(239,68,68,0.30);
+  color: #FCA5A5;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 20px;
+}

@@ -35,13 +35,12 @@ jobs:
       - name: Notify iPhone — site updated
         if: success()
         run: |
-          DEPLOY_TIME=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
           curl -s -X POST https://ntfy.sh/CloudeCode \
-            -H "Title: אבולוציה סכמטית — עיצוב חדש נפרס ✅" \
+            -H "Title: אבולוציה סכמטית ✅" \
             -H "Priority: default" \
             -H "Tags: brain" \
             -H "Click: ${{ steps.deploy.outputs.page_url }}" \
-            -d "מפת המערכת עודכנה ב-GitHub Pages — ${DEPLOY_TIME}"
+            -d "אתר אבולוציה נטען ומוכן לצפיה!"
 
       - name: Notify iPhone — deploy failed
         if: failure()

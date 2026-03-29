@@ -9,8 +9,8 @@ class MindMap {
     this.collapsed = new Set();
     this.currentData = null;
     this.tooltip = document.getElementById('tooltip');
-    this.NODE_W = 210; this.NODE_H = 54;
-    this.GAP_X = 30;   this.GAP_Y = 90;
+    this.NODE_W = 224; this.NODE_H = 60;
+    this.GAP_X = 38;   this.GAP_Y = 100;
     this.ANIM = 400;
     this._initSVG();
     window.addEventListener('resize', () => { if(this.currentData){ this._initSVG(); this.render(this.currentData); }});

@@ -35,4 +35,4 @@ Register-ScheduledTask `
 
 Write-Host "Task registered: $TaskName"
 Write-Host "Runs every Sunday at 11:00 AM local time"
-Write-Host "To test immediately: Start-ScheduledTask -TaskName '$TaskName'"
+Write-Host ("To test immediately: Start-ScheduledTask -TaskName " + $TaskName)

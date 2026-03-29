@@ -121,39 +121,47 @@ def scan_skills():
 
 def scan_hooks():
     result = []
-    hooks_json = CLAUDE_DIR / 'hooks' / 'hooks.json'
-    if hooks_json.exists():
-        try:
-            data = json.loads(read_text(hooks_json))
-            for h in data if isinstance(data, list) else data.get('hooks', []):
-                result.append({
-                    'type': h.get('type', h.get('event', '')),
-                    'trigger': h.get('trigger', h.get('matcher', '')),
-                    'script': h.get('script', h.get('command', ''))[:80]
-                })
-        except Exception:
-            pass
-    # Also check settings.json hooks section
     settings_json = CLAUDE_DIR / 'settings.json'
-    if settings_json.exists() and not result:
+    if settings_json.exists():
         try:
             data = json.loads(read_text(settings_json))
             hooks_section = data.get('hooks', {})
+            seen = set()
             for event_type, entries in hooks_section.items():
                 if isinstance(entries, list):
                     for entry in entries:
                         if isinstance(entry, dict):
+                            matcher = entry.get('matcher', '')
+                            description = entry.get('description', '')
                             hooks_list = entry.get('hooks', [entry])
                             for h in hooks_list:
-                                result.append({
-                                    'type': event_type,
-                                    'trigger': entry.get('matcher', ''),
-                                    'script': (h.get('command', '') if isinstance(h, dict) else str(h))[:80]
-                                })
-                        else:
-                            result.append({'type': event_type, 'trigger': '', 'script': str(entry)[:80]})
+                                cmd = (h.get('command', '') if isinstance(h, dict) else str(h))[:80]
+                                key = (event_type, matcher, cmd[:30])
+                                if key not in seen:
+                                    seen.add(key)
+                                    result.append({
+                                        'type': event_type,
+                                        'trigger': matcher,
+                                        'description': description[:120],
+                                        'script': cmd
+                                    })
         except Exception:
             pass
+    # Fallback: hooks.json
+    if not result:
+        hooks_json = CLAUDE_DIR / 'hooks' / 'hooks.json'
+        if hooks_json.exists():
+            try:
+                data = json.loads(read_text(hooks_json))
+                for h in data if isinstance(data, list) else data.get('hooks', []):
+                    result.append({
+                        'type': h.get('type', h.get('event', '')),
+                        'trigger': h.get('trigger', h.get('matcher', '')),
+                        'description': h.get('description', '')[:120],
+                        'script': h.get('script', h.get('command', ''))[:80]
+                    })
+            except Exception:
+                pass
     print(f'[HOOKS] Found {len(result)}')
     return result
 
@@ -175,7 +183,16 @@ def scan_modes():
             # Find "Triggered by:" line
             m = re.search(r'Triggered by:\s*(.+)', text)
             trigger = m.group(1).strip() if m else ''
-        result.append({'name': name, 'version': version, 'trigger': trigger[:80]})
+        # Extract description: first non-header, non-metadata paragraph
+        description = ''
+        for line in text.splitlines():
+            l = line.strip()
+            if l and not l.startswith('#') and not l.startswith('---') \
+               and not l.startswith('Version') and not l.startswith('Last Updated') \
+               and not l.startswith('Change:') and not l.startswith('Trigger'):
+                description = l[:120]
+                break
+        result.append({'name': name, 'version': version, 'trigger': trigger[:80], 'description': description})
     print(f'[MODES] Found {len(result)}')
     return result
 
@@ -252,13 +269,15 @@ def scan_commands():
     result = []
     commands_dir = CLAUDE_DIR / 'commands'
     if not commands_dir.exists():
-        # Try .claude/commands at root
         commands_dir = Path.home() / '.claude' / 'commands'
     if commands_dir.exists():
         for f in sorted(commands_dir.rglob('*.md')):
             name = f.stem
             category = f.parent.name if f.parent != commands_dir else 'general'
-            result.append({'name': name, 'category': category})
+            text = read_text(f)
+            fm = parse_frontmatter(text)
+            desc = fm.get('description', '') or fm.get('purpose', '') or first_non_empty_line(text)
+            result.append({'name': name, 'category': category, 'description': desc[:120]})
     print(f'[COMMANDS] Found {len(result)}')
     return result
 
@@ -276,7 +295,8 @@ def scan_memory():
             result.append({
                 'file': proj_mem.name,
                 'name': fm.get('name', proj_mem.stem),
-                'type': fm.get('type', 'memory')
+                'type': fm.get('type', 'memory'),
+                'description': fm.get('description', '')[:120]
             })
     else:
         for f in sorted(memory_dir.glob('*.md')):
@@ -287,7 +307,8 @@ def scan_memory():
             result.append({
                 'file': f.name,
                 'name': fm.get('name', f.stem),
-                'type': fm.get('type', 'memory')
+                'type': fm.get('type', 'memory'),
+                'description': fm.get('description', '')[:120]
             })
     print(f'[MEMORY] Found {len(result)}')
     return result
@@ -304,6 +325,28 @@ KNOWN_PROJECTS = {
     '5_StickerBot':         {'name': 'סטיקר בוט', 'description': 'בוט WhatsApp ליצירת מדבקות'},
     '6_Gigiz':              {'name': 'גיגיז', 'description': 'פלטפורמת גיג עבודה'},
     '7_WhaleWatcher':       {'name': 'WhaleWatcher', 'description': 'מעקב עסקאות לווייתנים בשוק ההון'},
+}
+
+PROJECT_AGENTS = {
+    '0_EvolutionSchematic': ['plan', 'code-reviewer', 'doc-updater'],
+    '1_EmotionWheel':       ['plan', 'code-reviewer'],
+    '2_Chadshani':          ['notice-manager', 'code-reviewer', 'database-reviewer', 'security-reviewer'],
+    '3_Notifications':      ['notice-manager', 'code-reviewer'],
+    '4_RemoteAccess':       ['security-reviewer', 'code-reviewer'],
+    '5_StickerBot':         ['code-reviewer', 'general-purpose'],
+    '6_Gigiz':              ['architect', 'code-reviewer', 'database-reviewer'],
+    '7_WhaleWatcher':       ['architect', 'code-reviewer', 'security-reviewer'],
+}
+
+PROJECT_SKILLS = {
+    '0_EvolutionSchematic': ['frontend-design', 'e2e-testing', 'update-docs'],
+    '1_EmotionWheel':       ['frontend-design', 'e2e-testing'],
+    '2_Chadshani':          ['frontend-design', 'e2e-testing', 'tdd-workflow'],
+    '3_Notifications':      ['update-docs', 'configure-ecc'],
+    '4_RemoteAccess':       ['update-docs'],
+    '5_StickerBot':         ['e2e-testing', 'update-docs'],
+    '6_Gigiz':              ['frontend-design', 'tdd-workflow', 'e2e-testing'],
+    '7_WhaleWatcher':       ['frontend-design', 'tdd-workflow'],
 }
 
 def detect_tech_stack(folder):
@@ -398,8 +441,9 @@ def scan_projects():
             'description': description,
             'tech_stack': tech_stack,
             'status': status,
-            'files_count': files_count,
             'last_modified': last_modified,
+            'project_agents': PROJECT_AGENTS.get(folder.name, []),
+            'project_skills': PROJECT_SKILLS.get(folder.name, []),
         })
     result.sort(key=lambda p: p['id'])
     print(f'[PROJECTS] Found {len(result)}')

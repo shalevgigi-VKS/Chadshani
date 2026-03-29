@@ -1,8 +1,9 @@
 /**
- * Schematic Evolution — App Logic v4.0
- * Drill-down interactive tree — no D3, pure HTML/CSS/JS
+ * Schematic Evolution — App Logic v5.0
+ * In-place expand/collapse D3 tree — dark theme, RTL Hebrew
  */
 let snapshotData = null, currentView = 'global';
+let collapsedNodes = new Set(); // category IDs currently collapsed
 
 const DATA_URL = (() => {
   const loc = window.location.pathname;
@@ -16,7 +17,7 @@ const HE_AGENTS = {
   'build-error-resolver': 'פותר שגיאות Build ו-TypeScript במינימום שינויים',
   'chief-of-staff':       'ראש מטה תקשורת — מיון מיילים, Slack, LINE, Messenger',
   'code-reviewer':        'מבקר קוד — איכות, אבטחה ותחזוקה אחרי כל כתיבה',
-  'cpp-build-resolver':   'פותר שגיאות C++, CMake, qllinker',
+  'cpp-build-resolver':   'פותר שגיאות C++, CMake, linker',
   'cpp-reviewer':         'מבקר C++ — ניהול זיכרון, מקביליות, ביצועים',
   'database-reviewer':    'מומחה PostgreSQL — שאילתות, סכמה, ביצועים, אבטחה',
   'doc-updater':          'מעדכן תיעוד — CLAUDE.md, READMEs, codemaps',
@@ -46,34 +47,44 @@ const HE_AGENTS = {
   'claude-code-guide':    'מומחה Claude Code — CLI, hooks, slash commands, MCP',
   'statusline-setup':     'מגדיר שורת סטטוס ב-Claude Code',
   'Explore':              'חוקר קודבייס לעומק — חיפוש קבצים, קוד ותשובות',
-  'e2e-runner':           'מריץ בדיקות End-to-End עם Playwright',
+  'backup-agent':         'גיבוי חודשי — snapshots של כל הפרויקטים ל-E:\\backup\\',
+  'bug-learner':          'לומד מבאגים — שומר פתרונות, מונע חזרה על שגיאות',
+  'chadshani-optimizer':  'מבקר ומשפר Chadshani — עלויות, איכות, שדרוגי API',
 };
+
 const HE_AGENTS_DETAIL = {
-  'architect':            'משמש לפני כתיבת קוד — מונע ארכיטקטורה שבורה מאוחר יותר. מתאים להחלטות על מבנה שכבות, בסיס נתונים, microservices ו-APIs.',
-  'code-reviewer':        'רץ אוטומטית אחרי כל שינוי קוד. עוצר קוד גרוע לפני ש-commit — חוסך שעות debug.',
-  'security-reviewer':    'שכבת ההגנה האחרונה. מגלה סודות שנשכחו ב-code, הזרקות SQL ופגיעויות OWASP לפני שהם מגיעים לפרודקשן.',
-  'tdd-guide':            'מוודא שהתוצאה הסופית מכוסה ב-80%+ בדיקות. מפחית באגים בפרודקשן ב-60-80% לפי מחקרים.',
-  'planner':              'חוסך זמן עצום — מפרק בקשות עמומות לשלבים ברורים. עדיף שלוחצים על "שמור" לפני כתיבת קוד.',
-  'database-reviewer':    'מגלה missing indexes, שאילתות איטיות ובעיות RLS לפני שנגיעים לפרודקשן.',
+  'architect':         'משמש לפני כתיבת קוד — מונע ארכיטקטורה שבורה. מתאים להחלטות על מבנה שכבות, DB, microservices.',
+  'code-reviewer':     'רץ אחרי כל שינוי קוד. עוצר קוד גרוע לפני commit — חוסך שעות debug.',
+  'security-reviewer': 'שכבת ההגנה האחרונה. מגלה סודות שנשכחו, הזרקות SQL ופגיעויות OWASP.',
+  'tdd-guide':         'מוודא כיסוי 80%+ בדיקות. מפחית באגים בפרודקשן ב-60-80%.',
+  'planner':           'מפרק בקשות עמומות לשלבים ברורים. עדיף לפני כתיבת קוד.',
+  'database-reviewer': 'מגלה missing indexes, שאילתות איטיות ובעיות RLS לפני פרודקשן.',
 };
+
 const HE_SKILLS = {
-  'ai-regression-testing':   'בדיקות רגרסיה לפיתוח מבוסס AI',
-  'configure-ecc':            'מתקין אינטראקטיבי לסקילים וכללים',
-  'continuous-learning':      'חילוץ פטרנים לשימוש חוזר מסשנים',
-  'create-sparc-agent':       'יצירת סוכן SPARC מובנה',
-  'debug-loop':               'לולאת דיבוג אוטומטית',
-  'init-sparc':               'אתחול פרויקט SPARC',
-  'load-rules':               'טעינת קבצי כללים לפרויקט',
-  'mcp-setup':                'הגדרת שרתי MCP',
-  'prime':                    'הכנת קונטקסט מהיר לפרויקט',
-  'review-pr':                'סקירת Pull Request',
-  'run-tests':                'הרצת טסטים',
-  'sub-task':                 'ניהול משימות-משנה',
-  'update-codemaps':          'עדכון מפות קוד ותיעוד',
-  'update-docs':              'עדכון תיעוד ו-CLAUDE.md',
-  'vcs-github':               'ניהול גרסאות ב-GitHub',
-  'worktree':                 'ניהול git worktrees מבודדים',
-  'commit':                   'יצירת commit מסוגנן',
+  'ai-regression-testing':    'בדיקות רגרסיה לפיתוח מבוסס AI',
+  'configure-ecc':             'מתקין אינטראקטיבי לסקילים וכללים',
+  'continuous-learning':       'חילוץ פטרנים לשימוש חוזר מסשנים',
+  'continuous-learning-v2':    'מערכת למידה מבוססת instincts',
+  'e2e-testing':               'בדיקות E2E עם Playwright — POM, artifacts',
+  'frontend-design':           'עיצוב ממשק משתמש — production-grade, distinctive',
+  'tdd-workflow':              'TDD — טסטים קודם לקוד, כיסוי 80%+',
+  'update-docs':               'עדכון תיעוד ו-CLAUDE.md',
+  'update-codemaps':           'עדכון מפות קוד ותיעוד ארכיטקטורה',
+  'commit':                    'יצירת commit מסוגנן',
+  'code-review':               'ביקורת קוד — אבטחה, איכות',
+  'plan':                      'תכנון יישום — דרישות + סיכונים',
+  'learn':                     'למד מה-session — חלץ פטרנים',
+  'verify':                    'אימות מקיף — בדיקת מצב הקוד',
+  'build-fix':                 'תיקון build שגיאות',
+  'checkpoint':                'שמירת נקודת ביקורת ב-workflow',
+  'save-session':              'שמירת session לקובץ',
+  'resume-session':            'חזרה ל-session מהקובץ האחרון',
+  'security-audit':            'סריקת אבטחה מלאה — OWASP, סודות',
+  'instinct-status':           'הצגת instincts פעילים',
+  'model-route':               'בחירת מודל — Haiku/Sonnet/Opus',
+  'docs':                      'תיעוד ספריות עדכני דרך Context7',
+  'devfleet':                  'ניהול צוות סוכני פיתוח מקביל',
 };
 
 // ── Hebrew: Modes ──────────────────────────────────────────────────────────
@@ -105,7 +116,7 @@ const HE_MCP = {
   'playwright':                   'אוטומציית דפדפן — E2E, צילומי מסך, Chrome/Firefox',
   'Figma':                        'שרת Figma — קריאת עיצובים, Code Connect, HTML/Tailwind',
   'figma':                        'שרת Figma — קריאת עיצובים, Code Connect',
-  'Gmail':                        'Gmail — חיפוש, קריאה, יצירת טיוטות ממש Claude Code',
+  'Gmail':                        'Gmail — חיפוש, קריאה, יצירת טיוטות מתוך Claude Code',
   'gmail':                        'Gmail — חיפוש, קריאה, יצירת טיוטות',
   'Google Calendar':              'Google Calendar — אירועים, פנוי/תפוס, תזמון פגישות',
   'Google Stitch MCP':            'Google Labs UI — ממשקים מטקסט, HTML/Tailwind',
@@ -175,7 +186,7 @@ const HE_COMMANDS = {
   'checkpoint':        'נקודת ביקורת — שמירת מצב workflow',
   'build-fix':         'תיקון build — שגיאות TypeScript/Webpack במינימום',
   'e2e':               'בדיקות E2E — Playwright על זרימות קריטיות',
-  'docs':              'עדכון תיעוד — CLAUDE.md, READMEs, codemaps',
+  'docs':              'תיעוד עדכני ספריות דרך Context7',
   'refactor-clean':    'ניקוי קוד מת — knip, depcheck, הסרה בטוחה',
   'verify':            'אימות מקיף — בדיקת מצב הקוד הנוכחי',
   'orchestrate':       'אורקסטרציה — ניהול זרימת עבודה רב-סוכני',
@@ -222,7 +233,6 @@ const HE_COMMANDS = {
   'rules-distill':     'חילוץ כללים — מ-skills לעקרונות כלליים',
   'skill-create':      'יצירת סקיל — תיעוד פטרן חדש עם frontmatter',
   'skill-health':      'בריאות סקילים — בדיקה ועדכון status',
-  'setup-pm':          'הגדרת package manager — npm/pnpm/yarn/bun',
   'test-coverage':     'כיסוי טסטים — ניתוח gap, ייצור טסטים חסרים',
   'update-codemaps':   'עדכון codemaps — תיעוד ארכיטקטורה lean',
   'update-docs':       'עדכון docs — סנכרון תיעוד עם קוד',
@@ -248,8 +258,10 @@ async function loadData() {
   } catch (err) {
     showLoading(false);
     const errEl = document.getElementById('errorMsg');
-    errEl.style.display = 'block';
-    errEl.textContent = 'שגיאה בטעינת הנתונים — הרץ את הסורק תחילה.';
+    if (errEl) {
+      errEl.style.display = 'block';
+      errEl.textContent = 'שגיאה בטעינת הנתונים — הרץ את הסורק תחילה.';
+    }
   }
 }
 
@@ -259,7 +271,9 @@ function updateTimestamp(iso) {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit'
   });
-  document.querySelectorAll('.last-updated').forEach(el => el.textContent = `עודכן: ${s}`);
+  const el = document.getElementById('lastUpdated');
+  if (el) el.textContent = `עודכן: ${s}`;
+  document.querySelectorAll('.last-updated').forEach(e => e.textContent = `עודכן: ${s}`);
 }
 
 function buildProjectMenu(projects) {
@@ -296,7 +310,7 @@ function setView(view) {
 }
 
 // ── Navigation Stack ───────────────────────────────────────────────────────
-let navStack = []; // [{data, title}]
+let navStack = [];
 let currentD3Data = null;
 let currentD3Title = '';
 
@@ -304,11 +318,6 @@ function navigateBack() {
   if (navStack.length === 0) return;
   const prev = navStack.pop();
   _renderD3(prev.data, prev.title);
-}
-
-function navigateTo(data, title) {
-  if (currentD3Data) navStack.push({ data: currentD3Data, title: currentD3Title });
-  _renderD3(data, title);
 }
 
 // ── Data builders ──────────────────────────────────────────────────────────
@@ -322,7 +331,7 @@ function buildGlobalData() {
   const rulesItems = buildRulesItems(g.rules);
 
   return {
-    id: 'root', icon: '🧠', label: 'מערכת Claude Code', count: total, color: '#4F6EF7',
+    id: 'root', icon: '🧠', label: 'מערכת Claude Code', count: total, color: '#38BDF8',
     children: [
       catData('agents',     'סוכנים',    g.agents,     a => ({ name: a.name, he: HE_AGENTS[a.name] || a.purpose, detail: HE_AGENTS_DETAIL[a.name] })),
       catData('skills',     'סקילים',    g.skills,     s => ({ name: s.name, he: HE_SKILLS[s.name] || s.purpose, tag: s.status !== 'active' ? s.status : null })),
@@ -333,10 +342,12 @@ function buildGlobalData() {
       catData('memory',     'זיכרון',    g.memory,     m => ({ name: m.name || m.file, he: HE_MEMORY_TYPE[m.type] || m.description, tag: m.type })),
       catData('commands',   'פקודות',    g.commands,   c => ({ name: `/${c.name}`, he: HE_COMMANDS[c.name] || c.description, tag: c.category !== 'general' ? c.category : null })),
       catData('projects',   'פרויקטים',  snapshotData.projects || [],
-        p => {
-          const updated = p.last_modified ? new Date(p.last_modified).toLocaleDateString('he-IL') : '—';
-          return { name: p.name, he: `${p.description||''} · ${p.tech_stack?.join(', ')||''} · ${updated}`, tag: p.status, isProject: p.id };
-        }),
+        p => ({
+          name: p.name,
+          he: p.description || '',
+          tag: p.status,
+          isProject: p.id
+        })),
     ]
   };
 }
@@ -353,7 +364,7 @@ function catData(cat, label, items, mapper) {
   const icon = CAT_ICONS[cat];
   return {
     id: cat, icon, label, count: (items||[]).length, color: c.border, cat,
-    children: (items||[]).map((item, i) => ({ leaf: true, ...mapper(item, i) }))
+    children: (items||[]).map((item, i) => ({ leaf: true, cat, ...mapper(item, i) }))
   };
 }
 
@@ -366,12 +377,12 @@ function _renderD3(data, title) {
   const area = document.getElementById('contentArea');
   area.innerHTML = '';
 
-  // Nav bar with back button + breadcrumbs
+  // Nav bar with back button
   if (navStack.length > 0) {
     const bar = document.createElement('div');
     bar.className = 'nav-bar';
-    const crumbs = navStack.map(s => `<span class="crumb">${s.title}</span>`).join(' › ');
-    bar.innerHTML = `<button class="btn-back-nav" onclick="navigateBack()">← חזרה</button><span class="crumb-trail">${crumbs} › <b>${title}</b></span>`;
+    bar.innerHTML = `<button class="btn-back-nav" onclick="navigateBack()">← חזרה</button>
+      <span class="crumb-trail">${esc(navStack.map(s=>s.title).join(' › '))} › <b>${esc(title)}</b></span>`;
     area.appendChild(bar);
   }
 
@@ -379,13 +390,18 @@ function _renderD3(data, title) {
   svgWrap.className = 'svg-wrap';
   area.appendChild(svgWrap);
 
+  // Use children accessor that respects collapsed state
   const isLeafView = data.children && data.children[0]?.leaf;
-  const nodeSpacingV = isLeafView ? 52 : 56;
-  const nodeW = isLeafView ? 260 : 200;
-  const nodeH = 38;
-  const colW  = isLeafView ? 320 : 280;
+  const nodeSpacingV = isLeafView ? 54 : 62;
+  const nodeW = isLeafView ? 270 : 200;
+  const nodeH = 40;
+  const colW  = isLeafView ? 330 : 290;
 
-  const hierarchy = d3.hierarchy(data);
+  const hierarchy = d3.hierarchy(data, d => {
+    if (collapsedNodes.has(d.id)) return null;
+    return d.children?.length ? d.children : null;
+  });
+
   const treeLayout = d3.tree().nodeSize([nodeSpacingV, colW]);
   treeLayout(hierarchy);
 
@@ -393,8 +409,8 @@ function _renderD3(data, title) {
   const minX = d3.min(descs, d => d.x);
   const maxX = d3.max(descs, d => d.x);
   const maxY = d3.max(descs, d => d.y);
-  const svgW = Math.max(500, maxY + nodeW + 60);
-  const svgH = Math.max(300, maxX - minX + nodeSpacingV * 2);
+  const svgW = Math.max(600, maxY + nodeW + 80);
+  const svgH = Math.max(400, maxX - minX + nodeSpacingV * 2 + 40);
   const offsetY = -minX + nodeSpacingV;
 
   const svg = d3.select(svgWrap).append('svg')
@@ -402,12 +418,38 @@ function _renderD3(data, title) {
     .attr('height', svgH)
     .attr('viewBox', `0 0 ${svgW} ${svgH}`)
     .style('display', 'block')
-    .style('max-width', '100%');
+    .style('background', '#0A0F1E');
 
-  const zoom = d3.zoom().scaleExtent([0.25, 4]).on('zoom', e => g.attr('transform', e.transform));
+  const zoom = d3.zoom().scaleExtent([0.15, 4]).on('zoom', e => g.attr('transform', e.transform));
   svg.call(zoom);
 
   const g = svg.append('g').attr('transform', `translate(30, ${offsetY})`);
+
+  // SVG defs — shadow filter + per-category gradients
+  const defs = svg.append('defs');
+  const shadowFilter = defs.append('filter').attr('id', 'd3shadow')
+    .attr('x', '-20%').attr('y', '-30%').attr('width', '150%').attr('height', '180%');
+  shadowFilter.append('feDropShadow')
+    .attr('dx', 0).attr('dy', 4).attr('stdDeviation', 7)
+    .attr('flood-color', '#000').attr('flood-opacity', 0.45);
+
+  // Per-category gradient fills
+  (currentD3Data?.children || []).forEach(cat => {
+    const c = cat.color || '#38BDF8';
+    const gid = `grad-${cat.id || 'x'}`;
+    const grad = defs.append('linearGradient').attr('id', gid)
+      .attr('x1', '0%').attr('y1', '0%').attr('x2', '100%').attr('y2', '100%');
+    grad.append('stop').attr('offset', '0%').attr('stop-color', c).attr('stop-opacity', 0.28);
+    grad.append('stop').attr('offset', '100%').attr('stop-color', c).attr('stop-opacity', 0.08);
+
+    // Glow filter per category
+    const gf = defs.append('filter').attr('id', `glow-cat-${cat.id}`)
+      .attr('x', '-40%').attr('y', '-40%').attr('width', '180%').attr('height', '180%');
+    gf.append('feGaussianBlur').attr('stdDeviation', '5').attr('in', 'SourceGraphic').attr('result', 'blur');
+    const fm = gf.append('feMerge');
+    fm.append('feMergeNode').attr('in', 'blur');
+    fm.append('feMergeNode').attr('in', 'SourceGraphic');
+  });
 
   // Links — curved Bezier
   g.selectAll('.d3lnk')
@@ -415,8 +457,9 @@ function _renderD3(data, title) {
     .enter().append('path')
     .attr('class', 'd3lnk')
     .attr('fill', 'none')
-    .attr('stroke', d => (d.target.data.color || '#4F6EF7') + '55')
-    .attr('stroke-width', 2)
+    .attr('stroke', d => (d.target.data.color || '#38BDF8') + '44')
+    .attr('stroke-width', d => d.target.depth === 1 ? 2.2 : 1.5)
+    .attr('stroke-dasharray', d => d.target.depth > 2 ? '4,3' : 'none')
     .attr('d', d3.linkHorizontal().x(d => d.y).y(d => d.x));
 
   // Nodes
@@ -425,97 +468,214 @@ function _renderD3(data, title) {
     .enter().append('g')
     .attr('class', d => `d3nd${d.data.leaf ? ' d3lf' : ''}`)
     .attr('transform', d => `translate(${d.y},${d.x})`)
-    .style('cursor', d => (!d.data.leaf || d.data.isProject) ? 'pointer' : 'default');
+    .style('cursor', d => (!d.data.leaf || d.data.isProject !== undefined) ? 'pointer' : 'default');
 
-  // Shadow filter
-  const defs = svg.append('defs');
-  const filter = defs.append('filter').attr('id', 'd3shadow').attr('x', '-20%').attr('y', '-30%').attr('width', '140%').attr('height', '160%');
-  filter.append('feDropShadow').attr('dx', 0).attr('dy', 3).attr('stdDeviation', 6).attr('flood-color', '#0F172A').attr('flood-opacity', 0.12);
-
-  // Node rect
+  // Node rect background
   node.append('rect')
     .attr('x', -nodeH/2).attr('y', -nodeH/2)
-    .attr('width', d => d.data.leaf ? nodeW : (d.depth === 0 ? 180 : 160))
+    .attr('width', d => {
+      if (d.data.leaf) return nodeW;
+      if (d.depth === 0) return 190;
+      return 170;
+    })
     .attr('height', nodeH)
-    .attr('rx', 10)
-    .attr('fill', d => (d.data.color || '#4F6EF7') + (d.depth === 0 ? '25' : '15'))
-    .attr('stroke', d => d.data.color || '#4F6EF7')
-    .attr('stroke-width', d => d.depth === 0 ? 3 : 1.5)
-    .attr('filter', 'url(#d3shadow)');
+    .attr('rx', d => d.depth === 0 ? 14 : 10)
+    .attr('fill', d => {
+      if (d.depth === 1 && d.data.id && !d.data.leaf) return `url(#grad-${d.data.id})`;
+      const cat = d.data.cat || (d.depth === 0 ? 'root' : null);
+      const catColor = d.data.color || '#38BDF8';
+      return catColor + (d.depth === 0 ? '20' : '12');
+    })
+    .attr('stroke', d => {
+      if (d.data.leaf) {
+        const catColor = d.data.color || '#38BDF8';
+        return catColor + '55';
+      }
+      return d.data.color || '#38BDF8';
+    })
+    .attr('stroke-width', d => d.depth === 0 ? 3 : d.depth === 1 ? 2.5 : 1.5)
+    .attr('filter', d => d.depth <= 1 ? `url(#glow-cat-${d.data.id || 'x'})` : 'url(#d3shadow)');
 
   // Count badge (category nodes)
   node.filter(d => d.data.count !== undefined && !d.data.leaf)
-    .append('g')
-    .call(g2 => {
-      g2.append('circle').attr('cx', d => d.depth===0 ? 70 : 62).attr('cy', 0).attr('r', 14)
-        .attr('fill', d => d.data.color || '#4F6EF7');
-      g2.append('text').attr('x', d => d.depth===0 ? 70 : 62).attr('y', 5)
-        .attr('text-anchor', 'middle').attr('fill', 'white').attr('font-size', 11).attr('font-weight', '700')
+    .each(function(d) {
+      const g2 = d3.select(this);
+      const cx = d.depth === 0 ? 76 : 68;
+      g2.append('circle').attr('cx', cx).attr('cy', 0).attr('r', 15)
+        .attr('fill', d.data.color || '#38BDF8').attr('opacity', 0.90);
+      g2.append('text').attr('x', cx).attr('y', 5)
+        .attr('text-anchor', 'middle').attr('fill', '#0A0F1E')
+        .attr('font-size', 11).attr('font-weight', '800')
         .attr('font-family', 'Heebo, sans-serif')
-        .text(d => d.data.count);
+        .text(d.data.count);
     });
 
-  // Icon
-  node.filter(d => d.data.icon)
+  // Expand/Collapse arrow (depth-1 category nodes)
+  node.filter(d => d.depth === 1 && d.data.children?.length > 0)
     .append('text')
-    .attr('x', -nodeH/2 + 18).attr('y', 5)
-    .attr('text-anchor', 'middle').attr('font-size', 14)
+    .attr('x', -nodeH/2 + 12).attr('y', 6)
+    .attr('font-size', 12)
+    .attr('fill', d => d.data.color || '#38BDF8')
+    .attr('opacity', 0.9)
+    .text(d => collapsedNodes.has(d.data.id) ? '▶' : '▾');
+
+  // Icon (root + category)
+  node.filter(d => d.data.icon && !d.data.leaf)
+    .append('text')
+    .attr('x', -nodeH/2 + (d => d.depth===1 ? 30 : 22))
+    .attr('y', 5)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', d => d.depth === 0 ? 16 : 14)
     .text(d => d.data.icon || '');
 
-  // Main label
+  // Main label — English uppercase, Hebrew as-is
   node.append('text')
-    .attr('x', d => d.data.icon ? -nodeH/2 + 34 : -nodeH/2 + 8)
-    .attr('y', d => (d.data.leaf && d.data.he) ? -4 : 5)
-    .attr('font-size', d => d.depth === 0 ? 14 : 12)
+    .attr('x', d => {
+      if (d.data.leaf) return -nodeH/2 + 8;
+      if (d.data.icon && d.depth === 0) return -nodeH/2 + 38;
+      if (d.data.icon && d.depth === 1) return -nodeH/2 + 46;
+      return -nodeH/2 + 10;
+    })
+    .attr('y', d => (d.data.leaf && d.data.he) ? -5 : 5)
+    .attr('font-size', d => d.depth === 0 ? 15 : d.depth === 1 ? 13 : 12)
     .attr('font-weight', d => d.depth <= 1 ? '700' : '500')
-    .attr('fill', '#1E293B')
+    .attr('fill', d => {
+      if (d.depth === 0) return '#E0F2FE';
+      if (d.depth === 1) return d.data.color || '#38BDF8';
+      return '#D1D5DB';
+    })
     .attr('font-family', 'Heebo, sans-serif')
     .text(d => {
       const raw = d.data.label || d.data.name || '';
-      const isEn = /^[/a-z0-9\-\._]+$/i.test(raw) && !/[\u0590-\u05FF]/.test(raw);
+      const isEn = /^[/a-z0-9\-\._\s]+$/i.test(raw) && !/[\u0590-\u05FF]/.test(raw);
       return isEn ? raw.toUpperCase() : raw;
     });
 
   // Hebrew description for leaf nodes
   node.filter(d => d.data.leaf && d.data.he)
     .append('text')
-    .attr('x', d => d.data.icon ? -nodeH/2 + 34 : -nodeH/2 + 8)
+    .attr('x', -nodeH/2 + 8)
     .attr('y', 13)
     .attr('font-size', 10)
-    .attr('fill', '#64748B')
+    .attr('fill', '#94A3B8')
     .attr('font-family', 'Heebo, sans-serif')
-    .text(d => (d.data.he || '').substring(0, 45) + ((d.data.he||'').length > 45 ? '…' : ''));
+    .text(d => (d.data.he || '').substring(0, 48) + ((d.data.he||'').length > 48 ? '…' : ''));
 
-  // Tag badge for leaf
+  // Tag badge
   node.filter(d => d.data.leaf && d.data.tag)
     .append('text')
-    .attr('x', d => nodeW - nodeH/2 - 4)
+    .attr('x', nodeW - nodeH/2 - 4)
     .attr('y', 5)
     .attr('text-anchor', 'end')
     .attr('font-size', 9)
     .attr('fill', d => d.data.color || '#94A3B8')
+    .attr('opacity', 0.75)
     .attr('font-family', 'Heebo, sans-serif')
     .text(d => d.data.tag || '');
+
+  // Accent right bar on category nodes
+  node.filter(d => d.depth === 1)
+    .append('rect')
+    .attr('x', 165)
+    .attr('y', -nodeH/2 + 6)
+    .attr('width', 4)
+    .attr('height', nodeH - 12)
+    .attr('rx', 2)
+    .attr('fill', d => d.data.color || '#38BDF8')
+    .attr('opacity', 0.7);
 
   // Click handlers
   node.on('click', (event, d) => {
     event.stopPropagation();
+    // Project leaf → navigate into project view
     if (d.data.isProject !== undefined) {
-      // Navigate to project view
       navStack.push({ data: currentD3Data, title: currentD3Title });
       setViewProject(d.data.isProject);
       return;
     }
-    if (!d.data.leaf && d.children && d.children.length > 0 && d.depth > 0) {
-      navigateTo(d.data, d.data.label || d.data.name);
+    // Category node (has id + children) → toggle expand/collapse in-place
+    if (d.data.id && !d.data.leaf && d.data.children?.length > 0) {
+      collapsedNodes.has(d.data.id)
+        ? collapsedNodes.delete(d.data.id)
+        : collapsedNodes.add(d.data.id);
+      _renderD3(currentD3Data, currentD3Title);
+      return;
+    }
+    // Leaf node → show tooltip detail
+    if (d.data.leaf) {
+      showLeafDetail(event, d.data);
     }
   });
+
+  updateExpandBtn();
 }
+
+// ── Leaf Detail Tooltip ────────────────────────────────────────────────────
+function showLeafDetail(event, data) {
+  const tt = document.getElementById('tooltip');
+  if (!tt) return;
+  const nameDisplay = (/^[/a-z0-9\-\._\s]+$/i.test(data.name) && !/[\u0590-\u05FF]/.test(data.name))
+    ? data.name.toUpperCase() : data.name;
+  const detail = data.detail || data.he || '';
+  tt.innerHTML = `
+    <div style="font-weight:700;margin-bottom:6px;font-size:14px;color:${data.color||'#38BDF8'}">${esc(nameDisplay)}</div>
+    <div style="color:#CBD5E1;font-size:12px;line-height:1.6">${esc(detail)}</div>
+    ${data.tag ? `<div style="margin-top:8px;font-size:10px;color:${data.color||'#94A3B8'};opacity:0.8">${esc(data.tag)}</div>` : ''}
+  `;
+  tt.style.display = 'block';
+  const tw = 260;
+  const left = (event.clientX + 14 > window.innerWidth - tw - 10)
+    ? event.clientX - tw - 14
+    : event.clientX + 14;
+  const top = (event.clientY + 120 > window.innerHeight)
+    ? event.clientY - 120
+    : event.clientY - 10;
+  tt.style.left = left + 'px';
+  tt.style.top  = top + 'px';
+  // Auto-hide after 5s
+  clearTimeout(tt._hideTimer);
+  tt._hideTimer = setTimeout(() => { tt.style.display = 'none'; }, 5000);
+}
+
+// Hide tooltip on outside click
+document.addEventListener('click', () => {
+  const tt = document.getElementById('tooltip');
+  if (tt) tt.style.display = 'none';
+});
+
+// ── Expand / Collapse All ─────────────────────────────────────────────────
+function expandAll() {
+  collapsedNodes.clear();
+  _renderD3(currentD3Data, currentD3Title);
+}
+
+function collapseAll() {
+  (currentD3Data?.children || []).forEach(c => c.id && collapsedNodes.add(c.id));
+  _renderD3(currentD3Data, currentD3Title);
+}
+
+function toggleExpandAll() {
+  const allCollapsed = currentD3Data?.children?.every(c => !c.id || collapsedNodes.has(c.id));
+  allCollapsed ? expandAll() : collapseAll();
+}
+
+function updateExpandBtn() {
+  const btn = document.getElementById('btn-expand-all');
+  if (!btn) return;
+  const allCollapsed = currentD3Data?.children?.every(c => !c.id || collapsedNodes.has(c.id));
+  btn.textContent = allCollapsed ? 'הרחב הכל' : 'כווץ הכל';
+}
+
+// ── Tree Renderers ─────────────────────────────────────────────────────────
 
 function renderGlobalTree() {
   if (!snapshotData) return;
   navStack = [];
   const data = buildGlobalData();
+  // On first load: start with all categories collapsed
+  if (collapsedNodes.size === 0) {
+    data.children.forEach(c => c.id && collapsedNodes.add(c.id));
+  }
   _renderD3(data, 'מפת המערכת הגלובלית');
 }
 
@@ -523,17 +683,53 @@ function setViewProject(projId) {
   if (!snapshotData) return;
   const proj = snapshotData.projects.find(p => p.id === projId);
   if (!proj) return;
-  const updated = proj.last_modified ? new Date(proj.last_modified).toLocaleDateString('he-IL') : '—';
   const color = COLORS.projectColors[proj.id % COLORS.projectColors.length];
-  const techChildren = (proj.tech_stack||[]).map(t => ({ leaf: true, name: t, he: null, color: '#6B7280' }));
+
+  const techChildren = (proj.tech_stack || []).map(t => ({
+    leaf: true, name: t, he: null, color: '#6B7280'
+  }));
+
+  const agentItems = (proj.project_agents || []).map(a => ({
+    leaf: true, name: a,
+    he: HE_AGENTS[a] || '',
+    detail: HE_AGENTS_DETAIL[a] || HE_AGENTS[a] || '',
+    color: COLORS.getCategory('agents').border,
+    cat: 'agents'
+  }));
+
+  const skillItems = (proj.project_skills || []).map(s => ({
+    leaf: true, name: s,
+    he: HE_SKILLS[s] || '',
+    color: COLORS.getCategory('skills').border,
+    cat: 'skills'
+  }));
+
   const data = {
-    id: `proj_${proj.id}`, icon: '📁', label: proj.name, color, count: proj.files_count || 0,
+    id: `proj_${proj.id}`, icon: '📁',
+    label: proj.name, color,
+    description: proj.description || '',
+    count: agentItems.length + skillItems.length,
     children: [
-      { leaf: true, name: 'תיאור', he: proj.description || '—', color },
-      techChildren.length ? { id: 'tech', icon: '⚙️', label: 'Tech Stack', color: '#6B7280', count: techChildren.length, children: techChildren } : null,
+      proj.description ? { leaf: true, name: 'תיאור', he: proj.description, color } : null,
+      techChildren.length ? {
+        id: 'tech', icon: '⚙️', label: 'Tech Stack',
+        color: '#6B7280', count: techChildren.length, children: techChildren
+      } : null,
       { leaf: true, name: 'סטטוס', he: proj.status || 'active', color },
-      { leaf: true, name: 'ספרייה', he: proj.folder, color },
-      { leaf: true, name: 'קבצים', he: `${proj.files_count||0} קבצים · עודכן: ${updated}`, color },
+      agentItems.length ? {
+        id: `proj_agents_${proj.id}`, icon: '🤖', label: 'סוכנים',
+        color: COLORS.getCategory('agents').border,
+        cat: 'agents',
+        count: agentItems.length,
+        children: agentItems
+      } : null,
+      skillItems.length ? {
+        id: `proj_skills_${proj.id}`, icon: '✨', label: 'סקילים',
+        color: COLORS.getCategory('skills').border,
+        cat: 'skills',
+        count: skillItems.length,
+        children: skillItems
+      } : null,
     ].filter(Boolean)
   };
   _renderD3(data, proj.name);
@@ -541,6 +737,8 @@ function setViewProject(projId) {
 
 function renderProjectTree(projId) {
   navStack = [{ data: buildGlobalData(), title: 'מפת המערכת הגלובלית' }];
+  // Reset collapsed state for project view
+  collapsedNodes.clear();
   setViewProject(projId);
 }
 
@@ -560,26 +758,7 @@ function esc(str) {
 async function refreshData() {
   const btn = document.getElementById('btnRefresh');
   if (btn) btn.classList.add('updating');
-  // Full page reload — picks up latest snapshot.json, JS, and CSS
   window.location.reload(true);
-  return;
-  // (dead code below kept for fallback reference)
-  showLoading(true);
-  document.getElementById('contentArea').innerHTML = '';
-  try {
-    const res = await fetch('data/snapshot.json?t=' + Date.now());
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    snapshotData = await res.json();
-    showLoading(false);
-    updateTimestamp(snapshotData.generated_at);
-    buildProjectMenu(snapshotData.projects);
-    setView(currentView);
-  } catch (err) {
-    showLoading(false);
-    document.getElementById('errorMsg').style.display = 'block';
-    document.getElementById('errorMsg').textContent = 'שגיאה בטעינת הנתונים.';
-  }
-  if (btn) btn.classList.remove('updating');
 }
 
 function showLoading(on) {

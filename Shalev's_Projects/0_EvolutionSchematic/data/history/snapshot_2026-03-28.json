@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-28T10:55:13.432571+00:00",
+  "generated_at": "2026-03-28T15:59:47.354547+00:00",
   "version": "1.1",
   "claude_global": {
     "agents": [
@@ -8,8 +8,20 @@
         "purpose": "Software architecture specialist for system design, scalability, and technical decision-making. Use PROACTIVELY when pla"
       },
       {
+        "name": "backup-agent",
+        "purpose": "Monthly full system backup agent. Creates dated snapshots of the Claude system and all projects at E:\\backup\\. Runs on t"
+      },
+      {
+        "name": "bug-learner",
+        "purpose": "Bug learning and prevention agent. Queries past failures from failures.jsonl, saves solutions to solutions.jsonl, and pr"
+      },
+      {
         "name": "build-error-resolver",
         "purpose": "Build and TypeScript error resolution specialist. Use PROACTIVELY when build fails or type errors occur. Fixes build/typ"
+      },
+      {
+        "name": "chadshani-optimizer",
+        "purpose": "Chadshani data quality auditor and cost optimizer. Analyzes cost trends, content quality per section, and library/API up"
       },
       {
         "name": "chief-of-staff",
@@ -223,36 +235,37 @@
       {
         "type": "PreToolUse",
         "trigger": "Bash",
+        "description": "",
         "script": "bash \"C:/Users/Shalev/.claude/hooks/pre-tool/security-check.sh\" \"$CLAUDE_TOOL_IN"
       },
       {
         "type": "PostToolUse",
+        "trigger": "Bash",
+        "description": "",
+        "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/bash-failure-capture.sh\""
+      },
+      {
+        "type": "PostToolUse",
         "trigger": "Write|Edit|MultiEdit",
+        "description": "",
         "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/memory-heartbeat.sh\" \"$CLAUDE_TOOL"
-      },
-      {
-        "type": "PostToolUse",
-        "trigger": "Write|Edit|MultiEdit",
-        "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/project-guard.sh\" \"$CLAUDE_TOOL_IN"
-      },
-      {
-        "type": "PostToolUse",
-        "trigger": "Write|Edit|MultiEdit",
-        "script": "bash \"C:/Users/Shalev/.claude/hooks/post-tool/secret-scan.sh\" \"$CLAUDE_TOOL_INPU"
       },
       {
         "type": "PreCompact",
         "trigger": "",
+        "description": "",
         "script": "bash \"C:/Users/Shalev/.claude/hooks/pre-compact/context-save.sh\""
       },
       {
         "type": "Notification",
         "trigger": "",
+        "description": "",
         "script": "bash \"C:/Users/Shalev/.claude/hooks/notification/ntfy-notify.sh\""
       },
       {
         "type": "Stop",
         "trigger": "",
+        "description": "",
         "script": "bash \"C:/Users/Shalev/.claude/hooks/stop/ntfy-stop.sh\""
       }
     ],
@@ -260,72 +273,86 @@
       {
         "name": "architect_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "You are operating as the system architect."
       },
       {
         "name": "audit_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "You are operating in SAFETY ANALYSIS + INTEGRATION AUDIT MODE."
       },
       {
         "name": "build_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "You are operating in CONTROLLED INFRASTRUCTURE EXECUTION MODE."
       },
       {
         "name": "consolidation_mode",
         "version": "",
-        "trigger": "\"dream\" / \"גיבוש זיכרון\" / \"consolidate\""
+        "trigger": "\"dream\" / \"גיבוש זיכרון\" / \"consolidate\"",
+        "description": "Run this 4-phase pass on all memory files:"
       },
       {
         "name": "document_ingestion_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "Runs automatically before reading any document over 200 lines or 3000 words."
       },
       {
         "name": "evolution_pathways_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "When user says: \"רוצה להוסיף\", \"מצאתי כלי\", \"יש לי רעיון\", \"תשלב את זה\","
       },
       {
         "name": "external_skill_intake_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "Every skill from outside the system — GitHub repo, MCP Market, npx package, manual file —"
       },
       {
         "name": "integration_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "You are operating in CONTROLLED INTEGRATIONS EXECUTION MODE."
       },
       {
         "name": "knowledge_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "You are operating in KNOWLEDGE INTEGRATION MODE."
       },
       {
         "name": "monthly_calibration_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "Runs automatically on the first session of every month,"
       },
       {
         "name": "project_closure_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "You are operating in PROJECT CLOSURE MODE."
       },
       {
         "name": "project_status_review_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "Also runs automatically at the start of the first session of every week, before any other work."
       },
       {
         "name": "security_scan_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "This scan runs BEFORE the External Skill Intake Protocol."
       },
       {
         "name": "shadow_agent_mode",
         "version": "",
-        "trigger": ""
+        "trigger": "",
+        "description": "You are operating in SHADOW AGENT MODE."
       }
     ],
     "rules": {
@@ -440,275 +467,341 @@
     "commands": [
       {
         "name": "aside",
-        "category": "general"
+        "category": "general",
+        "description": "Answer a quick side question without interrupting or losing context from the current task. Resume work automatically aft"
       },
       {
         "name": "build-fix",
-        "category": "general"
+        "category": "general",
+        "description": "Build and Fix"
       },
       {
         "name": "checkpoint",
-        "category": "general"
+        "category": "general",
+        "description": "Checkpoint Command"
       },
       {
         "name": "claw",
-        "category": "general"
+        "category": "general",
+        "description": "Start NanoClaw v2 — ECC's persistent, zero-dependency REPL with model routing, skill hot-load, branching, compaction, ex"
       },
       {
         "name": "code-review",
-        "category": "general"
+        "category": "general",
+        "description": "Code Review"
       },
       {
         "name": "context-budget",
-        "category": "general"
+        "category": "general",
+        "description": "Analyze context window usage across agents, skills, MCP servers, and rules to find optimization opportunities. Helps red"
       },
       {
         "name": "cpp-build",
-        "category": "general"
+        "category": "general",
+        "description": "Fix C++ build errors, CMake issues, and linker problems incrementally. Invokes the cpp-build-resolver agent for minimal,"
       },
       {
         "name": "cpp-review",
-        "category": "general"
+        "category": "general",
+        "description": "Comprehensive C++ code review for memory safety, modern C++ idioms, concurrency, and security. Invokes the cpp-reviewer "
       },
       {
         "name": "cpp-test",
-        "category": "general"
+        "category": "general",
+        "description": "Enforce TDD workflow for C++. Write GoogleTest tests first, then implement. Verify coverage with gcov/lcov."
       },
       {
         "name": "devfleet",
-        "category": "general"
+        "category": "general",
+        "description": "Orchestrate parallel Claude Code agents via Claude DevFleet — plan projects from natural language, dispatch agents in is"
       },
       {
         "name": "docs",
-        "category": "general"
+        "category": "general",
+        "description": "Look up current documentation for a library or topic via Context7."
       },
       {
         "name": "e2e",
-        "category": "general"
+        "category": "general",
+        "description": "Generate and run end-to-end tests with Playwright. Creates test journeys, runs tests, captures screenshots/videos/traces"
       },
       {
         "name": "eval",
-        "category": "general"
+        "category": "general",
+        "description": "Eval Command"
       },
       {
         "name": "evolve",
-        "category": "general"
+        "category": "general",
+        "description": "Analyze instincts and suggest or generate evolved structures"
       },
       {
         "name": "go-build",
-        "category": "general"
+        "category": "general",
+        "description": "Fix Go build errors, go vet warnings, and linter issues incrementally. Invokes the go-build-resolver agent for minimal, "
       },
       {
         "name": "go-review",
-        "category": "general"
+        "category": "general",
+        "description": "Comprehensive Go code review for idiomatic patterns, concurrency safety, error handling, and security. Invokes the go-re"
       },
       {
         "name": "go-test",
-        "category": "general"
+        "category": "general",
+        "description": "Enforce TDD workflow for Go. Write table-driven tests first, then implement. Verify 80%+ coverage with go test -cover."
       },
       {
         "name": "gradle-build",
-        "category": "general"
+        "category": "general",
+        "description": "Fix Gradle build errors for Android and KMP projects"
       },
       {
         "name": "harness-audit",
-        "category": "general"
+        "category": "general",
+        "description": "Harness Audit Command"
       },
       {
         "name": "instinct-export",
-        "category": "general"
+        "category": "general",
+        "description": "Export instincts from project/global scope to a file"
       },
       {
         "name": "instinct-import",
-        "category": "general"
+        "category": "general",
+        "description": "Import instincts from file or URL into project/global scope"
       },
       {
         "name": "instinct-status",
-        "category": "general"
+        "category": "general",
+        "description": "Show learned instincts (project + global) with confidence"
       },
       {
         "name": "kotlin-build",
-        "category": "general"
+        "category": "general",
+        "description": "Fix Kotlin/Gradle build errors, compiler warnings, and dependency issues incrementally. Invokes the kotlin-build-resolve"
       },
       {
         "name": "kotlin-review",
-        "category": "general"
+        "category": "general",
+        "description": "Comprehensive Kotlin code review for idiomatic patterns, null safety, coroutine safety, and security. Invokes the kotlin"
       },
       {
         "name": "kotlin-test",
-        "category": "general"
+        "category": "general",
+        "description": "Enforce TDD workflow for Kotlin. Write Kotest tests first, then implement. Verify 80%+ coverage with Kover."
       },
       {
         "name": "learn-eval",
-        "category": "general"
+        "category": "general",
+        "description": "\"Extract reusable patterns from the session, self-evaluate quality before saving, and determine the right save location "
       },
       {
         "name": "learn",
-        "category": "general"
+        "category": "general",
+        "description": "/learn - Extract Reusable Patterns"
       },
       {
         "name": "loop-start",
-        "category": "general"
+        "category": "general",
+        "description": "Loop Start Command"
       },
       {
         "name": "loop-status",
-        "category": "general"
+        "category": "general",
+        "description": "Loop Status Command"
       },
       {
         "name": "model-route",
-        "category": "general"
+        "category": "general",
+        "description": "Model Route Command"
       },
       {
         "name": "multi-backend",
-        "category": "general"
+        "category": "general",
+        "description": "Backend - Backend-Focused Development"
       },
       {
         "name": "multi-execute",
-        "category": "general"
+        "category": "general",
+        "description": "Execute - Multi-Model Collaborative Execution"
       },
       {
         "name": "multi-frontend",
-        "category": "general"
+        "category": "general",
+        "description": "Frontend - Frontend-Focused Development"
       },
       {
         "name": "multi-plan",
-        "category": "general"
+        "category": "general",
+        "description": "Plan - Multi-Model Collaborative Planning"
       },
       {
         "name": "multi-workflow",
-        "category": "general"
+        "category": "general",
+        "description": "Workflow - Multi-Model Collaborative Development"
       },
       {
         "name": "orchestrate",
-        "category": "general"
+        "category": "general",
+        "description": "Sequential and tmux/worktree orchestration guidance for multi-agent workflows."
       },
       {
         "name": "plan",
-        "category": "general"
+        "category": "general",
+        "description": "Restate requirements, assess risks, and create step-by-step implementation plan. WAIT for user CONFIRM before touching a"
       },
       {
         "name": "pm2",
-        "category": "general"
+        "category": "general",
+        "description": "PM2 Init"
       },
       {
         "name": "projects",
-        "category": "general"
+        "category": "general",
+        "description": "List known projects and their instinct statistics"
       },
       {
         "name": "promote",
-        "category": "general"
+        "category": "general",
+        "description": "Promote project-scoped instincts to global scope"
       },
       {
         "name": "prompt-optimize",
-        "category": "general"
+        "category": "general",
+        "description": "Analyze a draft prompt and output an optimized, ECC-enriched version ready to paste and run. Does NOT execute the task —"
       },
       {
         "name": "prune",
-        "category": "general"
+        "category": "general",
+        "description": "Delete pending instincts older than 30 days that were never promoted"
       },
       {
         "name": "python-review",
-        "category": "general"
+        "category": "general",
+        "description": "Comprehensive Python code review for PEP 8 compliance, type hints, security, and Pythonic idioms. Invokes the python-rev"
       },
       {
         "name": "quality-gate",
-        "category": "general"
+        "category": "general",
+        "description": "Quality Gate Command"
       },
       {
         "name": "refactor-clean",
-        "category": "general"
+        "category": "general",
+        "description": "Refactor Clean"
       },
       {
         "name": "resume-session",
-        "category": "general"
+        "category": "general",
+        "description": "Load the most recent session file from ~/.claude/sessions/ and resume work with full context from where the last session"
       },
       {
         "name": "rules-distill",
-        "category": "general"
+        "category": "general",
+        "description": "\"Scan skills to extract cross-cutting principles and distill them into rules\""
       },
       {
         "name": "rust-build",
-        "category": "general"
+        "category": "general",
+        "description": "Fix Rust build errors, borrow checker issues, and dependency problems incrementally. Invokes the rust-build-resolver age"
       },
       {
         "name": "rust-review",
-        "category": "general"
+        "category": "general",
+        "description": "Comprehensive Rust code review for ownership, lifetimes, error handling, unsafe usage, and idiomatic patterns. Invokes t"
       },
       {
         "name": "rust-test",
-        "category": "general"
+        "category": "general",
+        "description": "Enforce TDD workflow for Rust. Write tests first, then implement. Verify 80%+ coverage with cargo-llvm-cov."
       },
       {
         "name": "save-session",
-        "category": "general"
+        "category": "general",
+        "description": "Save current session state to a dated file in ~/.claude/sessions/ so work can be resumed in a future session with full c"
       },
       {
         "name": "sessions",
-        "category": "general"
+        "category": "general",
+        "description": "Manage Claude Code session history, aliases, and session metadata."
       },
       {
         "name": "setup-pm",
-        "category": "general"
+        "category": "general",
+        "description": "Configure your preferred package manager (npm/pnpm/yarn/bun)"
       },
       {
         "name": "skill-create",
-        "category": "general"
+        "category": "general",
+        "description": "Analyze local git history to extract coding patterns and generate SKILL.md files. Local version of the Skill Creator Git"
       },
       {
         "name": "skill-health",
-        "category": "general"
+        "category": "general",
+        "description": "Show skill portfolio health dashboard with charts and analytics"
       },
       {
         "name": "tdd",
-        "category": "general"
+        "category": "general",
+        "description": "Enforce test-driven development workflow. Scaffold interfaces, generate tests FIRST, then implement minimal code to pass"
       },
       {
         "name": "test-coverage",
-        "category": "general"
+        "category": "general",
+        "description": "Test Coverage"
       },
       {
         "name": "update-codemaps",
-        "category": "general"
+        "category": "general",
+        "description": "Update Codemaps"
       },
       {
         "name": "update-docs",
-        "category": "general"
+        "category": "general",
+        "description": "Update Documentation"
       },
       {
         "name": "verify",
-        "category": "general"
+        "category": "general",
+        "description": "Verification Command"
       }
     ],
     "memory": [
       {
         "file": "feedback_cleanup_after_changes.md",
         "name": "cleanup_after_changes",
-        "type": "feedback"
+        "type": "feedback",
+        "description": "After modifying or replacing a file/workflow/config, always delete the obsolete version immediately"
       },
       {
         "file": "feedback_gemini_cost_display.md",
         "name": "gemini_cost_display",
-        "type": "feedback"
+        "type": "feedback",
+        "description": "At the end of every major Chadshani task, read cost_log.json and display the Gemini budget status"
       },
       {
         "file": "feedback_project_naming.md",
         "name": "project_naming_convention",
-        "type": "feedback"
+        "type": "feedback",
+        "description": "Naming convention for all projects inside Shalev's_Projects — numeric prefix in creation order"
       },
       {
         "file": "project_anydesk_remote.md",
         "name": "AnyDesk Remote Access Setup",
-        "type": "project"
+        "type": "project",
+        "description": "AnyDesk unattended access configured for iPhone and tablet remote control of PC"
       },
       {
         "file": "project_chadshani.md",
         "name": "project_chadshani",
-        "type": "project"
+        "type": "project",
+        "description": "Project state for Chadshani (חדשני) — financial-tech news dashboard"
       },
       {
         "file": "project_ntfy_hooks.md",
         "name": "ntfy Notification Hooks",
-        "type": "project"
+        "type": "project",
+        "description": "Claude Code hooks that send iPhone notifications via ntfy.sh for key events"
       }
     ]
   },
@@ -722,8 +815,8 @@
         "Python"
       ],
       "status": "active",
-      "files_count": 10,
-      "last_modified": "2026-03-28T10:54:43.495809+00:00"
+      "files_count": 11,
+      "last_modified": "2026-03-28T15:59:24.884096+00:00"
     },
     {
       "id": 1,
@@ -747,7 +840,7 @@
       ],
       "status": "complete",
       "files_count": 23,
-      "last_modified": "2026-03-28T10:51:17.326805+00:00"
+      "last_modified": "2026-03-28T12:13:52.632615+00:00"
     },
     {
       "id": 3,
