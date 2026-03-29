@@ -5,10 +5,10 @@ name: Chadshani — Auto Update (DATA+DEPLOY)
 on:
   workflow_dispatch:
   schedule:
-    # 08:00 IL summer (UTC+3) / 07:00 IL winter (UTC+2) — one cron, works year-round
-    - cron: '0 5 * * *'
-    # 20:00 IL summer (UTC+3) / 19:00 IL winter (UTC+2) — one cron, works year-round
-    - cron: '0 17 * * *'
+    # Start 15min before 07:00 IL: 06:45 IL summer (UTC+3)=03:45 UTC / winter (UTC+2)=04:45 UTC
+    - cron: '45 3 * * *'
+    # Start 15min before 19:00 IL: 18:45 IL summer (UTC+3)=15:45 UTC / winter (UTC+2)=16:45 UTC
+    - cron: '45 15 * * *'
 
 permissions:
   contents: write
@@ -113,9 +113,9 @@ jobs:
 
           # Reject "אין חדשות" appearing in news or AI sections
           for item in data.get("section_2_news", []):
-              s = item.get("summary", "")
-              if "אין חדשות" in s or s.strip() in PLACEHOLDERS:
-                  issues.append(f"section_2_news item has placeholder summary: {s[:40]!r}")
+              s = item.get("body", "") or item.get("summary", "")
+              if not s or "אין חדשות" in s or s.strip() in PLACEHOLDERS:
+                  issues.append(f"section_2_news item has placeholder body/summary: {s[:40]!r}")
           for item in data.get("section_7_ai", []):
               u = item.get("update", "") or item.get("summary", "")
               if "אין חדשות" in u or "לא זמין" in u or u.strip() in PLACEHOLDERS:

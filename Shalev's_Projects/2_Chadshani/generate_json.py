@@ -672,14 +672,23 @@ def merge_with_previous(data, prev):
         t = str(text).strip()
         return t in _CONTENT_PLACEHOLDERS or "אין חדשות" in t or "לא זמין" in t
 
-    # section_2_news — match by ticker or headline
-    prev_news = {item.get("ticker", ""): item for item in prev.get("section_2_news", []) if item.get("ticker")}
+    # section_2_news — match by title (news items use body/title, not ticker)
+    prev_news = {item.get("title", ""): item for item in prev.get("section_2_news", []) if item.get("title")}
     for i, item in enumerate(data.get("section_2_news", [])):
-        if _is_placeholder(item.get("summary", "")):
-            key = item.get("ticker", "")
+        content = item.get("body", "") or item.get("summary", "")
+        if _is_placeholder(content):
+            key = item.get("title", "")
             if key and key in prev_news:
                 data["section_2_news"][i] = prev_news[key]
-                print(f"[MERGE] section_2_news {key}: replaced placeholder with previous data")
+                print(f"[MERGE] section_2_news '{key[:30]}': replaced placeholder with previous data")
+            else:
+                # No title match — take any previous news item that has content
+                for prev_item in prev.get("section_2_news", []):
+                    prev_content = prev_item.get("body", "") or prev_item.get("summary", "")
+                    if not _is_placeholder(prev_content):
+                        data["section_2_news"][i] = prev_item
+                        print(f"[MERGE] section_2_news fallback: used prev item '{prev_item.get('title','')[:30]}'")
+                        break
 
     # section_7_ai — match by company name
     prev_ai = {item.get("company", ""): item for item in prev.get("section_7_ai", []) if item.get("company")}
