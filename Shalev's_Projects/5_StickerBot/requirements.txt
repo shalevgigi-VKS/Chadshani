@@ -1,4 +1,0 @@
-opencv-python
-rembg
-onnxruntime
-Pillow
