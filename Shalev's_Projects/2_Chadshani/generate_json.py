@@ -118,12 +118,12 @@ JSON_PROMPT = """
     {"ticker": "SNOW", "price": "$...", "change": "+X.X%", "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו: השקות, עדכוני API, שינויי מחיר, שותפויות. אם אין — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.]", "last_known_update": "[DD/MM/YYYY של החדשה האחרונה בחומר שסופק]", "status": "GA/Beta"},
-    {"company": "Google/Gemini", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Meta/Llama", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "xAI/Grok", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Perplexity", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "brief": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"}
+    {"company": "OpenAI", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו: השקות, עדכוני API, שינויי מחיר, שותפויות. אם אין — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.]", "last_known_update": "[DD/MM/YYYY של החדשה האחרונה בחומר שסופק]", "status": "GA/Beta"},
+    {"company": "Google/Gemini", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Meta/Llama", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "xAI/Grok", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
+    {"company": "Perplexity", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
