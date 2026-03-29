@@ -1,0 +1,134 @@
+name: Evolution Schematic — Auto Update (SCAN+VALIDATE+DEPLOY)
+# Runs scan_system.py daily to capture system state → creates snapshot.json
+# Validates snapshot before notifying success
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Daily update at 19:30 IL (15:30 UTC summer / 16:30 UTC winter)
+    # Run 15min early: 15:15 UTC (summer) / 16:15 UTC (winter)
+    - cron: '15 15 * * *'
+    - cron: '15 16 * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: evolution-update
+  cancel-in-progress: true
+
+jobs:
+  scan-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run system scanner
+        id: scan
+        run: |
+          cd "Shalev's_Projects/0_EvolutionSchematic/scanner"
+          python scan_system.py
+          echo "scan_ok=true" >> $GITHUB_OUTPUT
+
+      - name: Validate snapshot.json
+        id: validate
+        run: |
+          python - <<'EOF'
+          import json, sys, os
+
+          path = "Shalev's_Projects/0_EvolutionSchematic/data/snapshot.json"
+          if not os.path.exists(path):
+              print("[VALIDATE] FAIL: snapshot.json not found")
+              sys.exit(1)
+
+          try:
+              with open(path, encoding="utf-8") as f:
+                  data = json.load(f)
+          except json.JSONDecodeError as e:
+              print(f"[VALIDATE] FAIL: snapshot.json is malformed: {e}")
+              sys.exit(1)
+
+          # Basic structure checks
+          required_keys = ["generated_at", "agents", "skills", "integrations"]
+          issues = []
+
+          for key in required_keys:
+              if key not in data:
+                  issues.append(f"missing required key: {key}")
+
+          if not data.get("generated_at"):
+              issues.append("generated_at is empty")
+
+          if len(data.get("agents", [])) == 0:
+              issues.append("agents array is empty")
+
+          if len(data.get("skills", [])) == 0:
+              issues.append("skills array is empty")
+
+          if issues:
+              print("[VALIDATE] FAIL — snapshot integrity issues:")
+              for i in issues:
+                  print(f"  - {i}")
+              sys.exit(1)
+          else:
+              agents_count = len(data.get("agents", []))
+              skills_count = len(data.get("skills", []))
+              integrations_count = len(data.get("integrations", []))
+              print(f"[VALIDATE] PASS — {agents_count} agents, {skills_count} skills, {integrations_count} integrations")
+          EOF
+
+      - name: Commit snapshot
+        run: |
+          git config user.name  "Evolution Bot"
+          git config user.email "evolution@users.noreply.github.com"
+          git add "Shalev's_Projects/0_EvolutionSchematic/data/"
+          git diff --staged --quiet && echo "[skip] No changes" || \
+            git commit -m "update schematic $(TZ=Asia/Jerusalem date +'%Y-%m-%d %H:%M IL')"
+          git pull --rebase origin master
+          git push
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "Shalev's_Projects/0_EvolutionSchematic"
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Notify success
+        if: success()
+        run: |
+          NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          curl -s -X POST https://ntfy.sh/CloudeCode \
+            -H "Title: אבולוציה סכמטית — עדכון הושלם ✅" \
+            -H "Tags: brain,sparkles" \
+            -H "Priority: default" \
+            -H "Click: https://shalevgigi-vks.github.io/Claude-Schematic/" \
+            -d "מערכת סרוקה, אומתה, ופורסמה בהצלחה — $NOW"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          STEP="${{ steps.validate.outcome }}"
+          MSG="עדכון נכשל"
+          [ "$STEP" = "failure" ] && MSG="snapshot.json לא עבר אימות"
+          curl -s -X POST https://ntfy.sh/CloudeCode \
+            -H "Title: אבולוציה סכמטית — עדכון נכשל ⚠️" \
+            -H "Tags: warning" \
+            -H "Priority: high" \
+            -d "$MSG — $NOW — בדוק GitHub Actions"
