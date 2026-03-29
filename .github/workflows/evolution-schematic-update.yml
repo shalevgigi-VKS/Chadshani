@@ -113,6 +113,19 @@ jobs:
         if: success()
         run: |
           NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          
+          # HTTP Polling: Wait up to 30 seconds to ensure GitHub Pages cache is cleared and index is live
+          echo "Checking if site is fully up before notifying..."
+          for i in {1..6}; do
+            HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" https://shalevgigi-vks.github.io/Claude-Schematic/)
+            echo "Status: $HTTP_STATUS"
+            if [ "$HTTP_STATUS" == "200" ]; then
+              echo "Site is up!"
+              break
+            fi
+            sleep 5
+          done
+
           curl -s -X POST https://ntfy.sh/CloudeCode \
             -H "Title: אבולוציה סכמטית — עדכון הושלם ✅" \
             -H "Tags: brain,sparkles" \

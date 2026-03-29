@@ -170,6 +170,14 @@ jobs:
         if: success()
         run: |
           NOW=$(TZ=Asia/Jerusalem date +'%d.%m.%Y %H:%M IL')
+          
+          echo "Checking if Chadshani site is live..."
+          for i in {1..6}; do
+            HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" https://shalevgigi-vks.github.io/Chadshani/)
+            if [ "$HTTP_STATUS" == "200" ]; then break; fi
+            sleep 5
+          done
+
           curl -s -X POST https://ntfy.sh/CloudeCode \
             -H "Title: חדשני — נתונים עודכנו ואומתו ✅" \
             -H "Tags: newspaper" \
