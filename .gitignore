@@ -7,3 +7,12 @@ __pycache__/
 *.log
 output/
 temp_news.txt
+
+# Untracked Local Projects (Separation Rule)
+Shalev's_Projects/0_EvolutionSchematic/
+Shalev's_Projects/8_EvolutionSchematic/
+Shalev's_Projects/3_Notifications/
+Shalev's_Projects/4_RemoteAccess/
+Shalev's_Projects/5_StickerBot/
+Shalev's_Projects/6_Gigiz/
+Shalev's_Projects/7_WhaleWatcher/
