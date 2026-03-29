@@ -29,24 +29,5 @@ jobs:
             -H "Click: https://shalevgigi-vks.github.io/Claude-Schematic/" \
             -d "מפת המערכת השבועית עודכנה — $NOW"
 
-  deploy:
-    needs: notify
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload schematic site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "Shalev's_Projects/0_EvolutionSchematic"
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  # NOTE: deploy job removed — EvolutionSchematic deploys to its OWN repo (Claude-Schematic)
+  # NEVER deploy from this (Chadshani) repo's GitHub Pages — it will overwrite Chadshani
