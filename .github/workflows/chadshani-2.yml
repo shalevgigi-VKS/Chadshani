@@ -53,6 +53,7 @@ jobs:
           git add "Shalev's_Projects/2_Chadshani/data/"
           git diff --staged --quiet && echo "[skip] No data changes" || \
             git commit -m "update $(TZ=Asia/Jerusalem date +'%Y-%m-%d %H:%M IL')"
+          git pull --rebase origin master
           git push
 
       - name: Validate generated data
