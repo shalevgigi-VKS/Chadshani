@@ -2,7 +2,7 @@
 """
 Chadshani Auto-Update Script
 Runs generate_json.py then git commit + push to deploy GitHub Pages.
-Called by Windows Task Scheduler (chadshani-0600, chadshani-1200, chadshani-2030).
+Called by Windows Task Scheduler (chadshani-0645, chadshani-1845).
 """
 import subprocess
 import sys
@@ -54,6 +54,8 @@ def run(cmd, cwd=None, env=None):
 def main():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     print(f"[START] chadshani_auto — {now}")
+    print("[MAINTENANCE] Site is currently down for maintenance. Auto-updates suspended.")
+    sys.exit(0)
 
     # Step 1: Generate JSON (sets GEMINI_API_KEY from environment)
     generate_script = os.path.join(PROJECT_DIR, "generate_json.py")
@@ -63,7 +65,7 @@ def main():
     )
     if result.returncode != 0:
         print("[ERROR] generate_json.py failed — aborting")
-        notify("חדשני — שגיאה", f"יצירת JSON נכשלה — {now}", tags="x")
+        notify("חדשני — שגיאה", "תהליך יצירת הנתונים ואימותם נכשל", tags="x")
         sys.exit(1)
 
     # Step 2: Stage only the data file
@@ -80,15 +82,17 @@ def main():
             print("[SKIP] Nothing changed — no commit needed")
             sys.exit(0)
         print(f"[ERROR] git commit failed\n{commit_result.stderr}")
+        notify("חדשני — תקלה", "שגיאה בשמירת הנתונים במסד", tags="x")
         sys.exit(1)
     print(commit_result.stdout.strip())
 
     # Step 4: Push to GitHub Pages
     if not run(["git", "push"], cwd=REPO_DIR):
+        notify("חדשני — תקלת רשת", "שגיאה בהעלת סנכרון התוכן לשרת", tags="x")
         sys.exit(1)
 
     print(f"[DONE] Update deployed — {now}")
-    notify("חדשני — עודכן", f"האתר עודכן בהצלחה\n{now}")
+    notify("חדשני — עודכן", "האתר עודכן בהצלחה בכל נתוני השוק החדשים")
 
 
 if __name__ == "__main__":
