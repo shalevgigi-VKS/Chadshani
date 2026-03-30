@@ -377,23 +377,24 @@ def fetch_prices(symbols):
     result = {}
     if not symbols:
         return result
-    try:
-        data = yf.download(list(symbols), period="2d", interval="1d",
-                           auto_adjust=True, progress=False, threads=True)
-        close = data["Close"]
-        for sym in symbols:
-            try:
-                col = close[sym] if sym in close.columns else close
-                prices = col.dropna()
-                if len(prices) >= 2:
-                    p_now, p_prev = float(prices.iloc[-1]), float(prices.iloc[-2])
-                    result[sym] = (p_now, (p_now - p_prev) / p_prev * 100)
-                elif len(prices) == 1:
-                    result[sym] = (float(prices.iloc[-1]), 0.0)
-            except Exception:
-                pass
-    except Exception as e:
-        print(f"[PRICE WARN] batch fetch failed: {e}")
+    for sym in symbols:
+        try:
+            fi = yf.Ticker(sym).fast_info
+            price = fi.get("lastPrice") or fi.get("last_price")
+            prev = fi.get("previousClose") or fi.get("previous_close")
+            if price and prev and prev > 0:
+                result[sym] = (float(price), (float(price) - float(prev)) / float(prev) * 100)
+            else:
+                hist = yf.Ticker(sym).history(period="5d", interval="1d")
+                if "Close" in hist:
+                    prices = hist["Close"].dropna()
+                    if len(prices) >= 2:
+                        p_now, p_prev = float(prices.iloc[-1]), float(prices.iloc[-2])
+                        result[sym] = (p_now, (p_now - p_prev) / p_prev * 100)
+                    elif len(prices) == 1:
+                        result[sym] = (float(prices.iloc[-1]), 0.0)
+        except Exception as e:
+            print(f"[PRICE WARN] fetch failed for {sym}: {e}")
     return result
 
 
@@ -512,9 +513,21 @@ def validate(data):
     for section, min_items in [("section_2_news", 4), ("section_3_sectors", 11),
                                 ("section_5_semis", 10), ("section_6_software", 10),
                                 ("section_7_ai", 4)]:
-        count = len(data.get(section, []))
+        items = data.get(section, [])
+        count = len(items)
         if count < min_items:
             issues.append(f"{section} has {count} items (need {min_items})")
+        
+        # Check for empty nested objects inside list
+        if count > 0:
+            for i, itm in enumerate(items):
+                if not itm or not isinstance(itm, dict):
+                    issues.append(f"{section}[{i}] is empty or invalid")
+                else:
+                    for k, v in itm.items():
+                        if not v or str(v).strip() == "":
+                            issues.append(f"{section}[{i}].{k} is completely empty")
+
     # Watchlist: {rising:[], falling:[]} — each must have 6 items
     wl = data.get("section_8_watchlist", {})
     if isinstance(wl, dict):
@@ -529,6 +542,13 @@ def validate(data):
         amt = s.get("flow_amount", "")
         if "X.X" in amt or amt in ("", None):
             issues.append(f"section_3_sectors {s.get('etf')} flow_amount is placeholder: {amt!r}")
+    
+    # Check section_8_conclusion values are not empty
+    concl = data.get("section_8_conclusion", {})
+    for key in ["thesis", "risks", "opportunities", "action"]:
+        if not concl.get(key) or str(concl.get(key)).strip() == "":
+            issues.append(f"section_8_conclusion.{key} is empty")
+
     # Markets block must exist
     if not data.get("markets"):
         issues.append("markets block missing")
@@ -658,50 +678,7 @@ def _load_previous():
     return {}
 
 
-def merge_with_previous(data, prev):
-    """
-    For every section item where summary/update/note contains a placeholder,
-    replace the item with the matching entry from the previous run.
-    This prevents 'אין חדשות' from ever reaching the live site.
-    """
-    if not prev:
-        return data
 
-    def _is_placeholder(text):
-        if not text:
-            return True
-        t = str(text).strip()
-        return t in _CONTENT_PLACEHOLDERS or "אין חדשות" in t or "לא זמין" in t
-
-    # section_2_news — match by title (news items use body/title, not ticker)
-    prev_news = {item.get("title", ""): item for item in prev.get("section_2_news", []) if item.get("title")}
-    for i, item in enumerate(data.get("section_2_news", [])):
-        content = item.get("body", "") or item.get("summary", "")
-        if _is_placeholder(content):
-            key = item.get("title", "")
-            if key and key in prev_news:
-                data["section_2_news"][i] = prev_news[key]
-                print(f"[MERGE] section_2_news '{key[:30]}': replaced placeholder with previous data")
-            else:
-                # No title match — take any previous news item that has content
-                for prev_item in prev.get("section_2_news", []):
-                    prev_content = prev_item.get("body", "") or prev_item.get("summary", "")
-                    if not _is_placeholder(prev_content):
-                        data["section_2_news"][i] = prev_item
-                        print(f"[MERGE] section_2_news fallback: used prev item '{prev_item.get('title','')[:30]}'")
-                        break
-
-    # section_7_ai — match by company name
-    prev_ai = {item.get("company", ""): item for item in prev.get("section_7_ai", []) if item.get("company")}
-    for i, item in enumerate(data.get("section_7_ai", [])):
-        update_text = item.get("update", "") or item.get("summary", "")
-        if _is_placeholder(update_text):
-            key = item.get("company", "")
-            if key and key in prev_ai:
-                data["section_7_ai"][i] = prev_ai[key]
-                print(f"[MERGE] section_7_ai {key}: replaced placeholder with previous data")
-
-    return data
 
 
 def generate():
@@ -726,7 +703,6 @@ def generate():
                 raw = clean_raw(response.text)
                 candidate = json.loads(raw)
                 candidate = patch_prices(candidate)
-                candidate = merge_with_previous(candidate, prev)
                 issues = validate(candidate)
                 if issues:
                     print(f"[WARN] Validation failed attempt {attempt+1}: {issues[:3]}")
