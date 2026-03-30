@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חדשני — תחזוקה</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            text-align: center; 
+        }
+        .container { 
+            background: #1e293b; 
+            padding: 3rem; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            max-width: 500px;
+            border: 1px solid #334155;
+        }
+        h1 { color: #e2e8f0; margin-bottom: 1rem; }
+        p { color: #94a3b8; font-size: 1.1rem; line-height: 1.5; }
+        .logo { font-size: 3rem; margin-bottom: 1rem; }
+        .spinner {
+            margin: 20px auto;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🧠</div>
+        <h1>מערכת חדשני כרגע תחת תחזוקה</h1>
+        <div class="spinner"></div>
+        <p>אנו מבצעים שדרוג מערכות ודיוק נתונים מהשורש.<br>הדסק ישוב לפעילות מלאה ברגע שכל המידע יהיה מאומת ב-100%. בשלב זה לא ניתן לגשת לנתונים הישנים.</p>
+    </div>
+</body>
+</html>

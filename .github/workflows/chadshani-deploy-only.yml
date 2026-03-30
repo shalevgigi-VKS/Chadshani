@@ -1,6 +1,12 @@
 name: Chadshani — Deploy Only
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "Shalev's_Projects/2_Chadshani/**"
+      - ".github/workflows/chadshani-deploy-only.yml"
 
 permissions:
   contents: read
