@@ -9,9 +9,11 @@ import os
 import json
 import re
 import sys
+import time
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+from email.utils import parsedate_to_datetime
 from google import genai
 from google.genai import types
 import yfinance as yf
@@ -161,6 +163,8 @@ JSON_PROMPT = """
 # Models: flash (2 attempts) → pro (1 attempt, expensive last resort)
 # Defined inline in generate() as MODEL_ATTEMPTS
 
+MAX_NEWS_AGE_DAYS = 7   # skip news items older than this
+
 # Crypto ticker mapping: JSON ticker → yfinance symbol
 CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
 
@@ -209,6 +213,7 @@ def fetch_yfinance_news_batch(tickers, max_per=2):
     """Fetch recent news headlines from yfinance for a list of tickers."""
     items = []
     seen = set()
+    cutoff_epoch = time.time() - MAX_NEWS_AGE_DAYS * 86400
     for sym in tickers:
         try:
             news = yf.Ticker(sym).news or []
@@ -219,13 +224,19 @@ def fetch_yfinance_news_batch(tickers, max_per=2):
                 title = (content.get("title") or item.get("title") or "").strip()
                 summary = (content.get("summary") or content.get("description")
                            or item.get("summary") or item.get("description") or "").strip()
-                if title and title not in seen and count < max_per:
-                    seen.add(title)
-                    line = f"[{sym}] {title}"
-                    if summary:
-                        line += f": {summary[:220]}"
-                    items.append(line)
-                    count += 1
+                if not title or title in seen or count >= max_per:
+                    continue
+                # Filter by publish time when available
+                pub_ts = (item.get("providerPublishTime") or
+                          (content.get("providerPublishTime") if isinstance(content, dict) else None) or 0)
+                if pub_ts and pub_ts < cutoff_epoch:
+                    continue
+                seen.add(title)
+                line = f"[{sym}] {title}"
+                if summary:
+                    line += f": {summary[:220]}"
+                items.append(line)
+                count += 1
         except Exception as e:
             print(f"[WARN] yf.news {sym}: {e}")
     return items
@@ -257,6 +268,28 @@ _AI_KEYWORDS = {
 }
 
 
+def _parse_pub_date(el) -> datetime | None:
+    """Return a timezone-aware datetime from RSS/Atom item element, or None."""
+    for tag in ("pubDate", "published", "updated", "date"):
+        date_el = el.find(tag)
+        if date_el is not None and date_el.text:
+            text = date_el.text.strip()
+            # RFC 2822 (RSS pubDate)
+            try:
+                dt = parsedate_to_datetime(text)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                return dt
+            except Exception:
+                pass
+            # ISO 8601 (Atom published/updated)
+            try:
+                return datetime.fromisoformat(text.replace("Z", "+00:00"))
+            except Exception:
+                pass
+    return None
+
+
 def _clean_rss_xml(raw: bytes) -> bytes:
     """Strip namespace prefixes and declarations so ElementTree can parse any RSS/Atom feed."""
     # Remove prefixed tags: <ns:tag> → <tag>
@@ -272,6 +305,8 @@ def fetch_ai_rss(max_per_feed=4):
     """Fetch recent headlines from AI-focused RSS feeds — no API key required."""
     items = []
     seen = set()
+    cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_NEWS_AGE_DAYS)
+    skipped_old = 0
     for label, url, item_tag, title_tag, desc_tag in _AI_RSS_FEEDS:
         try:
             req = urllib.request.Request(
@@ -288,17 +323,22 @@ def fetch_ai_rss(max_per_feed=4):
                 title = (title_el.text or "").strip() if title_el is not None else ""
                 desc = (desc_el.text or "").strip() if desc_el is not None else ""
                 desc = re.sub(r"<[^>]+>", "", desc)[:200]
-                if title and title not in seen and count < max_per_feed:
-                    seen.add(title)
-                    line = f"[{label}] {title}"
-                    if desc:
-                        line += f": {desc}"
-                    items.append(line)
-                    count += 1
+                if not title or title in seen or count >= max_per_feed:
+                    continue
+                pub_dt = _parse_pub_date(el)
+                if pub_dt and pub_dt < cutoff:
+                    skipped_old += 1
+                    continue
+                seen.add(title)
+                line = f"[{label}] {title}"
+                if desc:
+                    line += f": {desc}"
+                items.append(line)
+                count += 1
             print(f"[RSS] {label}: {count} items")
         except Exception as e:
             print(f"[WARN] RSS {label}: {e}")
-    print(f"[RSS] total: {len(items)} AI items from {len(_AI_RSS_FEEDS)} feeds")
+    print(f"[RSS] total: {len(items)} AI items from {len(_AI_RSS_FEEDS)} feeds (skipped {skipped_old} old)")
     return items
 
 
@@ -340,7 +380,13 @@ def build_news_context():
     Returns (context_str, fg_dict, market_prices_dict) — prices fetched once, reused by patch_prices.
     """
     today = datetime.utcnow().strftime("%Y-%m-%d")
-    lines = [f"=== נתוני שוק לניתוח — {today} ===\n"]
+    cutoff_date = (datetime.utcnow() - timedelta(days=MAX_NEWS_AGE_DAYS)).strftime("%Y-%m-%d")
+    lines = [
+        f"=== נתוני שוק לניתוח — {today} ===",
+        f"[RECENCY RULE] Today is {today}. Only use news published on or after {cutoff_date}.",
+        f"[RECENCY RULE] For section_7_ai: write only about announcements confirmed in the news context below. If no news exists for a company, write 'אין חדשות חדשות מהשבוע האחרון.' — do NOT use training knowledge for specific model names or dates.",
+        "",
+    ]
 
     fg = fetch_fear_greed()
     if fg["stock"] is not None or fg["crypto"] is not None:

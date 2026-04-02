@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chadshani v3 | Market Intelligence Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Heebo:wght@300;400;500;700;900&amp;family=Inter:wght@400;500;600&amp;family=Be+Vietnam+Pro:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#fe9cf4",
+              "surface-bright": "#f5f7f9",
+              "on-error": "#ffefee",
+              "primary-fixed-dim": "#658eff",
+              "surface-container": "#e5e9eb",
+              "surface-dim": "#d0d5d8",
+              "on-tertiary-fixed": "#480049",
+              "outline": "#747779",
+              "primary-container": "#7b9cff",
+              "secondary-fixed": "#dae2fd",
+              "secondary-fixed-dim": "#ccd4ee",
+              "on-surface": "#2c2f31",
+              "on-tertiary-container": "#661466",
+              "on-background": "#2c2f31",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary": "#f0f2ff",
+              "primary-dim": "#0046bb",
+              "tertiary-container": "#fe9cf4",
+              "error-container": "#fb5151",
+              "secondary-container": "#dae2fd",
+              "tertiary": "#8e3a8a",
+              "on-secondary-fixed": "#373f54",
+              "on-primary-fixed-variant": "#00266e",
+              "inverse-surface": "#0b0f10",
+              "tertiary-fixed-dim": "#ef8fe5",
+              "on-tertiary": "#ffeef8",
+              "on-primary": "#f1f2ff",
+              "on-secondary-fixed-variant": "#535b71",
+              "inverse-primary": "#618bff",
+              "secondary-dim": "#484f65",
+              "primary": "#0050d4",
+              "primary-fixed": "#7b9cff",
+              "surface-tint": "#0050d4",
+              "secondary": "#535171",
+              "surface": "#f5f7f9",
+              "surface-container-low": "#eef1f3",
+              "on-surface-variant": "#595c5e",
+              "on-primary-fixed": "#000000",
+              "background": "#f5f7f9",
+              "error-dim": "#9f0519",
+              "on-secondary-container": "#4a5167",
+              "outline-variant": "#abadaf",
+              "on-primary-container": "#001e5a",
+              "on-error-container": "#570008",
+              "surface-variant": "#d9dde0",
+              "inverse-on-surface": "#9a9d9f",
+              "surface-container-highest": "#d9dde0",
+              "on-tertiary-fixed-variant": "#711f6f",
+              "error": "#b31b25",
+              "tertiary-dim": "#802d7d",
+              "surface-container-high": "#dfe3e6"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk", "sans-serif"],
+              "body": ["Heebo", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        font-family: 'Heebo', sans-serif;
+        background: radial-gradient(circle at top left, #f5f7f9, #e5e9eb 100%);
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+      }
+      .perspective-card:hover {
+        transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .mesh-bg {
+        background-color: #f5f7f9;
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(123, 156, 255, 0.08) 0px, transparent 50%),
+          radial-gradient(at 100% 0%, rgba(254, 156, 244, 0.05) 0px, transparent 50%);
+      }
+      .pulsing-dot {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .3; }
+      }
+      .ticker-wrap {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .ticker-move {
+        display: inline-block;
+        animation: ticker 25s linear infinite;
+      }
+      @keyframes ticker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(100%); }
+      }
+    </style>
+</head>
+<body class="mesh-bg text-on-surface font-body overflow-x-hidden">
+<!-- TopNavBar -->
+<header class="bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-[0_16px_64px_-12px_rgba(0,0,0,0.04)]">
+<div class="flex flex-row-reverse justify-between items-center w-full px-6 py-3">
+<!-- Brand Section -->
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black text-blue-600 dark:text-blue-400 italic font-['Space_Grotesk'] tracking-tight">Chadshani v3</span>
+<div class="w-[2px] h-6 bg-outline-variant/30"></div>
+<div class="flex items-center gap-2 text-error font-headline font-bold">
+<span class="w-2 h-2 rounded-full bg-error pulsing-dot"></span>
+<span class="text-xs uppercase tracking-widest">LIVE</span>
+</div>
+</div>
+<!-- Scrolling Ticker -->
+<div class="hidden md:flex flex-1 mx-12 overflow-hidden items-center border-x border-outline-variant/10 px-4">
+<div class="ticker-wrap w-full">
+<div class="ticker-move flex gap-8 items-center">
+<span class="text-blue-700 dark:text-blue-300 font-bold border-b-2 border-blue-600 px-2 py-1 text-sm font-headline">S&amp;P 500 +1.2%</span>
+<span class="text-slate-500 dark:text-slate-400 font-medium px-2 py-1 text-sm font-headline">Nasdaq +0.8%</span>
+<span class="text-slate-500 dark:text-slate-400 font-medium px-2 py-1 text-sm font-headline">Bitcoin +2.4%</span>
+<span class="text-slate-500 dark:text-slate-400 font-medium px-2 py-1 text-sm font-headline">Ethereum +1.9%</span>
+<span class="text-slate-500 dark:text-slate-400 font-medium px-2 py-1 text-sm font-headline">Oil -0.4%</span>
+</div>
+</div>
+</div>
+<!-- User/Actions -->
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-500 hover:bg-slate-50 p-2 rounded-full transition-all">sensors</button>
+<img alt="User Intelligence Profile" class="w-10 h-10 rounded-full border-2 border-primary-container" data-alt="professional male portrait with confident expression, neutral gray studio background, high-end corporate photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgxaYOHFEymBgROQL3zyW42uueP4b5jzHjXFJOLEc3I_sFeb1Y6vRf8xNQmzQI65JgLw9uBOpx58xApfmABshFsReZRmw4vis_VLvNOQtT5QmrHroygDwAWjEnW-8JRGo-ofLhTg_45d_XmkEXf8LLZC3gL1UMseDT_ZI4iV-azqOTywMzy3ftvF9kj4H1WZN4kN4rtyXEQD2YymOWMHCiAGOr6Mt30Gyd54OSvGYbqLQ0njduyKLe8uZ6bXIY5QnRY0-9HPB7BEQh"/>
+</div>
+</div>
+</header>
+<div class="flex flex-row">
+<!-- Main Content Canvas -->
+<main class="flex-1 min-h-screen pt-8 pb-12 px-6 md:px-12 mr-0 md:mr-72">
+<!-- Hero Slider: Daily Perspective -->
+<section class="mb-12">
+<div class="relative w-full h-[450px] rounded-full overflow-hidden glass-card perspective-card transition-all duration-500 group">
+<img alt="Market Perspective" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-30" data-alt="abstract financial data visualization with glowing blue lines and network connections over a dark cinematic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZFMefr4YaTfV-mGXrxdzMYdSRQ7XMSQL6uFoU41nT1FsrNIuOfn0hlTQhOmf8UpcbXPWWhbL258sx47pMCKJCeTq5cP1ZLRFfPjbVaVgCILeRx8qdcnzo8ZRzBlbinfIIVti8YBAfj6A_FPdYtWc2SjVT063zoWMoEOuq7lK-Cz67fLDTQpYAGIfnBy8gFs6cxP-pcJzsvPIGXLt_Un6JLnSHtG2MySUKHkN2E64qQgq8orLRnqcEuQ3sVXs_ZYOJhknHax9XcQ_j"/>
+<div class="absolute inset-0 bg-gradient-to-l from-white/10 via-white/80 to-white flex flex-col justify-center p-16">
+<span class="text-primary font-headline font-bold tracking-widest text-sm mb-4">DAILY PERSPECTIVE / DEC 24</span>
+<h1 class="text-5xl md:text-6xl font-black font-headline text-on-surface mb-6 leading-tight max-w-2xl">המפץ הגדול של ה-AI: <br/><span class="text-primary-dim">שינוי סדרי עולם בשוק השבבים</span></h1>
+<p class="text-lg text-secondary max-w-xl mb-8 leading-relaxed">ניתוח עומק של זרימת המזומנים מסקטור התוכנה המסורתי אל ענקיות החומרה. האם Nvidia כבר מתמחרת את 2026?</p>
+<div class="flex gap-4">
+<button class="bg-primary text-white px-8 py-3 rounded-full font-bold shadow-[0_4px_20px_rgba(0,80,212,0.3)] hover:scale-105 transition-all">קרא את התזה המלאה</button>
+<button class="bg-white/50 backdrop-blur-md text-primary border border-primary/20 px-8 py-3 rounded-full font-bold hover:bg-white transition-all">צפה בנתונים</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Market Intelligence Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
+<!-- Sentiment Gauges -->
+<div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Gauge 1 -->
+<div class="surface-container-lowest glass-card p-6 rounded-full border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<span class="font-bold text-secondary">VIX (Volatility)</span>
+<span class="material-symbols-outlined text-primary">show_chart</span>
+</div>
+<div class="text-4xl font-headline font-black mb-2">14.20</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-green-500 w-[14%]"></div>
+</div>
+<p class="text-xs text-on-surface-variant mt-3">שלווה בשווקים. רמת סיכון: נמוכה</p>
+</div>
+<!-- Gauge 2 -->
+<div class="surface-container-lowest glass-card p-6 rounded-full border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<span class="font-bold text-secondary">Fear &amp; Greed (Stocks)</span>
+<span class="material-symbols-outlined text-orange-500">local_fire_department</span>
+</div>
+<div class="text-4xl font-headline font-black mb-2">72</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[72%]"></div>
+</div>
+<p class="text-xs text-on-surface-variant mt-3">אופטימיות יתרה. נוטה לתאוות בצע</p>
+</div>
+<!-- Gauge 3 -->
+<div class="surface-container-lowest glass-card p-6 rounded-full border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<span class="font-bold text-secondary">Crypto Sentiment</span>
+<span class="material-symbols-outlined text-tertiary">currency_bitcoin</span>
+</div>
+<div class="text-4xl font-headline font-black mb-2">85</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[85%]"></div>
+</div>
+<p class="text-xs text-on-surface-variant mt-3">אופוריה. זהירות נדרשת</p>
+</div>
+</div>
+<!-- Critical Alert -->
+<div class="bg-error-container/10 border border-error/20 p-6 rounded-full flex flex-col justify-between">
+<div class="flex items-center gap-3 text-error mb-2">
+<span class="material-symbols-outlined font-bold">warning</span>
+<span class="font-bold uppercase tracking-tighter">CRITICAL ALERT</span>
+</div>
+<h3 class="font-bold text-xl mb-2 text-on-error-container">החלטת הריבית הקרובה</h3>
+<p class="text-sm text-on-error-container/80 mb-4 leading-tight">צפי לתנודתיות קיצונית בשעה 21:00. הגנה על פוזיציות מומלצת.</p>
+<div class="bg-error text-white text-[10px] py-1 px-3 rounded-full w-fit font-bold">HIGH IMPACT</div>
+</div>
+</section>
+<!-- Sector Map & Money Flow -->
+<section class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-12">
+<div class="xl:col-span-2 glass-card rounded-full p-8">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="text-2xl font-black font-headline">Sector Money Flow</h2>
+<p class="text-on-surface-variant text-sm">זרימת כספים מוסדיים ב-24 השעות האחרונות</p>
+</div>
+<div class="text-right">
+<span class="text-3xl font-headline font-bold text-primary">+$1.2B</span>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Total Net Flow</p>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+<!-- Sector Item -->
+<div class="bg-surface-container-low p-4 rounded-xl text-center group hover:bg-primary transition-all">
+<div class="text-xs font-bold mb-2 group-hover:text-white">TECH</div>
+<div class="text-lg font-headline font-black text-green-600 group-hover:text-white">+$450M</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl text-center group hover:bg-primary transition-all">
+<div class="text-xs font-bold mb-2 group-hover:text-white">FIN</div>
+<div class="text-lg font-headline font-black text-red-600 group-hover:text-white">-$120M</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl text-center group hover:bg-primary transition-all">
+<div class="text-xs font-bold mb-2 group-hover:text-white">HLTH</div>
+<div class="text-lg font-headline font-black text-slate-500 group-hover:text-white">$0M</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl text-center group hover:bg-primary transition-all">
+<div class="text-xs font-bold mb-2 group-hover:text-white">CONS</div>
+<div class="text-lg font-headline font-black text-green-600 group-hover:text-white">+$85M</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl text-center group hover:bg-primary transition-all">
+<div class="text-xs font-bold mb-2 group-hover:text-white">ENER</div>
+<div class="text-lg font-headline font-black text-red-600 group-hover:text-white">-$210M</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl text-center group hover:bg-primary transition-all">
+<div class="text-xs font-bold mb-2 group-hover:text-white">RE</div>
+<div class="text-lg font-headline font-black text-green-600 group-hover:text-white">+$42M</div>
+</div>
+</div>
+</div>
+<!-- AI Frontier Tracker -->
+<div class="glass-card rounded-full p-8 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary blur-[4px]"></div>
+<h2 class="text-2xl font-black font-headline mb-6">AI Frontier</h2>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center text-white font-bold">S</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-bold">OpenAI Sora</span>
+<span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold">BETA</span>
+</div>
+<div class="text-xs text-on-surface-variant">עדכון מודל וידאו: שיפור עקביות ב-4K</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold">G</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-bold">Gemini 1.5 Pro</span>
+<span class="bg-green-600/10 text-green-600 text-[10px] px-2 py-0.5 rounded-full font-bold">GA</span>
+</div>
+<div class="text-xs text-on-surface-variant">הרחבת Context Window ל-2M טוקנים</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary flex items-center justify-center text-white font-bold">C</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-bold">Claude 3 Opus</span>
+<span class="bg-green-600/10 text-green-600 text-[10px] px-2 py-0.5 rounded-full font-bold">GA</span>
+</div>
+<div class="text-xs text-on-surface-variant">ביצועים מעבר ל-GPT-4 במבחני קוד</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Strategy & Watchlist -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+<!-- Core Thesis -->
+<div class="surface-container-low rounded-full p-8">
+<h2 class="text-2xl font-black font-headline mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">lightbulb</span>
+                        Strategy Thesis
+                    </h2>
+<div class="space-y-6">
+<div>
+<span class="text-xs font-bold text-primary uppercase tracking-widest">Main Thesis</span>
+<p class="font-bold text-lg mt-1">צבירת עמדות בתוכנת AI בזמן שהחומרה מתקררת</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-error/5 p-4 rounded-xl border-r-2 border-error">
+<span class="text-xs font-bold text-error">RISKS</span>
+<p class="text-sm mt-1">אינפלציה דביקה, דחיית הורדות ריבית</p>
+</div>
+<div class="bg-green-600/5 p-4 rounded-xl border-r-2 border-green-600">
+<span class="text-xs font-bold text-green-600">OPPORTUNITIES</span>
+<p class="text-sm mt-1">דוחות רווח חזקים בסקטור הענן</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Watchlist -->
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card rounded-full p-6 border-r-4 border-green-500">
+<h3 class="font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-green-500">trending_up</span>
+                            Rising Targets
+                        </h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center p-2 hover:bg-surface-container rounded-lg">
+<span class="font-headline font-bold">ASML</span>
+<span class="text-green-600 font-bold">+3.2%</span>
+</div>
+<div class="flex justify-between items-center p-2 hover:bg-surface-container rounded-lg">
+<span class="font-headline font-bold">MSFT</span>
+<span class="text-green-600 font-bold">+1.8%</span>
+</div>
+<div class="flex justify-between items-center p-2 hover:bg-surface-container rounded-lg">
+<span class="font-headline font-bold">TSM</span>
+<span class="text-green-600 font-bold">+4.5%</span>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-full p-6 border-r-4 border-error">
+<h3 class="font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-error">trending_down</span>
+                            Falling Targets
+                        </h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center p-2 hover:bg-surface-container rounded-lg">
+<span class="font-headline font-bold">TSLA</span>
+<span class="text-error font-bold">-2.4%</span>
+</div>
+<div class="flex justify-between items-center p-2 hover:bg-surface-container rounded-lg">
+<span class="font-headline font-bold">NFLX</span>
+<span class="text-error font-bold">-0.9%</span>
+</div>
+<div class="flex justify-between items-center p-2 hover:bg-surface-container rounded-lg">
+<span class="font-headline font-bold">DIS</span>
+<span class="text-error font-bold">-1.2%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- High Density Asset Tracker (Bento Style) -->
+<section class="mb-12">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-black font-headline">Intelligence Ledger</h2>
+<div class="flex gap-2">
+<button class="px-4 py-1 bg-primary text-white rounded-full text-xs font-bold">Semiconductors</button>
+<button class="px-4 py-1 bg-surface-container-high rounded-full text-xs font-bold hover:bg-primary-container transition-all">Software</button>
+<button class="px-4 py-1 bg-surface-container-high rounded-full text-xs font-bold hover:bg-primary-container transition-all">Crypto</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+<!-- Semi Cards (Repeatable) -->
+<div class="surface-container-lowest p-5 rounded-full border border-outline-variant/5 flex items-center justify-between group hover:shadow-xl transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs">NVDA</div>
+<div>
+<div class="font-headline font-bold">Nvidia Corp.</div>
+<div class="text-[10px] text-primary italic">AI NOTE: Demand outpaces supply by 30%</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline font-black">$875.20</div>
+<div class="text-xs text-green-600 font-bold">+2.15%</div>
+</div>
+</div>
+<!-- Repeat for density... -->
+<div class="surface-container-lowest p-5 rounded-full border border-outline-variant/5 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs">AMD</div>
+<div>
+<div class="font-headline font-bold">AMD Inc.</div>
+<div class="text-[10px] text-primary italic">AI NOTE: MI300X adoption acceleration</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline font-black">$182.44</div>
+<div class="text-xs text-green-600 font-bold">+1.40%</div>
+</div>
+</div>
+<div class="surface-container-lowest p-5 rounded-full border border-outline-variant/5 flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs">AVGO</div>
+<div>
+<div class="font-headline font-bold">Broadcom</div>
+<div class="text-[10px] text-primary italic">AI NOTE: Custom ASIC momentum</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline font-black">$1,350.10</div>
+<div class="text-xs text-red-600 font-bold">-0.45%</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- SideNavBar -->
+<aside class="bg-slate-50 dark:bg-slate-950 docked fixed right-0 h-full w-72 border-l border-slate-200/10 flex flex-col h-full py-8 px-4 gap-8 z-40 hidden md:flex">
+<!-- Sidebar Header -->
+<div class="flex flex-col items-end px-4 gap-2">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary p-1 bg-white mb-2 shadow-lg shadow-primary/10">
+<img alt="v3 3D Intelligence Icon" class="w-full h-full object-cover rounded-full" data-alt="close-up of a high-tech glowing abstract sphere representing artificial intelligence and data networks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuAWkCkmmXpLqH3cRfMCYOQAWhTDItKqw0BEEh95rMIBlYyzp06Nf3rV6JJb9-Sl5x5W0s36T7_AGLmWD7m_QWCHp0sLN47heyReFIDBnKvg-2a8Li2EAvjzZKhqhX8W3Dla7VMUEb0bytlK_2v7JhOCWy5foXc9i9bFGg5L7RTLFJWRn34tEV8RUgaA45-35T_0JvHXNc-wl8suEmStMq--XJAfyZUm96oKVjZlX4xaZ8XpNs5ILQlT-Y7FtVHX86NMJJ-yjDHFgB"/>
+</div>
+<h2 class="text-3xl font-black tracking-tighter text-blue-600 dark:text-blue-500 font-headline uppercase">Chadshani</h2>
+<p class="text-[10px] font-bold text-slate-500 font-label tracking-widest uppercase">Intelligence Terminal v3</p>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-2 mt-8">
+<a class="flex items-center justify-end gap-4 p-4 bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-[0_4px_20px_rgba(37,99,235,0.1)] rounded-xl group transition-all duration-300" href="#">
+<span class="font-bold text-right">The Market (Macro)</span>
+<span class="material-symbols-outlined">public</span>
+</a>
+<a class="flex items-center justify-end gap-4 p-4 text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:translate-x-[-4px] hover:scale-[1.02] transition-all duration-300 group" href="#">
+<span class="font-medium text-right">Sectors &amp; Flow (Micro)</span>
+<span class="material-symbols-outlined">account_tree</span>
+</a>
+<a class="flex items-center justify-end gap-4 p-4 text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:translate-x-[-4px] hover:scale-[1.02] transition-all duration-300 group" href="#">
+<span class="font-medium text-right">Crypto World</span>
+<span class="material-symbols-outlined">currency_bitcoin</span>
+</a>
+<a class="flex items-center justify-end gap-4 p-4 text-slate-600 dark:text-slate-400 hover:text-blue-500 hover:translate-x-[-4px] hover:scale-[1.02] transition-all duration-300 group" href="#">
+<span class="font-medium text-right">AI Frontier</span>
+<span class="material-symbols-outlined">psychology</span>
+</a>
+</nav>
+<!-- Profile Card Integration -->
+<div class="mt-auto glass-card p-6 rounded-full border border-outline-variant/10">
+<div class="flex items-center justify-end gap-3 mb-4">
+<div class="text-right">
+<div class="font-bold text-sm">Shalev Gigi</div>
+<div class="text-[10px] text-on-surface-variant font-bold">Chief Strategist</div>
+</div>
+<img alt="Shalev Gigi" class="w-10 h-10 rounded-full border border-primary-container" data-alt="professional portrait of a young male executive in a tailored suit, modern office background with soft bokeh lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAia8H9KatO5SbA96EkNCJm9adqiALPpKBrRFljYw8z-PzuVG40BRBKpMUtVto2mol9n8BmaO0CLdSw7RoQs6Zs99dUcsnBH95XDXmAw-BaqS1pgo8XICySQACdvFM7Vvye7dcAVTGXJeP0s-EXEDvli_DEjHv462AYyGKaH4AJWjDdxTjcgfiPMuWZ_ORu8u-BGRDO88-78xxPamRDja3BLq2hiReOfKyUByLN525KDk0XioDcVsd4iuwKpMqldhjSN1bzuUvgan2i"/>
+</div>
+<p class="text-[11px] leading-tight text-on-surface-variant text-right mb-4">מומחה לניתוח מאקרו וזיהוי מגמות טכנולוגיות בשווקים הגלובליים.</p>
+<div class="flex justify-end gap-2">
+<button class="material-symbols-outlined text-slate-400 hover:text-blue-500 transition-colors">help</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-error transition-colors">logout</button>
+</div>
+</div>
+</aside>
+</div>
+<!-- Mobile BottomNavBar (Responsive Pivot) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-lg flex justify-around py-3 px-6 border-t border-outline-variant/10 z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">public</span>
+<span class="text-[10px] font-bold">Macro</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="text-[10px] font-bold">Micro</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">currency_bitcoin</span>
+<span class="text-[10px] font-bold">Crypto</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">psychology</span>
+<span class="text-[10px] font-bold">AI</span>
+</button>
+</nav>
+</body></html>

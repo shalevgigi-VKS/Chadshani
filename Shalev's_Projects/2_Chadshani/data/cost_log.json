@@ -945,8 +945,100 @@
       "out_tokens": 8138,
       "cost_usd": 0.00304,
       "cost_ils": 0.0111
+    },
+    {
+      "ts": "2026-04-02T05:07:41Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8197,
+      "out_tokens": 8535,
+      "cost_usd": 0.00318,
+      "cost_ils": 0.0116
+    },
+    {
+      "ts": "2026-04-02T05:08:43Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8197,
+      "out_tokens": 7542,
+      "cost_usd": 0.00288,
+      "cost_ils": 0.0105
+    },
+    {
+      "ts": "2026-04-02T05:10:54Z",
+      "model": "gemini-2.5-pro",
+      "in_tokens": 8197,
+      "out_tokens": 7719,
+      "cost_usd": 0.08744,
+      "cost_ils": 0.3191
+    },
+    {
+      "ts": "2026-04-02T06:19:33Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 9502,
+      "out_tokens": 7217,
+      "cost_usd": 0.00288,
+      "cost_ils": 0.0105
+    },
+    {
+      "ts": "2026-04-02T06:22:23Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 9507,
+      "out_tokens": 7467,
+      "cost_usd": 0.00295,
+      "cost_ils": 0.0108
+    },
+    {
+      "ts": "2026-04-02T06:30:08Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 9610,
+      "out_tokens": 7692,
+      "cost_usd": 0.00303,
+      "cost_ils": 0.0111
+    },
+    {
+      "ts": "2026-04-02T06:32:50Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 9633,
+      "out_tokens": 7062,
+      "cost_usd": 0.00284,
+      "cost_ils": 0.0104
+    },
+    {
+      "ts": "2026-04-02T09:11:08Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 9682,
+      "out_tokens": 7194,
+      "think_tokens": 2773,
+      "cost_usd": 0.01259,
+      "cost_ils": 0.0466
+    },
+    {
+      "ts": "2026-04-02T09:19:53Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 9612,
+      "out_tokens": 7381,
+      "think_tokens": 8953,
+      "cost_usd": 0.03427,
+      "cost_ils": 0.1268
+    },
+    {
+      "ts": "2026-04-02T14:30:01Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8586,
+      "out_tokens": 6410,
+      "think_tokens": 6529,
+      "cost_usd": 0.02542,
+      "cost_ils": 0.094
+    },
+    {
+      "ts": "2026-04-02T17:01:41Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8365,
+      "out_tokens": 6763,
+      "think_tokens": 2392,
+      "cost_usd": 0.01103,
+      "cost_ils": 0.0408
     }
   ],
-  "total_usd": 4.22904,
-  "total_ils": 15.4352
+  "total_usd": 4.41755,
+  "total_ils": 16.1274
 }

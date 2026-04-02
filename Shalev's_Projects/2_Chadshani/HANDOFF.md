@@ -1,16 +1,19 @@
 # Chadshani — HANDOFF
 Last updated: 2026-04-02
 
-## מצב נוכחי
-- האתר פועל על GitHub Pages: https://shalevgigi-vks.github.io/Chadshani/
-- נתונים מתעדכנים דרך `generate_json.py` (Gemini API + yfinance)
-- workflow_dispatch בלבד — cron בוטל (2026-04-02)
-- מפתחות API: GEMINI_API_KEY חייב להיות בסביבה המקומית
+## מצב נוכחי (2026-04-02)
+- האתר פועל ✅ — https://shalevgigi-vks.github.io/Chadshani/
+- Task Scheduler: Chadshani-0645 + Chadshani-1845 רשומים ופועלים
+- GEMINI_API_KEY מוגדר כ-User env var
+- תקציב אפריל: ~₪0.65 / ₪20 (Google AI Studio — המספר הסמכותי)
+- עלות ריצה: ~₪0.09 כולל thinking tokens
+- flow_amount: מחושב מ-yfinance AUM (לא Gemini)
+- section_7_ai: fallback לנתונים קודמים אם אין חדשות
+- **סינון חדשות**: MAX_NEWS_AGE_DAYS=7 — RSS + yfinance מסננים פריטים ישנים מ-7 ימים+
 
-## הצעד הבא
-- בחר: האם לבנות Task Scheduler מקומי (07:00 ו-19:00 IL) או להמשיך עם הרצה ידנית
-- לאחר החלטה: אם Task Scheduler → הרץ `setup_task.ps1` כ-Admin (קיים ב-EvolutionSchematic כדוגמה)
-- שלב הבא בפרויקט: שחזור v2 עם נתונים אמיתיים → ואז v3
+## סטטוס: מוקפא ✅
+הפרויקט יציב ועובד. המשתמש בונה רעיון ל-v3 — אסור לגעת עד הנחיה מפורשת.
+Task Scheduler ממשיך לרוץ אוטומטית (06:45 + 18:45) בלי כל התערבות.
 
 ## כלל קריטי — אסור לפרוס ללא נתונים
 **חדשני לא עולה לאוויר ללא עדכון מלא של כלל הנתונים באתר.**

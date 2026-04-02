@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Heebo:wght@300;400;500;700;800&amp;family=Inter:wght@400;500;600&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface": "#f5f7f9",
+              "on-secondary-fixed-variant": "#535b71",
+              "on-secondary-container": "#4a5167",
+              "on-primary-container": "#001e5a",
+              "primary-container": "#7b9cff",
+              "inverse-on-surface": "#9a9d9f",
+              "on-tertiary": "#ffeef8",
+              "on-tertiary-container": "#661466",
+              "on-error-container": "#570008",
+              "secondary": "#535b71",
+              "tertiary-container": "#fe9cf4",
+              "surface-variant": "#d9dde0",
+              "on-error": "#ffefee",
+              "surface-container-highest": "#d9dde0",
+              "on-primary-fixed": "#000000",
+              "secondary-dim": "#484f65",
+              "on-primary-fixed-variant": "#00266e",
+              "primary-fixed-dim": "#658eff",
+              "on-tertiary-fixed-variant": "#711f6f",
+              "tertiary-dim": "#802d7d",
+              "secondary-fixed": "#dae2fd",
+              "tertiary-fixed-dim": "#ef8fe5",
+              "on-surface-variant": "#595c5e",
+              "error": "#b31b25",
+              "surface-dim": "#d0d5d8",
+              "surface-container": "#e5e9eb",
+              "surface-container-lowest": "#ffffff",
+              "inverse-primary": "#618bff",
+              "primary-fixed": "#7b9cff",
+              "surface-container-low": "#eef1f3",
+              "on-tertiary-fixed": "#480049",
+              "outline": "#747779",
+              "error-dim": "#9f0519",
+              "on-background": "#2c2f31",
+              "surface-bright": "#f5f7f9",
+              "on-primary": "#f1f2ff",
+              "outline-variant": "#abadaf",
+              "on-secondary-fixed": "#373f54",
+              "primary-dim": "#0046bb",
+              "surface-container-high": "#dfe3e6",
+              "background": "#f5f7f9",
+              "error-container": "#fb5151",
+              "primary": "#0050d4",
+              "on-secondary": "#f0f2ff",
+              "secondary-fixed-dim": "#ccd4ee",
+              "secondary-container": "#dae2fd",
+              "tertiary": "#8e3a8a",
+              "surface-tint": "#0050d4",
+              "inverse-surface": "#0b0f10",
+              "tertiary-fixed": "#fe9cf4",
+              "on-surface": "#2c2f31"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Heebo"],
+              "label": ["Inter"],
+              "vietnam": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glow-line {
+            box-shadow: 0 0 10px 0 rgba(0, 80, 212, 0.4);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-x-hidden pb-32">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl">
+<div class="flex flex-row-reverse justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-3">
+<span class="text-xl font-black text-blue-600 uppercase tracking-tighter font-headline">Chadshani v3</span>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="minimalist tech logo with abstract brain and geometric patterns in blue tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtVUPraR0TuF0YQZj1cxEt390UcEsm4vQMsGBaj1JCCo0jQVWm4X9AuAgWJXJ9iup0RVYOurugASM_T8sgvBFG3nnN61EtGeclLnXmXyUMHhVMpXZ1ehDe24gfJvJhG51IcBhQIXCKh2EHkJZVUxnvJ2ZzCkuaKfveth4K8eST1DgpYasCxVJbZtrhGbh8FZc0f3T52Wqwkh4yJVZdTEdVphaicX61kITgJ7JXUYk_VO8FvZWq21_ZcKZj_LMrnXah8VyIEPYC-0go"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-error-container text-white text-[10px] font-bold font-headline">LIVE</span>
+<button class="material-symbols-outlined text-slate-500 hover:bg-blue-50/50 transition-all p-2 rounded-full">search</button>
+</div>
+</div>
+<div class="bg-gradient-to-r from-transparent via-blue-500/10 to-transparent h-[1px]"></div>
+</header>
+<main class="pt-20 px-6 space-y-8">
+<!-- Market Ticker -->
+<section class="-mx-6 overflow-hidden">
+<div class="flex gap-4 px-6 overflow-x-auto no-scrollbar py-2">
+<div class="flex-shrink-0 flex items-center gap-2 bg-surface-container-lowest px-4 py-2 rounded-full shadow-sm">
+<span class="text-xs font-headline font-bold text-slate-400">SPX</span>
+<span class="text-xs font-headline font-bold text-primary">5,420.22</span>
+<span class="text-[10px] text-green-600 font-bold">+1.2%</span>
+</div>
+<div class="flex-shrink-0 flex items-center gap-2 bg-surface-container-lowest px-4 py-2 rounded-full shadow-sm">
+<span class="text-xs font-headline font-bold text-slate-400">NDX</span>
+<span class="text-xs font-headline font-bold text-primary">18,623.15</span>
+<span class="text-[10px] text-green-600 font-bold">+0.8%</span>
+</div>
+<div class="flex-shrink-0 flex items-center gap-2 bg-surface-container-lowest px-4 py-2 rounded-full shadow-sm">
+<span class="text-xs font-headline font-bold text-slate-400">BTC</span>
+<span class="text-xs font-headline font-bold text-primary">64,102</span>
+<span class="text-[10px] text-error font-bold">-0.4%</span>
+</div>
+</div>
+</section>
+<!-- Hero Section: Daily Perspective -->
+<section class="relative h-64 rounded-[2rem] overflow-hidden shadow-2xl">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="futuristic digital landscape with abstract glass structures and glowing blue light data streams in a dark void" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAetx8a950CGWxhTSHUmkN8JYWtQrWkdduqYLvA59SFQeyZz5v3pvqnU69L1bnz01iLkhQyJ9WP6fQUbwIGpZjnPArldypvuXE30s-I688rurz06oeB7AntArum5iRATDBSt1D9QDcjwMCHC3c3_abkLHba5ltfShyaqy40JFf6hvd1Xr7zh91DrN-TRxDoKVnDqD7i_85qaoPvLWfN8B6ihV1AwhNQUSNCnP8yR-elGihDK7g9Zz5vHK2b_YAcKjCIuMvyP_NvN2zE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/90 via-inverse-surface/20 to-transparent p-6 flex flex-col justify-end">
+<span class="text-primary-container text-xs font-bold tracking-widest uppercase mb-1 font-headline">Intelligence Brief</span>
+<h1 class="text-white text-3xl font-black font-headline leading-tight tracking-tight">Daily Perspective</h1>
+<p class="text-surface-variant text-sm mt-2 max-w-[80%] font-body">ניתוח מעמיק של תנודות השוק והזדמנויות AI בזמן אמת.</p>
+</div>
+</section>
+<!-- Sentiment Gauges -->
+<section class="grid grid-cols-3 gap-3">
+<div class="bg-surface-container-lowest p-4 rounded-[1.5rem] flex flex-col items-center justify-center text-center">
+<span class="text-[10px] font-bold text-slate-400 uppercase font-headline mb-1">VIX</span>
+<div class="relative flex items-center justify-center">
+<div class="w-12 h-12 rounded-full border-4 border-primary/20 border-t-primary rotate-45"></div>
+<span class="absolute text-xs font-bold font-headline">12.4</span>
+</div>
+<span class="text-[10px] text-green-600 mt-2 font-bold">Complacent</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-[1.5rem] flex flex-col items-center justify-center text-center">
+<span class="text-[10px] font-bold text-slate-400 uppercase font-headline mb-1">STOCKS</span>
+<div class="relative flex items-center justify-center">
+<div class="w-12 h-12 rounded-full border-4 border-tertiary/20 border-t-tertiary -rotate-12"></div>
+<span class="absolute text-xs font-bold font-headline">68%</span>
+</div>
+<span class="text-[10px] text-tertiary mt-2 font-bold">Greed</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-[1.5rem] flex flex-col items-center justify-center text-center">
+<span class="text-[10px] font-bold text-slate-400 uppercase font-headline mb-1">CRYPTO</span>
+<div class="relative flex items-center justify-center">
+<div class="w-12 h-12 rounded-full border-4 border-primary/20 border-t-primary rotate-180"></div>
+<span class="absolute text-xs font-bold font-headline">42%</span>
+</div>
+<span class="text-[10px] text-slate-500 mt-2 font-bold">Neutral</span>
+</div>
+</section>
+<!-- Critical Alert -->
+<section class="bg-error/5 border border-error/10 p-5 rounded-[1.5rem] flex gap-4 items-start relative overflow-hidden">
+<div class="absolute right-0 top-0 h-full w-1 bg-error"></div>
+<div class="bg-error text-white p-2 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-error text-sm mb-1">Critical Alert</h4>
+<p class="text-xs text-on-surface leading-relaxed font-body">שינוי בריביות הפד צפוי להשפיע על מניות הטכנולוגיה בשעה 20:00. היערכו מראש.</p>
+</div>
+</section>
+<!-- Sector Money Flow Summary -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h2 class="text-xl font-bold font-headline tracking-tight">Sector Money Flow</h2>
+<span class="text-xs text-primary font-bold">See All</span>
+</div>
+<div class="bg-surface-container-low rounded-[2rem] p-6 space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span>Technology</span>
+<span class="text-green-600">+$2.4B</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary glow-line" style="width: 85%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span>Energy</span>
+<span class="text-error">-$1.1B</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 40%"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span>Financials</span>
+<span class="text-slate-500">+$0.2B</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-slate-400" style="width: 55%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Asset Trackers -->
+<section class="space-y-4">
+<h2 class="text-xl font-bold font-headline tracking-tight">Intelligence Trackers</h2>
+<div class="space-y-3">
+<!-- Semiconductor Card -->
+<div class="bg-surface-container-lowest p-5 rounded-[1.5rem] shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">memory</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">Semiconductors</h4>
+<p class="text-[10px] text-slate-400">SOXX INDEX</p>
+</div>
+</div>
+<div class="text-left">
+<p class="font-headline font-bold text-sm">224.50</p>
+<p class="text-[10px] text-green-600 font-bold">+2.1%</p>
+</div>
+</div>
+<!-- Software Card -->
+<div class="bg-surface-container-lowest p-5 rounded-[1.5rem] shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">code</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">Software (AI)</h4>
+<p class="text-[10px] text-slate-400">IGV CLOUD</p>
+</div>
+</div>
+<div class="text-left">
+<p class="font-headline font-bold text-sm">412.18</p>
+<p class="text-[10px] text-green-600 font-bold">+1.5%</p>
+</div>
+</div>
+<!-- Crypto Card -->
+<div class="bg-surface-container-lowest p-5 rounded-[1.5rem] shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">currency_bitcoin</span>
+</div>
+<div>
+<h4 class="font-bold text-sm">Total Crypto Cap</h4>
+<p class="text-[10px] text-slate-400">GLOBAL MARKET</p>
+</div>
+</div>
+<div class="text-left">
+<p class="font-headline font-bold text-sm">2.41T</p>
+<p class="text-[10px] text-error font-bold">-0.8%</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Strategy Thesis & Watchlist -->
+<section class="grid grid-cols-1 gap-6">
+<div class="bg-inverse-surface text-white p-6 rounded-[2rem] space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">lightbulb</span>
+<h3 class="font-headline font-bold text-lg">Strategy Thesis</h3>
+</div>
+<p class="text-sm text-surface-variant font-body leading-relaxed">
+                    מיקוד ברבעון הנוכחי: מעבר מתשתית AI לאפליקציות AI. הגדלת חשיפה למגזרי תוכנה ארגונית ופינטק המטמיעים מודלים שפתיים.
+                </p>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold">TECH BULLISH</span>
+<span class="px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold">RATES NEUTRAL</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-[2rem] shadow-sm">
+<h3 class="font-headline font-bold text-lg mb-4">Focus Watchlist</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-surface-container-low">
+<div class="flex gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-xs font-bold">NVDA</div>
+<div>
+<p class="text-sm font-bold">Nvidia Corp</p>
+<p class="text-[10px] text-slate-400">Leading Indicator</p>
+</div>
+</div>
+<span class="text-green-600 font-headline font-bold">124.52</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-surface-container-low">
+<div class="flex gap-3">
+<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-xs font-bold">AAPL</div>
+<div>
+<p class="text-sm font-bold">Apple Inc</p>
+<p class="text-[10px] text-slate-400">Institutional Proxy</p>
+</div>
+</div>
+<span class="text-error font-headline font-bold">214.15</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Profile / Summary Section -->
+<section class="bg-surface-container-high rounded-[2rem] p-6 flex items-center gap-4">
+<img class="w-14 h-14 rounded-full ring-2 ring-primary" data-alt="portrait of a professional analyst in a modern minimalist workspace with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQTAfbqKgVNH0lu7ykqQqMc6fOL9spE9NnpXjGMD8qOsMp3mGltTX0oFxgEUBwMq-yrUFhpJlgOW5G21aim_ueaRnh55F7i5UUojGrIAWs7S2a6MW4FGt7ab1s5ExKNfZ27m6t5jlWhuJYV0dFhNvQqUJrXgUwUgTF0dINrDyfDfVCYKj8u4gwOkt0dAuujyEcYbRGNVFgjH5Co3WH23U0AYSHjmrUuyMHLQjKWHsBkWfFd6idCWh2jZA_614Ah8-PUdHAP3axrXD3"/>
+<div>
+<h4 class="font-bold text-lg">שחר אשכנזי</h4>
+<p class="text-xs text-on-surface-variant font-medium">Head of Research • Alpha Account</p>
+<div class="flex gap-2 mt-2">
+<div class="px-2 py-0.5 rounded-md bg-primary/20 text-primary text-[10px] font-bold">EXPERT</div>
+<div class="px-2 py-0.5 rounded-md bg-tertiary/20 text-tertiary text-[10px] font-bold">98% SCORE</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex flex-row-reverse justify-around items-center px-4 pb-6 pt-3 bg-white/80 backdrop-blur-2xl rounded-t-[2rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.04)]">
+<!-- Active Tab: Market -->
+<a class="flex flex-col items-center justify-center text-blue-600 bg-blue-50/50 rounded-2xl px-5 py-2 ring-1 ring-blue-500/20 active:scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-['Heebo'] text-[11px] font-bold leading-relaxed">מרקט</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-blue-500 active:scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1">grid_view</span>
+<span class="font-['Heebo'] text-[11px] font-medium leading-relaxed">סקטורים</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-blue-500 active:scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1">currency_bitcoin</span>
+<span class="font-['Heebo'] text-[11px] font-medium leading-relaxed">קריפטו</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:text-blue-500 active:scale-90 transition-transform duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1">psychology</span>
+<span class="font-['Heebo'] text-[11px] font-medium leading-relaxed">AI</span>
+</a>
+</nav>
+<!-- FAB for AI Chat -->
+<button class="fixed bottom-24 left-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform duration-200 z-40">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</button>
+</body></html>
