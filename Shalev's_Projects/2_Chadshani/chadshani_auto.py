@@ -12,6 +12,15 @@ import urllib.request
 from datetime import datetime
 
 NTFY_TOPIC = "CloudeCode"
+BUDGET_ILS = 20.0
+COST_LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cost_log.json")
+
+
+def read_cost_log():
+    if os.path.exists(COST_LOG):
+        with open(COST_LOG, encoding="utf-8") as f:
+            return json.load(f)
+    return {"runs": [], "total_usd": 0.0, "total_ils": 0.0}
 
 
 def notify(title, message, tags="white_check_mark"):
@@ -54,6 +63,21 @@ def run(cmd, cwd=None, env=None):
 def main():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     print(f"[START] chadshani_auto — {now}")
+
+    # Budget check — abort if limit reached
+    log = read_cost_log()
+    total_ils = log.get("total_ils", 0.0)
+    pct = total_ils / BUDGET_ILS * 100
+    print(f"[BUDGET] ₪{total_ils:.2f} / ₪{BUDGET_ILS:.0f} ({pct:.1f}% used)")
+    if total_ils >= BUDGET_ILS:
+        msg = f"תקציב API מוצה: ₪{total_ils:.2f} / ₪{BUDGET_ILS:.0f} — עדכון הופסק"
+        print(f"[BUDGET] EXCEEDED — {msg}")
+        notify("חדשני — תקציב מוצה ⛔", msg, tags="x")
+        sys.exit(1)
+    if total_ils >= BUDGET_ILS * 0.9:
+        notify("חדשני — אזהרת תקציב ⚠️",
+               f"נוצלו {pct:.0f}% מהתקציב — ₪{total_ils:.2f} מתוך ₪{BUDGET_ILS:.0f}",
+               tags="warning")
 
     # Step 1: Generate JSON (sets GEMINI_API_KEY from environment)
     generate_script = os.path.join(PROJECT_DIR, "generate_json.py")
@@ -125,7 +149,13 @@ def main():
         sys.exit(1)
 
     print(f"[DONE] Update deployed — {now}")
-    notify("חדשני — עודכן", "האתר עודכן בהצלחה בכל נתוני השוק החדשים")
+    log_after = read_cost_log()
+    total_after = log_after.get("total_ils", 0.0)
+    last_run = log_after.get("runs", [{}])[-1]
+    run_ils = last_run.get("cost_ils", 0.0)
+    remaining = BUDGET_ILS - total_after
+    cost_line = f"עלות ריצה: ₪{run_ils:.4f} | סה\"כ: ₪{total_after:.2f} | נשאר: ₪{remaining:.2f}"
+    notify("חדשני — עודכן ✅", f"האתר עודכן בכל נתוני השוק החדשים\n{cost_line}")
 
 
 if __name__ == "__main__":

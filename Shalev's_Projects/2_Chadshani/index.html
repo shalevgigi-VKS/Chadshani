@@ -3,50 +3,1080 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חדשני — תחזוקה</title>
+    <title>חדשני | דסק חדשות מודיעיני פיננסי-טכנולוגי</title>
+    <meta property="og:title" content="חדשני | דסק חדשות מודיעיני פיננסי-טכנולוגי">
+    <meta property="og:description" content="דסק חדשות מודיעיני פיננסי-טכנולוגי – עדכון יומי בזמן אמת על שוק ההון, AI, שבבים וקריפטו">
+    <meta property="og:image" content="https://shalevgigi-vks.github.io/Chadshani/chadshani_logo.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shalevgigi-vks.github.io/Chadshani/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="חדשני | דסק חדשות מודיעיני">
+    <meta name="twitter:image" content="https://shalevgigi-vks.github.io/Chadshani/chadshani_logo.jpg">
+    <link rel="icon" href="chadshani_logo.jpg" type="image/jpeg">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>history.scrollRestoration = 'manual';</script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#f8fafc',
+                            surface: '#ffffff',
+                            accent: '#2563eb',
+                            gold: '#d97706',
+                            emerald: '#059669',
+                            rose: '#e11d48',
+                            border: 'rgba(0,0,0,0.08)',
+                            muted: '#64748b',
+                            text: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Outfit', 'Heebo', 'sans-serif'],
+                        body: ['Heebo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #0f172a; 
-            color: #f8fafc; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            text-align: center; 
+        * { box-sizing: border-box; }
+        p, .text-justify-all { text-align: justify; text-align-last: auto; hyphens: auto; }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: 'Heebo', sans-serif;
+            overflow-x: hidden;
         }
-        .container { 
-            background: #1e293b; 
-            padding: 3rem; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
-            max-width: 500px;
-            border: 1px solid #334155;
+
+        /* Cards */
+        .card {
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
-        h1 { color: #e2e8f0; margin-bottom: 1rem; }
-        p { color: #94a3b8; font-size: 1.1rem; line-height: 1.5; }
-        .logo { font-size: 3rem; margin-bottom: 1rem; }
-        .spinner {
-            margin: 20px auto;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: #3b82f6;
-            animation: spin 1s ease-in-out infinite;
+        .card:hover {
+            box-shadow: 0 8px 32px rgba(37,99,235,0.13), 0 2px 8px rgba(0,0,0,0.07);
+            transform: translateY(-3px) scale(1.005);
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Glow card variant */
+        .card-glow {
+            background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+            border: 1px solid rgba(37,99,235,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(37,99,235,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Ticker */
+        .ticker-wrap {
+            background: #0f172a;
+            color: #f1f5f9;
+            overflow: hidden;
+            white-space: nowrap;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        .ticker-track {
+            display: inline-flex;
+            width: max-content;
+            gap: 3rem;
+            padding: 0 1rem;
+            will-change: transform;
+        }
+        .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; }
+        .up { color: #10b981; }
+        .down { color: #f43f5e; }
+
+        /* Header */
+        header {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0,0,0,0.07);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* Carousel */
+        .carousel-container { position: relative; overflow: hidden; border-radius: 1.5rem; }
+        .carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .carousel-slide { min-width: 100%; }
+        .carousel-slide img { width: 100%; height: 400px; object-fit: cover; border-radius: 1.5rem; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 50%; width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.2rem; z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            transition: background 0.2s;
+        }
+        .carousel-btn:hover { background: #fff; }
+        .carousel-btn.prev { right: 12px; }
+        .carousel-btn.next { left: 12px; }
+        .carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+        .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #cbd5e1; cursor: pointer; transition: background 0.2s, width 0.2s;
+        }
+        .dot.active { background: #2563eb; width: 24px; border-radius: 4px; }
+
+        /* Sector rows */
+        .flow-in { color: #059669; font-weight: 600; }
+        .flow-out { color: #e11d48; font-weight: 600; }
+        .flow-neutral { color: #64748b; font-weight: 500; }
+
+        /* Progress bars */
+        .bar-track { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+        /* Section label */
+        .section-label {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em;
+            text-transform: uppercase; margin-bottom: 1.1rem;
+            padding: 0.3rem 0.75rem 0.3rem 0;
+        }
+        .section-label::before {
+            content: ''; display: block; width: 20px; height: 3px; border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .label-blue { color: #1d4ed8; }
+        .label-blue::before { background: linear-gradient(90deg,#2563eb,#60a5fa); }
+        .label-emerald { color: #047857; }
+        .label-emerald::before { background: linear-gradient(90deg,#059669,#34d399); }
+        .label-gold { color: #b45309; }
+        .label-gold::before { background: linear-gradient(90deg,#d97706,#fbbf24); }
+        .label-rose { color: #be123c; }
+        .label-rose::before { background: linear-gradient(90deg,#e11d48,#fb7185); }
+
+        /* About section */
+        .about-section {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            border: 1px solid rgba(37,99,235,0.1);
+        }
+
+        /* Watchlist chip */
+        .ticker-chip {
+            padding: 0.75rem 1rem; background: #f8fafc;
+            border: 1px solid rgba(0,0,0,0.07); border-radius: 0.75rem;
+            transition: border-color 0.2s, background 0.2s; cursor: crosshair;
+        }
+        .ticker-chip:hover { border-color: #2563eb; background: #eff6ff; }
+
+        /* Status badge */
+        .status-ga { background: #dcfce7; color: #15803d; }
+        .status-beta { background: #fef9c3; color: #a16207; }
+
+        /* Pulse dot */
+        .pulse-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #10b981;
+            animation: pulse-anim 2s ease-in-out infinite;
+        }
+        @keyframes pulse-anim {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        @media (max-width: 768px) {
+            .carousel-slide img { height: 220px; }
+            /* Force single-column on mobile for text-heavy sections */
+            .mobile-stack { grid-template-columns: 1fr !important; }
+            /* Bigger section labels on mobile */
+            .section-label { font-size: 0.75rem; }
+        }
+
+        /* Shimmer animation for premium feel */
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .shimmer-text {
+            background: linear-gradient(90deg, #1d4ed8 0%, #7c3aed 30%, #059669 60%, #1d4ed8 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s linear infinite;
+        }
+
+        /* 3D card effect */
+        .card-3d {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .card-3d:hover {
+            transform: translateY(-4px) rotateX(1deg) rotateY(-1deg) scale(1.008);
+            box-shadow: 0 12px 40px rgba(37,99,235,0.15), 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Gradient accent borders */
+        .border-gradient-blue {
+            border-image: linear-gradient(135deg, #2563eb, #7c3aed) 1;
+        }
+
+        /* Hero section glow */
+        .hero-glow {
+            position: relative;
+        }
+        .hero-glow::after {
+            content: '';
+            position: absolute;
+            top: -20px; left: 50%; transform: translateX(-50%);
+            width: 80%; height: 60px;
+            background: radial-gradient(ellipse, rgba(37,99,235,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Important Notices */
+        .notice-box {
+            border: 2px solid #dc2626;
+            background: #fff1f1;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            text-align: center;
+            font-family: 'Heebo', sans-serif;
+        }
+        .notice-box .notice-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #b91c1c;
+            margin-bottom: 0.6rem;
+        }
+        .notice-box .notice-body {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.7;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="logo">🧠</div>
-        <h1>מערכת חדשני כרגע תחת תחזוקה</h1>
-        <div class="spinner"></div>
-        <p>אנו מבצעים שדרוג מערכות ודיוק נתונים מהשורש.<br>הדסק ישוב לפעילות מלאה ברגע שכל המידע יהיה מאומת ב-100%. בשלב זה לא ניתן לגשת לנתונים הישנים.</p>
+<body class="font-body">
+
+<!-- Staleness Banner (pre-placed so header/ticker can offset correctly) -->
+<div id="staleness-banner" hidden style="background:#fef3c7;color:#92400e;text-align:center;padding:6px 12px;font-size:13px;position:sticky;top:0;z-index:60;border-bottom:1px solid #fcd34d;"></div>
+
+<!-- Header -->
+<header class="px-4 md:px-6 py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3">
+                <img src="chadshani_logo.jpg" alt="חדשני" class="w-11 h-11 rounded-xl object-cover shrink-0" style="border:1px solid rgba(0,0,0,0.09);box-shadow:0 2px 8px rgba(37,99,235,0.15)">
+                <div>
+                    <h1 class="font-display font-black text-xl leading-none text-brand-text tracking-tight">חדשני</h1>
+                    <p class="text-[0.65rem] font-mono tracking-widest mt-0.5" style="background:linear-gradient(90deg,#2563eb,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">INTELLIGENCE TERMINAL</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+            <div class="flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-mono font-bold" style="box-shadow:0 0 0 3px rgba(5,150,105,0.08)">
+                <div class="pulse-dot"></div>
+                <span>LIVE</span>
+            </div>
+        </div>
     </div>
+</header>
+
+<!-- Ticker Bar -->
+<div class="ticker-wrap py-2 text-xs font-mono" id="ticker-bar">
+    <div class="ticker-track" id="ticker-track">
+        <!-- populated by JS -->
+    </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-6">
+
+    <!-- Clock Bar -->
+    <div id="clock-bar" class="grid grid-cols-3 text-center text-xs font-mono py-1" style="background:transparent;border:none;box-shadow:none">
+        <div>
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">שעה נוכחית</div>
+            <div id="clock-now" class="font-bold text-brand-text tabular-nums"></div>
+        </div>
+        <div class="border-x border-slate-200">
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון אחרון</div>
+            <div id="clock-last" class="font-bold text-emerald-600 tabular-nums"></div>
+        </div>
+        <div>
+            <div class="text-slate-900 font-semibold text-[0.65rem] mb-0.5 uppercase tracking-wider underline">עדכון הבא בעוד</div>
+            <div id="clock-next" class="font-bold text-brand-accent tabular-nums"></div>
+        </div>
+    </div>
+
+    <!-- Carousel (built dynamically by JS) -->
+    <section>
+        <div class="carousel-container">
+            <div class="carousel-track" id="carousel-track"></div>
+            <button class="carousel-btn prev" onclick="carouselMove(-1)">&#x2039;</button>
+            <button class="carousel-btn next" onclick="carouselMove(1)">&#x203a;</button>
+        </div>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- Important Notice (auto-expires) -->
+    <div id="important-notice"></div>
+
+    <!-- Market Cards -->
+    <section>
+        <div class="section-label label-blue">שווקים</div>
+        <!-- TradingView Mini Tickers -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <!-- S&P 500 -->
+            <div class="card p-5 border-r-4 border-r-brand-accent">
+                <div class="text-xs font-mono text-brand-muted mb-1">S&P 500</div>
+                <div class="tradingview-widget-container">
+                    <div class="tradingview-widget-container__widget"></div>
+                </div>
+                <div id="mkt-sp" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">SPX</div>
+            </div>
+            <!-- Nasdaq -->
+            <div class="card p-5 border-r-4 border-r-rose-500">
+                <div class="text-xs font-mono text-brand-muted mb-1">Nasdaq-100</div>
+                <div id="mkt-ndx" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">NDX</div>
+            </div>
+            <!-- Dow Jones -->
+            <div class="card p-5 border-r-4 border-r-amber-400">
+                <div class="text-xs font-mono text-brand-muted mb-1">Dow Jones</div>
+                <div id="mkt-dji" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">DJIA</div>
+            </div>
+            <!-- 10Y Yield -->
+            <div class="card p-5 border-r-4 border-r-emerald-500">
+                <div class="text-xs font-mono text-brand-muted mb-1">US 10Y Yield</div>
+                <div id="mkt-yield" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">TNX</div>
+            </div>
+            <!-- Gold -->
+            <div class="card p-5 border-r-4 border-r-yellow-500">
+                <div class="text-xs font-mono text-brand-muted mb-1">Gold</div>
+                <div id="mkt-gold" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">XAU/USD</div>
+            </div>
+            <!-- Silver -->
+            <div class="card p-5 border-r-4 border-r-slate-400">
+                <div class="text-xs font-mono text-brand-muted mb-1">Silver</div>
+                <div id="mkt-silver" class="text-2xl font-bold font-display text-brand-text mt-1">—</div>
+                <div class="text-xs text-brand-muted mt-1">XAG/USD</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sentiment Gauges -->
+    <section>
+        <div class="section-label label-rose">מדדי סנטימנט</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="sentiment-gauges">
+            <!-- VIX -->
+            <div class="card p-5">
+                <div class="text-xs font-mono text-rose-500 font-bold mb-1 uppercase underline">VIX — מדד הפחד</div>
+                <div class="flex items-end gap-2 mb-3">
+                    <div id="gauge-vix-value" class="text-3xl font-bold font-display text-brand-text">—</div>
+                    <div id="gauge-vix-change" class="text-sm font-mono text-brand-muted mb-1">—</div>
+                </div>
+                <div class="bar-track mb-2"><div id="gauge-vix-bar" class="bar-fill" style="width:0%;background:#e11d48"></div></div>
+                <div class="flex justify-between text-[0.6rem] font-mono text-slate-400 mb-2">
+                    <span>0 — שקט</span><span>15</span><span>25</span><span>40+</span>
+                </div>
+                <div id="gauge-vix-label" class="text-xs font-semibold text-rose-600"></div>
+            </div>
+            <!-- Fear & Greed Stock -->
+            <div class="card p-5">
+                <div class="text-xs font-mono text-amber-600 font-bold mb-1 uppercase underline">Fear & Greed — מניות</div>
+                <div class="flex items-end gap-2 mb-3">
+                    <div id="gauge-fg-stock-value" class="text-3xl font-bold font-display text-brand-text">—</div>
+                    <span class="text-sm font-mono text-brand-muted mb-1">/100</span>
+                </div>
+                <div class="bar-track mb-2"><div id="gauge-fg-stock-bar" class="bar-fill" style="width:0%"></div></div>
+                <div class="flex justify-between text-[0.6rem] font-mono text-slate-400 mb-2">
+                    <span>פחד קיצוני</span><span>פחד</span><span>נייטרל</span><span>חמדנות</span>
+                </div>
+                <div id="gauge-fg-stock-label" class="text-xs font-semibold text-amber-600"></div>
+            </div>
+            <!-- Fear & Greed Crypto -->
+            <div class="card p-5">
+                <div class="text-xs font-mono text-brand-accent font-bold mb-1 uppercase underline">Fear & Greed — קריפטו</div>
+                <div class="flex items-end gap-2 mb-3">
+                    <div id="gauge-fg-crypto-value" class="text-3xl font-bold font-display text-brand-text">—</div>
+                    <span class="text-sm font-mono text-brand-muted mb-1">/100</span>
+                </div>
+                <div class="bar-track mb-2"><div id="gauge-fg-crypto-bar" class="bar-fill" style="width:0%"></div></div>
+                <div class="flex justify-between text-[0.6rem] font-mono text-slate-400 mb-2">
+                    <span>פחד קיצוני</span><span>פחד</span><span>נייטרל</span><span>חמדנות</span>
+                </div>
+                <div id="gauge-fg-crypto-label" class="text-xs font-semibold text-brand-accent"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Situation -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mobile-stack">
+        <div class="card card-3d lg:col-span-2 p-7 relative overflow-hidden hero-glow">
+            <div class="section-label label-blue">תמונת מצב מיידית</div>
+            <p class="text-xl md:text-2xl font-light leading-relaxed text-slate-700 mb-6" id="s1-headline">
+                טוען נתונים...
+            </p>
+            <p class="text-sm text-brand-muted leading-relaxed mb-6" id="s1-analysis"></p>
+            <div class="flex flex-col sm:flex-row gap-3" id="s1-cards"></div>
+        </div>
+        <div class="card p-7 border-t-4 border-t-emerald-500 bg-gradient-to-br from-emerald-50/60 to-white">
+            <div class="section-label label-emerald">התרעת מעקב</div>
+            <div id="s1-alert-value" class="text-3xl font-bold text-emerald-700 font-mono mb-3"></div>
+            <p class="text-sm text-slate-600 leading-relaxed mb-4" id="s1-alert-desc"></p>
+            <div class="bg-emerald-100 text-emerald-800 text-xs font-mono px-3 py-2 rounded-lg flex justify-between">
+                <span>EST. IMPACT</span>
+                <span class="font-bold" id="s1-alert-impact"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: News -->
+    <section>
+        <div class="section-label label-blue">חדשות מרכזיות</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="s2-news"></div>
+    </section>
+
+    <!-- Section 3: Unified Sector Map — one row per sector with all data -->
+    <section>
+        <div class="card p-7">
+            <div class="flex justify-between items-center mb-6">
+                <div class="section-label label-emerald mb-0">זרימת הון ומפת סקטורים</div>
+                <span class="text-xs font-mono text-brand-muted uppercase tracking-widest">Global Sector Exposure · 30D</span>
+            </div>
+            <div class="space-y-0" id="s3-sectors"></div>
+        </div>
+    </section>
+
+    <!-- Section 4: Crypto -->
+    <section>
+        <div class="section-label label-gold">אקוסיסטם קריפטו ונזילות</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="s4-crypto"></div>
+    </section>
+
+    <!-- Section 4b: Crypto Brief -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mobile-stack">
+        <div class="card p-7 border-t-4 border-t-amber-400">
+            <div class="section-label label-gold">סיפור היום בקריפטו</div>
+            <div class="space-y-4">
+                <div>
+                    <div class="text-xs font-mono text-amber-600 font-semibold mb-1 uppercase underline">נרטיב יומי</div>
+                    <p class="text-sm text-slate-700 leading-relaxed" id="crypto-brief-narrative"></p>
+                </div>
+                <div>
+                    <div class="text-xs font-mono text-amber-600 font-semibold mb-1 uppercase underline">כסף חכם ומוסדיים</div>
+                    <p class="text-sm text-slate-600 leading-relaxed" id="crypto-brief-smart"></p>
+                </div>
+            </div>
+        </div>
+        <div class="card p-7 border-t-4 border-t-amber-400">
+            <div class="space-y-4 h-full flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-mono text-amber-600 font-semibold mb-1 uppercase underline">פעילות לוויתנים</div>
+                    <p class="text-sm text-slate-600 leading-relaxed" id="crypto-brief-whale"></p>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-auto">
+                    <div class="text-xs font-mono text-amber-700 font-semibold mb-1 uppercase">מסקנה ותזה</div>
+                    <p class="text-sm font-medium text-amber-900 leading-relaxed" id="crypto-brief-conclusion"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sections 5 & 6: Semis + Software -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Semis -->
+        <div>
+            <div class="section-label label-blue">שבבים ותשתיות</div>
+            <div class="card p-6 space-y-3" id="s5-semis"></div>
+        </div>
+        <!-- Software -->
+        <div>
+            <div class="section-label label-emerald">תוכנה וענן</div>
+            <div class="card p-6 space-y-3" id="s6-software"></div>
+        </div>
+    </section>
+
+    <!-- Section 7: AI Models -->
+    <section>
+        <div class="section-label label-rose">חזית ה-AI — מודלים</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="s7-ai"></div>
+    </section>
+
+    <!-- Section 8: Conclusion + Watchlist -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mobile-stack">
+        <div class="card p-7 border-r-4 border-r-rose-500">
+            <div class="section-label label-rose">עמדה ומסקנות</div>
+            <div class="space-y-4">
+                <div>
+                    <div class="text-xs font-mono text-rose-500 font-semibold mb-1 uppercase underline">תזת השקעה</div>
+                    <p class="text-sm text-slate-700 leading-relaxed" id="s8-thesis"></p>
+                </div>
+                <div>
+                    <div class="text-xs font-mono text-rose-500 font-semibold mb-1 uppercase underline">סיכונים עיקריים</div>
+                    <p class="text-sm text-slate-600 leading-relaxed" id="s8-risks"></p>
+                </div>
+                <div>
+                    <div class="text-xs font-mono text-rose-500 font-semibold mb-1 uppercase underline">הזדמנויות</div>
+                    <p class="text-sm text-slate-600 leading-relaxed" id="s8-opportunities"></p>
+                </div>
+                <div class="bg-rose-50 border border-rose-200 rounded-xl p-4">
+                    <div class="text-xs font-mono text-rose-600 font-semibold mb-1 uppercase">פעולה מומלצת</div>
+                    <p class="text-sm font-medium text-brand-text leading-relaxed" id="s8-action"></p>
+                </div>
+            </div>
+        </div>
+        <div class="card p-7">
+            <div class="section-label label-blue">Watchlist — טיקרים למעקב</div>
+            <div class="grid grid-cols-2 gap-4" id="s8-watchlist">
+                <!-- populated by JS: rising (left) | falling (right) -->
+            </div>
+            <div class="mt-5 pt-5 border-t border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-xs font-mono text-brand-muted">
+                    <div class="pulse-dot" style="background:#2563eb"></div>
+                    SCANNING GLOBAL MARKETS
+                </div>
+                <span class="text-xs font-mono text-brand-accent">ALGO-READY</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="card about-section p-8 md:p-10">
+        <div class="flex flex-row items-start gap-8">
+            <!-- Right (RTL first child): name + photo + title -->
+            <div class="flex flex-col items-center text-center flex-shrink-0">
+                <h2 class="text-xl font-bold text-brand-text mb-3">שלו גיגי</h2>
+                <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-40 md:w-52 rounded-2xl object-cover shadow-md border-2 border-white">
+                <p class="text-xs font-mono text-brand-accent mt-3 uppercase tracking-wider">״אנליסט״ פיננסי-טכנולוגי</p>
+            </div>
+            <!-- Left (RTL second child): bio -->
+            <div class="text-right flex-1">
+                <div class="section-label label-blue mb-3">אודותי</div>
+                <p class="text-sm md:text-base text-slate-600 leading-relaxed max-w-2xl">
+                    בעולם שבו המידע זורם בלי הפסקה, האתגר האמיתי הוא לזהות את הסיגנל בתוך הרעש. מעבר לכותרות ולתנודות היומיומיות, הבנה אמיתית של המציאות דורשת פרספקטיבה עמוקה יותר — לכן בניתי את דסק <strong class="text-brand-text">חדשני</strong>, כדי לייצר בהירות, להישאר עם היד על הדופק, ולהבין את המחר כבר היום.
+                </p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="border-t border-slate-200 bg-white mt-8 py-6 px-6">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3 text-xs font-mono text-brand-muted">
+        <div class="flex items-center gap-2">
+            <img src="chadshani_logo.jpg" alt="חדשני" class="w-6 h-6 rounded object-cover" style="border:1px solid rgba(0,0,0,0.08)">
+            <span class="font-bold text-brand-text">חדשני</span>
+            <span class="text-slate-300">|</span>
+            <span>Powered by Gemini AI</span>
+        </div>
+        <div class="text-slate-400">עדכון אחרון: <span id="footer-last-update">—</span> | © 2026 Shalev Gigi</div>
+        <div class="flex items-center gap-1">
+            <div class="pulse-dot" style="width:6px;height:6px;background:#10b981"></div>
+            <span>AUTO-UPDATE 07:00 · 19:00 IL</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ===== LOAD DATA =====
+async function loadData() {
+    try {
+        const [dataRes, versionRes] = await Promise.allSettled([
+            fetch('data/latest.json?v=' + Date.now()),
+            fetch('version.json?v=' + Date.now())
+        ]);
+        let d = {};
+        if (dataRes.status === 'fulfilled' && dataRes.value.ok) {
+            d = await dataRes.value.json();
+        }
+        let designTs = null;
+        if (versionRes.status === 'fulfilled' && versionRes.value.ok) {
+            const v = await versionRes.value.json();
+            designTs = v.design_updated || null;
+        }
+        // Show whichever deploy is more recent
+        const displayTs = (designTs && (!d.generated_at || designTs > d.generated_at))
+            ? designTs : (d.generated_at || null);
+        if (displayTs) setLastUpdateClock(displayTs);
+        renderAll(d);
+    } catch(e) {
+        console.warn('Could not load data', e);
+    }
+}
+
+function renderAll(d) {
+
+    // Staleness warning: data >2h old shows sticky banner above header
+    if (d.generated_at) {
+        const ageHours = (Date.now() - new Date(d.generated_at).getTime()) / 3600000;
+        const hour = new Date().getHours();
+        if (ageHours > 2 && !(hour >= 0 && hour < 7)) {
+            const bannerEl = document.getElementById('staleness-banner');
+            bannerEl.textContent = `⚠️ הנתונים עודכנו לאחרונה לפני ${Math.floor(ageHours)} שעות — ייתכן שאינם עדכניים`;
+            bannerEl.hidden = false;
+            requestAnimationFrame(() => {
+                const h = bannerEl.offsetHeight;
+                document.querySelector('header').style.top = h + 'px';
+                fixTickerTop();
+            });
+        }
+    }
+    buildTicker(d);
+
+    // Section 1
+    const s1 = d.section_1_situation;
+    if (s1) {
+        document.getElementById('s1-headline').textContent = s1.headline || '';
+        document.getElementById('s1-analysis').textContent = s1.analysis || '';
+        const cardsEl = document.getElementById('s1-cards');
+        cardsEl.innerHTML = (s1.cards || []).map(c => `
+            <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl flex-1 min-w-0">
+                <span class="block text-xs text-brand-accent font-semibold mb-1 underline uppercase">${c.label}</span>
+                <span class="text-xs text-slate-700 leading-relaxed">${c.value}</span>
+            </div>`).join('');
+        if (s1.alert) {
+            document.getElementById('s1-alert-value').textContent = s1.alert.value || '';
+            document.getElementById('s1-alert-desc').textContent = s1.alert.description || '';
+            document.getElementById('s1-alert-impact').textContent = s1.alert.impact || '';
+        }
+    }
+
+    // Section 2: News
+    const newsEl = document.getElementById('s2-news');
+    if (newsEl && d.section_2_news) {
+        newsEl.innerHTML = d.section_2_news.map((n, i) => `
+            <div class="card p-6">
+                <span class="text-xs font-mono text-brand-muted">${String(i+1).padStart(2,'0')}</span>
+                <h3 class="font-bold text-brand-text mt-2 mb-3 leading-snug">${n.title}</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-4">${n.body}</p>
+                <div class="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                    <span class="text-xs font-mono text-brand-accent font-bold">SO WHAT?</span>
+                    <p class="text-xs text-slate-600 mt-1">${n.so_what}</p>
+                </div>
+            </div>`).join('');
+    }
+
+    // Section 3: Unified sector map
+    renderSectors(d.section_3_sectors);
+
+    // Section 4: Crypto
+    const cryptoEl = document.getElementById('s4-crypto');
+    if (cryptoEl && d.section_4_crypto) {
+        cryptoEl.innerHTML = d.section_4_crypto.map(c => {
+            const up = c.change_24h && c.change_24h.startsWith('+');
+            return `
+            <div class="card p-5">
+                <div class="text-xs font-mono text-brand-muted mb-2">${c.ticker}</div>
+                <div class="text-xl font-bold font-display text-brand-text">${c.price}</div>
+                <div class="text-sm font-mono ${up ? 'text-emerald-600' : 'text-rose-500'} font-bold mt-1">${c.change_24h}</div>
+                <p class="text-xs text-brand-muted leading-relaxed mt-3">${c.note}</p>
+            </div>`;
+        }).join('');
+    }
+
+    // Section 5: Semis
+    const semisEl = document.getElementById('s5-semis');
+    if (semisEl && d.section_5_semis) {
+        semisEl.innerHTML = d.section_5_semis.map(s => {
+            const up = s.change && s.change.startsWith('+');
+            return `
+            <div class="py-2 border-b border-slate-100 last:border-0">
+                <div class="flex items-center gap-3">
+                    <span class="font-mono font-bold text-brand-accent text-sm w-14 shrink-0">${s.ticker}</span>
+                    <span class="font-bold text-brand-text text-sm w-20 shrink-0">${s.price}</span>
+                    <span class="font-mono text-sm font-bold ${up ? 'text-emerald-600' : 'text-rose-500'} w-14 shrink-0">${s.change}</span>
+                </div>
+                <p class="text-xs text-brand-muted mt-1 leading-relaxed">${s.note}</p>
+            </div>`;
+        }).join('');
+    }
+
+    // Section 6: Software
+    const softEl = document.getElementById('s6-software');
+    if (softEl && d.section_6_software) {
+        softEl.innerHTML = d.section_6_software.map(s => {
+            const up = s.change && s.change.startsWith('+');
+            return `
+            <div class="py-2 border-b border-slate-100 last:border-0">
+                <div class="flex items-center gap-3">
+                    <span class="font-mono font-bold text-brand-accent text-sm w-14 shrink-0">${s.ticker}</span>
+                    <span class="font-bold text-brand-text text-sm w-20 shrink-0">${s.price}</span>
+                    <span class="font-mono text-sm font-bold ${up ? 'text-emerald-600' : 'text-rose-500'} w-14 shrink-0">${s.change}</span>
+                </div>
+                <p class="text-xs text-brand-muted mt-1 leading-relaxed">${s.note}</p>
+            </div>`;
+        }).join('');
+    }
+
+    // Section 7: AI
+    const aiEl = document.getElementById('s7-ai');
+    if (aiEl && d.section_7_ai) {
+        const borderColors = ['border-t-brand-accent','border-t-emerald-500','border-t-rose-500','border-t-amber-400','border-t-purple-500','border-t-sky-500'];
+        const labelColors = ['text-brand-accent','text-emerald-600','text-rose-500','text-amber-600','text-purple-600','text-sky-600'];
+        aiEl.innerHTML = d.section_7_ai.map((a, i) => `
+            <div class="card p-5 border-t-2 ${borderColors[i % borderColors.length]}">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs font-mono ${labelColors[i % labelColors.length]} font-bold uppercase underline">${a.company}</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full font-mono ${a.status === 'GA' ? 'status-ga' : 'status-beta'}">${a.status}</span>
+                </div>
+                <h4 class="font-bold text-brand-text mb-2 text-sm">${a.product}</h4>
+                <p class="text-xs text-slate-600 leading-relaxed mb-3">${a.brief || a.update || ''}</p>
+                ${a.last_known_update ? `<div class="text-[0.6rem] font-mono text-slate-400 border-t border-slate-100 pt-2">עדכון ידוע: ${a.last_known_update}</div>` : ''}
+            </div>`).join('');
+    }
+
+    // Section 8: Conclusion
+    const s8 = d.section_8_conclusion;
+    if (s8) {
+        document.getElementById('s8-thesis').textContent = s8.thesis || '';
+        document.getElementById('s8-risks').textContent = s8.risks || '';
+        document.getElementById('s8-opportunities').textContent = s8.opportunities || '';
+        document.getElementById('s8-action').textContent = s8.action || '';
+    }
+
+    // Watchlist
+    renderWatchlist(d.section_8_watchlist);
+
+    // Market index cards
+    if (d.markets) {
+        const m = d.markets;
+        if (m.sp500)     document.getElementById('mkt-sp').textContent    = m.sp500.price;
+        if (m.nasdaq)    document.getElementById('mkt-ndx').textContent   = m.nasdaq.price;
+        if (m.yield_10y) document.getElementById('mkt-yield').textContent = m.yield_10y.value;
+        if (m.dji)       document.getElementById('mkt-dji').textContent   = m.dji.price;
+        if (m.gold)      document.getElementById('mkt-gold').textContent  = m.gold.price;
+        if (m.silver)    document.getElementById('mkt-silver').textContent = m.silver.price;
+    }
+
+    // Sentiment gauges
+    const gauges = d.section_1_situation && d.section_1_situation.gauges;
+    if (gauges) {
+        if (gauges.vix) {
+            const v = parseFloat(gauges.vix.value) || 0;
+            document.getElementById('gauge-vix-value').textContent = gauges.vix.value;
+            document.getElementById('gauge-vix-label').textContent = gauges.vix.label || '';
+            // VIX scale: 0-40+ mapped to 0-100%
+            const vixPct = Math.min(v / 40 * 100, 100);
+            const vixColor = v < 15 ? '#10b981' : v < 20 ? '#f59e0b' : v < 30 ? '#f97316' : '#e11d48';
+            const bar = document.getElementById('gauge-vix-bar');
+            bar.style.width = vixPct + '%'; bar.style.background = vixColor;
+            if (d.markets && d.markets.vix) document.getElementById('gauge-vix-change').textContent = d.markets.vix.change;
+        }
+        if (gauges.fear_greed_stock) {
+            const fg = gauges.fear_greed_stock;
+            const val = parseInt(fg.value) || 0;
+            document.getElementById('gauge-fg-stock-value').textContent = fg.value;
+            document.getElementById('gauge-fg-stock-label').textContent = fg.label || '';
+            const fgColor = val < 25 ? '#e11d48' : val < 45 ? '#f97316' : val < 55 ? '#94a3b8' : val < 75 ? '#10b981' : '#059669';
+            const b = document.getElementById('gauge-fg-stock-bar');
+            b.style.width = val + '%'; b.style.background = fgColor;
+        }
+        if (gauges.fear_greed_crypto) {
+            const fg = gauges.fear_greed_crypto;
+            const val = parseInt(fg.value) || 0;
+            document.getElementById('gauge-fg-crypto-value').textContent = fg.value;
+            document.getElementById('gauge-fg-crypto-label').textContent = fg.label || '';
+            const fgColor = val < 25 ? '#e11d48' : val < 45 ? '#f97316' : val < 55 ? '#94a3b8' : val < 75 ? '#10b981' : '#059669';
+            const b = document.getElementById('gauge-fg-crypto-bar');
+            b.style.width = val + '%'; b.style.background = fgColor;
+        }
+    }
+
+    // Crypto brief
+    const cb = d.section_4_crypto_brief;
+    if (cb) {
+        const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
+        set('crypto-brief-narrative', cb.daily_narrative);
+        set('crypto-brief-smart',     cb.smart_money);
+        set('crypto-brief-whale',     cb.whale_activity);
+        set('crypto-brief-conclusion',cb.conclusion);
+    }
+}
+
+// ===== TICKER =====
+function buildTicker(d) {
+    const items = [];
+    const m = (d && d.markets) || {};
+    const add = (label, val, chg) => { if (val) items.push({label, val, chg:chg||'', up:!!(chg&&chg.startsWith('+'))}); };
+    add('S&P 500',   m.sp500&&m.sp500.price,        m.sp500&&m.sp500.change);
+    add('Nasdaq',    m.nasdaq&&m.nasdaq.price,       m.nasdaq&&m.nasdaq.change);
+    add('Dow Jones', m.dji&&m.dji.price,             m.dji&&m.dji.change);
+    add('VIX',       m.vix&&m.vix.value,             m.vix&&m.vix.change);
+    add('Gold',      m.gold&&m.gold.price,           m.gold&&m.gold.change);
+    add('Silver',    m.silver&&m.silver.price,       m.silver&&m.silver.change);
+    add('Oil WTI',   m.oil&&m.oil.price,             m.oil&&m.oil.change);
+    add('BTC',       m.btc&&m.btc.price,             m.btc&&m.btc.change);
+    add('ETH',       m.eth&&m.eth.price,             m.eth&&m.eth.change);
+    add('10Y Yield', m.yield_10y&&m.yield_10y.value, m.yield_10y&&m.yield_10y.change);
+    add('DXY',       m.dxy&&m.dxy.price,             m.dxy&&m.dxy.change);
+    (d&&d.section_5_semis||[]).slice(0,2).forEach(s=>s.ticker&&s.price&&add(s.ticker,s.price,s.change));
+    (d&&d.section_6_software||[]).slice(0,2).forEach(s=>s.ticker&&s.price&&add(s.ticker,s.price,s.change));
+    if (!items.length) return;
+    const render = arr => arr.map(t =>
+        `<span class="ticker-item"><span class="text-slate-400">${t.label}</span> <span class="font-bold">${t.val}</span> <span class="${t.up?'up':'down'}">${t.chg}</span></span>`
+    ).join('');
+    const track = document.getElementById('ticker-track');
+    track.innerHTML = render(items) + render(items);
+    // JS tick: right-scroll, 2 copies, seamless reset
+    let pos = 0;
+    const wrap2 = document.getElementById('ticker-bar');
+    let paused = false;
+    wrap2.addEventListener('mouseenter', () => { paused = true; });
+    wrap2.addEventListener('mouseleave', () => { paused = false; });
+    function tick() {
+        if (!paused) {
+            pos += 0.5;
+            const sw = track.scrollWidth / 2;
+            if (sw > 0 && pos >= sw) pos -= sw;
+            track.style.transform = 'translateX(' + pos + 'px)';
+        }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+// ===== CAROUSEL =====
+const carouselImages = [
+    '1.png','2.png','3.png','4.png','5.png',
+    '6.jpg','7.png','8.png','9.jpg','10.jpg','11.jpg'
+];
+const TOTAL_SLIDES = carouselImages.length;
+let carouselIdx = 0;
+
+function buildCarouselSlides() {
+    const track = document.getElementById('carousel-track');
+    track.innerHTML = carouselImages.map((img, i) =>
+        `<div class="carousel-slide"><img src="assets/karusela/${img}" alt="חדשני ${i+1}" loading="lazy"></div>`
+    ).join('');
+    track.style.transform = 'translateX(0%)';
+}
+function carouselMove(dir) {
+    carouselIdx = (carouselIdx - dir + TOTAL_SLIDES) % TOTAL_SLIDES;
+    document.getElementById('carousel-track').style.transform = `translateX(${carouselIdx * 100}%)`;
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === carouselIdx));
+}
+function buildCarouselDots() {
+    const dots = document.getElementById('carousel-dots');
+    dots.innerHTML = Array.from({length: TOTAL_SLIDES}, (_, i) =>
+        `<div class="dot ${i === 0 ? 'active' : ''}" onclick="carouselMove(${i} - carouselIdx)"></div>`).join('');
+}
+setInterval(() => carouselMove(1), 4000);
+
+// ===== IMPORTANT NOTICES =====
+// Each notice: { title, body, expiresISO }
+// expiresISO: the notice is hidden from this date onward (Israel midnight = UTC-2 or UTC-3)
+const NOTICES = [
+    {
+        title: '😎 הודעה חשובה לסוחרים 😎',
+        body: 'בעקבות יום שישי הטוב (Good Friday), שוקי המניות בארה״ב יהיו סגורים ביום שישי, ה־3 באפריל 2026, לאורך כל יום המסחר.\n\nהמסחר יחזור לפעילות רגילה ביום שני, ה־6 באפריל 2026.',
+        expiresISO: '2026-04-04T06:00:00+03:00'
+    }
+];
+
+function renderNotices() {
+    const el = document.getElementById('important-notice');
+    if (!el) return;
+    const now = Date.now();
+    const active = NOTICES.filter(n => new Date(n.expiresISO).getTime() > now);
+    el.innerHTML = active.map(n => `
+        <div class="notice-box">
+            <div class="notice-title">${n.title}</div>
+            <div class="notice-body">${n.body.replace(/\n/g,'<br>')}</div>
+        </div>`).join('');
+}
+
+// ===== SECTOR MAP — unified: ETF + change + flow direction + amount + note =====
+function renderSectors(arr) {
+    const el = document.getElementById('s3-sectors');
+    if (!el || !arr || !arr.length) return;
+    const getAmt = s => Math.abs(parseFloat((s.flow_amount || s.amount || '0').replace(/[^0-9.]/g, '')));
+    const sorted = [...arr].sort((a, b) => {
+        const aIn = a.flow_direction === 'in';
+        const bIn = b.flow_direction === 'in';
+        if (aIn !== bIn) return aIn ? -1 : 1;
+        return getAmt(b) - getAmt(a);
+    });
+    const maxAmt = Math.max(...sorted.map(getAmt)) || 1;
+    el.innerHTML = sorted.map(s => {
+        const isIn = s.flow_direction === 'in';
+        const isOut = s.flow_direction === 'out';
+        const chgUp = parseFloat((s.change || '0').replace(/[^0-9.\-]/g, '')) >= 0;
+        const pct = Math.min(95, (getAmt(s) / maxAmt) * 95);
+        const barColor = isIn ? 'bg-emerald-500' : isOut ? 'bg-rose-400' : 'bg-slate-300';
+        const amtColor = isIn ? 'text-emerald-600' : isOut ? 'text-rose-500' : 'text-slate-500';
+        const flowLabel = isIn ? 'Inflow' : isOut ? 'Outflow' : 'נייטרלי';
+        const flowClass = isIn ? 'flow-in' : isOut ? 'flow-out' : 'flow-neutral';
+        const amt = s.flow_amount || s.amount || '';
+        return `
+        <div class="py-3 border-b border-slate-100 last:border-0">
+            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span class="font-mono text-xs font-bold text-brand-accent w-12 shrink-0">${s.etf}</span>
+                <span class="text-sm font-semibold text-brand-text flex-1 min-w-0">${s.name}</span>
+                <span class="font-mono text-sm font-bold ${chgUp ? 'text-emerald-600' : 'text-rose-500'} shrink-0">${s.change}</span>
+                <span class="text-xs ${flowClass} shrink-0">${flowLabel}</span>
+                ${amt ? `<span class="${amtColor} font-bold text-xs shrink-0">${amt}</span>` : ''}
+            </div>
+            ${amt ? `<div class="bar-track mb-1.5"><div class="bar-fill ${barColor}" style="width:${pct}%"></div></div>` : ''}
+            ${s.note ? `<p class="text-xs text-brand-muted leading-relaxed">${s.note}</p>` : ''}
+        </div>`;
+    }).join('');
+}
+
+// ===== WATCHLIST — supports {rising:[],falling:[]} or legacy array =====
+function renderWatchlist(wl) {
+    const el = document.getElementById('s8-watchlist');
+    if (!el || !wl) return;
+    // Legacy: flat array
+    if (Array.isArray(wl)) {
+        el.innerHTML = wl.map(w => `
+            <div class="ticker-chip">
+                <div class="font-bold text-brand-accent text-lg">${w.ticker}</div>
+                <div class="text-xs text-brand-muted">${w.note}</div>
+            </div>`).join('');
+        return;
+    }
+    const rising  = wl.rising  || [];
+    const falling = wl.falling || [];
+    const maxLen  = Math.max(rising.length, falling.length);
+
+    // Render as paired rows: each row has [rising[i], falling[i]] side by side
+    // CSS grid auto-stretches cells in the same row to equal height
+    const card = (w, isRising) => {
+        if (!w) return '<div></div>';
+        const cardBg   = isRising ? 'bg-emerald-50 border-emerald-100 hover:border-emerald-300' : 'bg-rose-50 border-rose-100 hover:border-rose-300';
+        const tkrColor = isRising ? 'text-emerald-700' : 'text-rose-700';
+        const sigBg    = isRising ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700';
+        const sig      = isRising ? '↑ BUY' : '↓ SELL';
+        return `
+        <div class="border ${cardBg} rounded-xl p-3 transition-colors h-full">
+            <div class="flex items-center justify-between mb-1">
+                <span class="font-bold ${tkrColor} text-base font-mono">${w.ticker}</span>
+                <span class="text-xs font-bold ${sigBg} px-2 py-0.5 rounded-full">${sig}</span>
+            </div>
+            <div class="text-xs text-slate-600 leading-snug">${w.note || ''}</div>
+            ${w.reason ? `<div class="text-xs ${tkrColor} mt-1.5 font-medium border-t ${isRising ? 'border-emerald-100' : 'border-rose-100'} pt-1">${w.reason}</div>` : ''}
+        </div>`;
+    };
+
+    // Header row
+    let html = `
+        <div class="flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+            <span class="text-xs font-mono font-bold text-emerald-600 uppercase tracking-wider">▲ עולות · BUY</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+            <span class="text-xs font-mono font-bold text-rose-500 uppercase tracking-wider">▼ יורדות · SELL</span>
+        </div>`;
+
+    // Paired item rows
+    for (let i = 0; i < maxLen; i++) {
+        html += card(rising[i], true) + card(falling[i], false);
+    }
+    el.innerHTML = html;
+}
+
+// ===== CLOCKS =====
+function getNextUpdateIL() {
+    const scheduleHours = [8, 20];
+    const now = new Date();
+    const ilOffset = 3 * 3600; // UTC+3 (summer)
+    const nowUtcSec = now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + now.getUTCSeconds();
+    const nowIlSec = (nowUtcSec + ilOffset) % (24 * 3600);
+    for (const h of scheduleHours) {
+        const targetSec = h * 3600;
+        if (targetSec > nowIlSec) {
+            const diff = targetSec - nowIlSec;
+            const hh = Math.floor(diff / 3600).toString().padStart(2, '0');
+            const mm = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+            const ss = (diff % 60).toString().padStart(2, '0');
+            return `${hh}:${mm}:${ss}`;
+        }
+    }
+    const diff = (24 * 3600 - nowIlSec) + 8 * 3600; // next day 08:00
+    const hh = Math.floor(diff / 3600).toString().padStart(2, '0');
+    const mm = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+    const ss = (diff % 60).toString().padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
+}
+
+function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    const timeStr = h + ':' + m + ':' + s;
+
+    const nowEl = document.getElementById('clock-now');
+    if (nowEl) nowEl.textContent = timeStr;
+
+    const nextEl = document.getElementById('clock-next');
+    if (nextEl) nextEl.textContent = getNextUpdateIL();
+}
+
+function setLastUpdateClock(isoStr) {
+    if (!isoStr) return;
+    const dt = new Date(isoStr);
+    const h = String(dt.getHours()).padStart(2, '0');
+    const m = String(dt.getMinutes()).padStart(2, '0');
+    const d = dt.toLocaleDateString('he-IL');
+    const label = d + ' ' + h + ':' + m;
+
+    const el = document.getElementById('clock-last');
+    if (el) el.textContent = label;
+
+    const footerEl = document.getElementById('footer-last-update');
+    if (footerEl) footerEl.textContent = label;
+}
+setInterval(updateClock, 1000);
+
+function fixTickerTop() {
+    const header = document.querySelector('header');
+    const ticker = document.querySelector('.ticker-wrap');
+    const banner = document.getElementById('staleness-banner');
+    if (!header || !ticker) return;
+    const bannerH = (banner && !banner.hidden) ? banner.offsetHeight : 0;
+    ticker.style.top = (bannerH + header.offsetHeight) + 'px';
+}
+
+// ===== INIT =====
+window.scrollTo(0, 0);
+buildCarouselSlides();
+buildCarouselDots();
+renderNotices();
+updateClock();
+requestAnimationFrame(fixTickerTop);
+window.addEventListener('resize', fixTickerTop);
+loadData();
+</script>
 </body>
 </html>
