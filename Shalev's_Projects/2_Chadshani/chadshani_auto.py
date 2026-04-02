@@ -187,15 +187,8 @@ def main():
     print(f"[DONE] Update deployed — {now}")
     # Cost summary: show last run + monthly total from local log
     # Note: local calc may undercount thinking tokens — actual Google bill is authoritative
-    runs_today = [r for r in read_cost_log().get("runs", [])
-                  if r.get("ts", "").startswith(datetime.utcnow().strftime("%Y-%m-%d"))]
-    run_ils = sum(r.get("cost_ils", 0.0) for r in runs_today)
     month_after = monthly_cost_ils()
-    remaining = BUDGET_ILS - month_after
-    cost_line = (f"ריצה: ₪{run_ils:.4f} | חודש מקומי: ₪{month_after:.2f}/₪{BUDGET_ILS:.0f} "
-                 f"| נשאר: ₪{remaining:.2f}\n"
-                 f"(חיוב אמיתי — בדוק Google AI Studio)")
-    notify("חדשני — עודכן ✅", f"האתר עודכן בכל נתוני השוק החדשים\n{cost_line}")
+    notify("חדשני — עודכן ✅", f"₪{month_after:.2f} / ₪{BUDGET_ILS:.0f}")
 
 
 if __name__ == "__main__":
