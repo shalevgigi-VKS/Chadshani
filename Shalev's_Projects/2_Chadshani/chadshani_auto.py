@@ -54,9 +54,9 @@ def notify(title, message, tags="white_check_mark"):
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(PROJECT_DIR, "..", ".."))
 DATA_REL     = os.path.join("Shalev's_Projects", "2_Chadshani", "data", "latest.json")
-INDEX_REL    = os.path.join("Shalev's_Projects", "2_Chadshani", "index.html")
-INDEX_REAL   = os.path.join(PROJECT_DIR, "index_backup_ORIGINAL.html")
-INDEX_MAINT  = os.path.join(PROJECT_DIR, "index_maintenance.html")
+INDEX_REL     = os.path.join("Shalev's_Projects", "2_Chadshani", "index.html")
+INDEX_REAL    = os.path.join(PROJECT_DIR, "index.html")
+INDEX_MAINT   = os.path.join(PROJECT_DIR, "index_maintenance.html")
 
 
 def run(cmd, cwd=None, env=None):

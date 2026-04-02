@@ -42,11 +42,21 @@ python E:\Claude\chadshani\generate_presentation.py
 - generate_presentation.py / generate_infographic.py: קוראים claude.exe — מסירים CLAUDECODE מה-env אוטומטית כדי לאפשר nested call
 
 ## 5. משתני סביבה קבועים למערכת
-- ROOT_WORKSPACE: E:\Claude\chadshani\
-- OUTPUT_DIR: E:\Claude\chadshani\output\
-- TEMP_NEWS: E:\Claude\chadshani\temp_news.txt
+- ROOT_WORKSPACE: E:\Claude\Shalev's_Projects\2_Chadshani\
+- OUTPUT_DIR: E:\Claude\Shalev's_Projects\2_Chadshani\data\
+- TEMP_NEWS: E:\Claude\Shalev's_Projects\2_Chadshani\temp_news.txt
 
-## 6. סקירה קולית — כללים וטמפלייט
+## 6. העדפות עיצוב (Chadshani Preferences)
+- **פונטים:** שימוש ב-`Heebo` כפונט ראשי. כותרות ותתי-כותרות חייבות להיות במשקל **Bold/Black** (700-900) למראה יוקרתי.
+- **יישור טקסט:** כל פסקאות המלל (Analysis, News, Bio) חייבות להיות ביישור דו-צדדי (`text-align: justify`).
+- **פרופיל:** תמונת הפרופיל במבנה מלבני מעוגל (`rounded-2xl`) ולא עיגול.
+- **מבנה דפים (5 עמודים):**
+  1. מאקרו (Macro)
+  2. סקטורים (Sectors)
+  3. קריפטו (Crypto)
+  4. חזית ה-AI (AI Frontier)
+  5. טיקרים למעקב (Watchlist - אייקון `list_alt`)
+- **אוטומציה:** ה-`chadshani_auto.py` חייב להשתמש ב-`index.html` כמקור האמת ולשלוח התראה ל-`ntfy` בסיום כל ריצה.
 
 **כללים מחייבים לכל סקירה:**
 - השפה: עברית בלבד
