@@ -36,7 +36,7 @@ def notify(title, message, tags="white_check_mark"):
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(PROJECT_DIR, "..", ".."))
-DATA_REL = os.path.join("Shalev's_Projects", "1_chadshani", "data", "latest.json")
+DATA_REL = os.path.join("Shalev's_Projects", "2_Chadshani", "data", "latest.json")
 
 
 def run(cmd, cwd=None, env=None):
@@ -54,8 +54,6 @@ def run(cmd, cwd=None, env=None):
 def main():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     print(f"[START] chadshani_auto — {now}")
-    print("[MAINTENANCE] Site is currently down for maintenance. Auto-updates suspended.")
-    sys.exit(0)
 
     # Step 1: Generate JSON (sets GEMINI_API_KEY from environment)
     generate_script = os.path.join(PROJECT_DIR, "generate_json.py")
@@ -68,11 +66,46 @@ def main():
         notify("חדשני — שגיאה", "תהליך יצירת הנתונים ואימותם נכשל", tags="x")
         sys.exit(1)
 
-    # Step 2: Stage only the data file
+    # Step 2: Validate generated data before committing
+    data_path = os.path.join(REPO_DIR, DATA_REL)
+    PLACEHOLDERS = ("לא זמין", "$...", None, "", "אין חדשות חדשות מהשבוע האחרון.",
+                    "עדכון ידוע: לא זמין", "לא זמין.", "אין עדכון")
+    try:
+        with open(data_path, encoding="utf-8") as f:
+            data = json.load(f)
+        issues = []
+        if not data.get("generated_at"):
+            issues.append("generated_at missing")
+        headline = data.get("section_1_situation", {}).get("headline", "")
+        if not headline or headline in PLACEHOLDERS:
+            issues.append("headline missing or placeholder")
+        markets = data.get("markets", {})
+        for key in ("sp500", "nasdaq", "vix"):
+            if key not in markets:
+                issues.append(f"markets.{key} missing")
+        if len(data.get("section_2_news", [])) < 4:
+            issues.append(f"section_2_news has {len(data.get('section_2_news', []))} items (need 4)")
+        for item in data.get("section_2_news", []):
+            s = item.get("body", "") or item.get("summary", "")
+            if not s or "אין חדשות" in s or s.strip() in PLACEHOLDERS:
+                issues.append(f"section_2_news placeholder body: {s[:30]!r}")
+        if issues:
+            print("[VALIDATE] FAIL:")
+            for i in issues:
+                print(f"  - {i}")
+            notify("חדשני — נתונים לא עברו אימות", "\n".join(issues[:3]), tags="x")
+            sys.exit(1)
+        print(f"[VALIDATE] PASS — {len(data)} keys")
+    except Exception as e:
+        print(f"[VALIDATE] ERROR: {e}")
+        notify("חדשני — שגיאה באימות", str(e), tags="x")
+        sys.exit(1)
+
+    # Step 3: Stage only the data file
     if not run(["git", "add", DATA_REL], cwd=REPO_DIR):
         sys.exit(1)
 
-    # Step 3: Commit (skip if nothing changed)
+    # Step 4: Commit (skip if nothing changed)
     commit_result = subprocess.run(
         ["git", "commit", "-m", f"update {now}"],
         capture_output=True, text=True, cwd=REPO_DIR
@@ -86,7 +119,7 @@ def main():
         sys.exit(1)
     print(commit_result.stdout.strip())
 
-    # Step 4: Push to GitHub Pages
+    # Step 5: Push to GitHub Pages
     if not run(["git", "push"], cwd=REPO_DIR):
         notify("חדשני — תקלת רשת", "שגיאה בהעלת סנכרון התוכן לשרת", tags="x")
         sys.exit(1)
