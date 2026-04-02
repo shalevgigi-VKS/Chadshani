@@ -37,8 +37,9 @@ SYSTEM_PROMPT = """אתה "חדשני" — דסק חדשות מודיעיני פ
 
 JSON_PROMPT = """
 על בסיס חדשות השוק והנתונים שסופקו למעלה, הפק תשובה JSON בלבד (ללא markdown, ללא ```).
+מחירים, שינויים אחוזיים, ו-flow_amount יוזרקו אוטומטית — אל תכלול אותם ב-JSON.
 
-הפורמט המדויק הנדרש:
+הפורמט המדויק (שדות טקסט בלבד):
 {
   "generated_at": "[ISO timestamp]Z",
   "section_1_situation": {
@@ -49,82 +50,77 @@ JSON_PROMPT = """
       {"label": "גורמי חיכוך", "value": "..."},
       {"label": "סביבת מסחר", "value": "..."}
     ],
-    "alert": {
-      "title": "התרעת מעקב קריטית",
-      "value": "[סכום/ערך מרכזי]",
-      "description": "[תיאור קצר של האירוע]",
-      "impact": "HIGH / MEDIUM / LOW VOLATILITY"
-    },
+    "alert": {"title": "התרעת מעקב קריטית", "value": "[ערך/סכום מרכזי]", "description": "...", "impact": "HIGH / MEDIUM / LOW VOLATILITY"},
     "gauges": {
-      "vix": {"value": "X.X", "zone": "low/medium/high/extreme", "label": "תיאור מצב VIX"},
-      "fear_greed_stock": {"value": "XX", "label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"},
-      "fear_greed_crypto": {"value": "XX", "label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"}
+      "vix": {"zone": "low/medium/high/extreme", "label": "תיאור מצב VIX"},
+      "fear_greed_stock": {"label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"},
+      "fear_greed_crypto": {"label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"}
     }
   },
   "section_2_news": [
-    {"title": "כותרת חדשה 1", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
-    {"title": "כותרת חדשה 2", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
-    {"title": "כותרת חדשה 3", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
-    {"title": "כותרת חדשה 4", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
-    {"title": "כותרת חדשה 5", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
-    {"title": "כותרת חדשה 6", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"}
+    {"title": "...", "body": "פסקה מנותחת", "so_what": "משמעות למשקיע"},
+    {"title": "...", "body": "...", "so_what": "..."},
+    {"title": "...", "body": "...", "so_what": "..."},
+    {"title": "...", "body": "...", "so_what": "..."},
+    {"title": "...", "body": "...", "so_what": "..."},
+    {"title": "...", "body": "...", "so_what": "..."}
   ],
   "section_3_sectors": [
-    {"etf": "XLK", "name": "טכנולוגיה", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$3.2B", "note": "סיבה עיקרית — אנליזה קצרה"},
-    {"etf": "XLV", "name": "בריאות", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$1.8B", "note": "..."},
-    {"etf": "XLU", "name": "תשתיות", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$0.9B", "note": "..."},
-    {"etf": "XLF", "name": "פיננסים", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$2.1B", "note": "..."},
-    {"etf": "XLE", "name": "אנרגיה", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$1.3B", "note": "..."},
-    {"etf": "XLY", "name": "צריכה מחזורית", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$2.0B", "note": "..."},
-    {"etf": "XLI", "name": "תעשייה", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$1.1B", "note": "..."},
-    {"etf": "XLB", "name": "חומרי גלם", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$0.7B", "note": "..."},
-    {"etf": "XLRE", "name": "נדל\"ן", "change": "YFINANCE", "flow_direction": "out", "flow_amount": "-$0.5B", "note": "..."},
-    {"etf": "XLP", "name": "צריכה בסיסית", "change": "YFINANCE", "flow_direction": "neutral", "flow_amount": "$0.1B", "note": "..."},
-    {"etf": "XLC", "name": "תקשורת", "change": "YFINANCE", "flow_direction": "in", "flow_amount": "+$1.5B", "note": "..."}
+    {"etf": "XLK",  "name": "טכנולוגיה",    "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLV",  "name": "בריאות",        "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLU",  "name": "תשתיות",        "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLF",  "name": "פיננסים",       "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLE",  "name": "אנרגיה",        "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLY",  "name": "צריכה מחזורית", "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLI",  "name": "תעשייה",        "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLB",  "name": "חומרי גלם",     "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLRE", "name": "נדל\"ן",         "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLP",  "name": "צריכה בסיסית",  "flow_direction": "in/out/neutral", "note": "..."},
+    {"etf": "XLC",  "name": "תקשורת",        "flow_direction": "in/out/neutral", "note": "..."}
   ],
   "section_4_crypto": [
-    {"ticker": "BTC", "price": "$...", "change_24h": "+X.X%", "note": "..."},
-    {"ticker": "ETH", "price": "$...", "change_24h": "+X.X%", "note": "..."},
-    {"ticker": "SOL", "price": "$...", "change_24h": "+X.X%", "note": "..."},
-    {"ticker": "LINK", "price": "$...", "change_24h": "+X.X%", "note": "..."}
+    {"ticker": "BTC",  "note": "..."},
+    {"ticker": "ETH",  "note": "..."},
+    {"ticker": "SOL",  "note": "..."},
+    {"ticker": "LINK", "note": "..."}
   ],
   "section_4_crypto_brief": {
-    "daily_narrative": "סיפור היום בקריפטו — מה הניע את השוק, אירועים מרכזיים, נרטיב מלא (לפחות 3-4 משפטים)",
-    "smart_money": "זרימת הכסף החכם — מה המוסדיים עושים, ETF flows, futures positions",
-    "whale_activity": "פעילות לוויתנים — העברות גדולות, ריכוז ארנקים, on-chain signals",
-    "conclusion": "מסקנה ותזה — מה המשמעות למשקיע, מה לעקוב"
+    "daily_narrative": "סיפור היום בקריפטו — לפחות 3-4 משפטים",
+    "smart_money": "ניתוח מודל — זרימת כסף מוסדי, ETF flows (לפחות 2-3 משפטים)",
+    "whale_activity": "ניתוח מודל — פעילות לוויתנים, on-chain signals (לפחות 2-3 משפטים)",
+    "conclusion": "מסקנה ותזה למשקיע"
   },
   "section_5_semis": [
-    {"ticker": "NVDA", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "TSM", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "AMD", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "AVGO", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "MU", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "ASML", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "QCOM", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "ARM", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "MRVL", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "LRCX", "price": "$...", "change": "+X.X%", "note": "..."}
+    {"ticker": "NVDA", "note": "..."},
+    {"ticker": "TSM",  "note": "..."},
+    {"ticker": "AMD",  "note": "..."},
+    {"ticker": "AVGO", "note": "..."},
+    {"ticker": "MU",   "note": "..."},
+    {"ticker": "ASML", "note": "..."},
+    {"ticker": "QCOM", "note": "..."},
+    {"ticker": "ARM",  "note": "..."},
+    {"ticker": "MRVL", "note": "..."},
+    {"ticker": "LRCX", "note": "..."}
   ],
   "section_6_software": [
-    {"ticker": "MSFT", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "GOOGL", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "META", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "AMZN", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "CRM", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "NOW", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "ORCL", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "ADBE", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "PLTR", "price": "$...", "change": "+X.X%", "note": "..."},
-    {"ticker": "SNOW", "price": "$...", "change": "+X.X%", "note": "..."}
+    {"ticker": "MSFT",  "note": "..."},
+    {"ticker": "GOOGL", "note": "..."},
+    {"ticker": "META",  "note": "..."},
+    {"ticker": "AMZN",  "note": "..."},
+    {"ticker": "CRM",   "note": "..."},
+    {"ticker": "NOW",   "note": "..."},
+    {"ticker": "ORCL",  "note": "..."},
+    {"ticker": "ADBE",  "note": "..."},
+    {"ticker": "PLTR",  "note": "..."},
+    {"ticker": "SNOW",  "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו: השקות, עדכוני API, שינויי מחיר, שותפויות. אם אין — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.]", "last_known_update": "[DD/MM/YYYY של החדשה האחרונה בחומר שסופק]", "status": "GA/Beta"},
-    {"company": "Google/Gemini", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Meta/Llama", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "xAI/Grok", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"},
-    {"company": "Perplexity", "product": "[שם המוצר הנוכחי לפי החדשות שסופקו]", "update": "[לפי החדשות שסופקו בלבד.]", "last_known_update": "[DD/MM/YYYY]", "status": "GA/Beta"}
+    {"company": "OpenAI",         "product": "[שם מוצר לפי חדשות בלבד]", "update": "[לפי חדשות שסופקו. אם אין — 'אין חדשות חדשות מהשבוע האחרון.' בלבד]", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Google/Gemini",  "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude","product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Meta/Llama",     "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "xAI/Grok",       "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Perplexity",     "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -133,37 +129,31 @@ JSON_PROMPT = """
     "action": "משפט מסכם — מה הפעולה הנכונה עכשיו"
   },
   "section_8_watchlist": {
-    "rising": [
-      {"ticker": "NVDA", "note": "למה לעקוב — מה הקטליסט", "signal": "BUY", "reason": "סיבה טכנית/פונדמנטלית לכניסה"},
-      {"ticker": "TSM",  "note": "...", "signal": "BUY", "reason": "..."},
-      {"ticker": "VRT",  "note": "...", "signal": "BUY", "reason": "..."},
-      {"ticker": "PLTR", "note": "...", "signal": "BUY", "reason": "..."},
-      {"ticker": "MU",   "note": "...", "signal": "BUY", "reason": "..."},
-      {"ticker": "AVGO", "note": "...", "signal": "BUY", "reason": "..."}
+    "rising":  [
+      {"ticker": "NVDA", "note": "למה לעקוב", "signal": "BUY",  "reason": "סיבה טכנית/פונדמנטלית"},
+      {"ticker": "...",  "note": "...",         "signal": "BUY",  "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "BUY",  "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "BUY",  "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "BUY",  "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "BUY",  "reason": "..."}
     ],
     "falling": [
-      {"ticker": "META", "note": "למה לעקוב — מה הקטליסט", "signal": "SELL", "reason": "סיבה טכנית/פונדמנטלית לכניסה"},
-      {"ticker": "SNOW", "note": "...", "signal": "SELL", "reason": "..."},
-      {"ticker": "ADBE", "note": "...", "signal": "SELL", "reason": "..."},
-      {"ticker": "CRM",  "note": "...", "signal": "SELL", "reason": "..."},
-      {"ticker": "MSTR", "note": "...", "signal": "SELL", "reason": "..."},
-      {"ticker": "XLY",  "note": "...", "signal": "SELL", "reason": "..."}
+      {"ticker": "META", "note": "למה לעקוב", "signal": "SELL", "reason": "סיבה טכנית/פונדמנטלית"},
+      {"ticker": "...",  "note": "...",         "signal": "SELL", "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "SELL", "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "SELL", "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "SELL", "reason": "..."},
+      {"ticker": "...",  "note": "...",         "signal": "SELL", "reason": "..."}
     ]
   }
 }
 
-כללים קריטיים:
-- שדות price ו-change_24h: מחירים ושינויים יסופקו מ-yfinance לאחר מכן — כתוב "לא זמין" כ-placeholder בלבד.
-- שדות note, so_what, body, analysis, brief, thesis, risks, opportunities, action, flow, daily_narrative, smart_money, whale_activity, conclusion: חייבים להכיל טקסט אנליטי ממשי — אסור לכתוב "לא זמין".
-- section_7_ai: עבור כל חברה — השתמש אך ורק בחדשות שסופקו למעלה. אסור להמציא שמות מוצרים, גרסאות, או תאריכים שאינם בחומר. אם אין מידע — כתוב "אין חדשות חדשות מהשבוע האחרון." ותו לא.
-- section_7_ai product: מלא שם מוצר רק לפי מה שמופיע בחומר שסופק. אל תמציא.
-- section_4_crypto_brief: כל שדה חייב להיות לפחות 2-3 משפטים עם מידע ממשי.
-- section_1_situation gauges: ערכי Fear & Greed יסופקו בפרומפט — השתמש בהם בדיוק. VIX יוחלף אוטומטית על ידי yfinance.
-- gauges zone: "extreme_fear" (0-24) / "fear" (25-44) / "neutral" (45-54) / "greed" (55-74) / "extreme_greed" (75-100) עבור F&G. VIX zone: "low" (<15) / "medium" (15-20) / "high" (20-30) / "extreme" (>30).
-- section_3_sectors flow_amount: חובה להחליף בסכום ממשי (לדוגמה: "+$3.2B", "-$1.8B", "$0.1B"). אסור להשאיר "X.X" — זה placeholder בלבד לצורך הדוגמה. אמוד לפי סנטימנט הסקטור ביום זה.
-- section_3_sectors change: שדה change יוחלף אוטומטית על ידי yfinance — כתוב "YFINANCE" בלבד.
-- generated_at: timestamp ISO עכשווי בדיוק עם Z בסיום.
-- section_8_watchlist: בחר 6 טיקרים עם פוטנציאל עלייה (rising) ו-6 עם פוטנציאל ירידה (falling) לשבוע הקרוב. לכל טיקר: note (למה לעקוב, מה הקטליסט), signal (BUY/SELL), reason (סיבה טכנית/פונדמנטלית קצרה ומדויקת). בחר לפי החדשות שמצאת בלבד.
+כללים:
+- section_7_ai: חדשות שסופקו בלבד. אסור להמציא שמות מוצרים, גרסאות, תאריכים.
+- gauges zones — F&G: extreme_fear(0-24)/fear(25-44)/neutral(45-54)/greed(55-74)/extreme_greed(75-100). VIX: low(<15)/medium(15-20)/high(20-30)/extreme(>30).
+- section_3_sectors flow_direction: "in" = חוזק יחסי ביום זה, "out" = חולשה, "neutral" = ניטרלי.
+- section_4_crypto_brief smart_money/whale_activity: תייג "ניתוח מודל —" בתחילת הטקסט (אין נתוני on-chain בזמן אמת).
+- section_8_watchlist: 6 rising + 6 falling לפי החדשות שסופקו.
 - החזר JSON בלבד. אין טקסט לפני או אחרי.
 """
 
@@ -345,7 +335,9 @@ def fetch_hn_news(max_items=15):
 
 
 def build_news_context():
-    """Aggregate free market data into a context string + Fear&Greed dict."""
+    """Aggregate free market data into a context string + structured local data dict.
+    Returns (context_str, fg_dict, market_prices_dict) — prices fetched once, reused by patch_prices.
+    """
     today = datetime.utcnow().strftime("%Y-%m-%d")
     lines = [f"=== נתוני שוק לניתוח — {today} ===\n"]
 
@@ -358,9 +350,31 @@ def build_news_context():
             lines.append(f"Crypto Fear & Greed Index: {fg['crypto']}/100")
         lines.append("")
 
+    # Fetch all market prices upfront — used both as Gemini context and for JSON injection
+    all_symbols = set(MARKET_SYMBOLS.keys()) | set(ETF_SECTORS)
+    for section_tickers in [
+        ["NVDA","TSM","AMD","AVGO","MU","ASML","QCOM","ARM","MRVL","LRCX"],
+        ["MSFT","GOOGL","META","AMZN","CRM","NOW","ORCL","ADBE","PLTR","SNOW"],
+    ]:
+        all_symbols.update(section_tickers)
+    market_prices = fetch_prices(all_symbols)
+
+    # Add real market prices as plain-text context for Gemini analysis
+    idx_labels = {"^GSPC": "S&P 500", "^NDX": "Nasdaq 100", "^DJI": "Dow Jones",
+                  "^VIX": "VIX", "^TNX": "10Y Yield", "GC=F": "Gold",
+                  "SI=F": "Silver", "CL=F": "Oil (WTI)", "DX-Y.NYB": "DXY",
+                  "BTC-USD": "Bitcoin", "ETH-USD": "Ethereum"}
+    lines.append("=== מדדים ונכסים (yfinance — מחיר סגירה אחרון) ===")
+    for sym, label in idx_labels.items():
+        if sym in market_prices:
+            p, c = market_prices[sym]
+            sign = "+" if c >= 0 else ""
+            lines.append(f"{label}: {p:,.2f}  ({sign}{c:.2f}%)")
+    lines.append("")
+
     ai_rss = fetch_ai_rss(max_per_feed=5)
     if ai_rss:
-        lines.append("=== חדשות AI — RSS (TechCrunch/VentureBeat/TheVerge/ArsTechnica/OpenAI/Anthropic/DeepMind/MetaAI) ===")
+        lines.append("=== חדשות AI — RSS ===")
         lines.extend(ai_rss)
         lines.append("")
 
@@ -378,7 +392,34 @@ def build_news_context():
 
     context = "\n".join(lines)
     print(f"[CONTEXT] {len(context)} chars | {len(ai_rss)} RSS | {len(stock_news)} stock | {len(hn_news)} HN | F&G={fg}")
-    return context, fg
+    return context, fg, market_prices
+
+
+ETF_SECTORS = ["XLK", "XLV", "XLU", "XLF", "XLE", "XLY", "XLI", "XLB", "XLRE", "XLP", "XLC"]
+
+
+def fetch_etf_aum_flows(etf_list):
+    """Calculate flow proxy: daily_return × AUM for each ETF (yfinance totalAssets).
+    Returns dict: etf → formatted flow_amount string, e.g. "+$1.2B" or "-$0.8B".
+    This replaces Gemini-estimated values with real math on real data.
+    """
+    result = {}
+    for sym in etf_list:
+        try:
+            t = yf.Ticker(sym)
+            fi = t.fast_info
+            price = fi.get("lastPrice") or fi.get("last_price")
+            prev  = fi.get("previousClose") or fi.get("previous_close")
+            aum   = (t.info or {}).get("totalAssets", 0) or 0
+            if price and prev and prev > 0 and aum > 0:
+                daily_return = (float(price) - float(prev)) / float(prev)
+                flow_b = (aum * daily_return) / 1_000_000_000
+                sign = "+" if flow_b >= 0 else "-"
+                result[sym] = f"{sign}${abs(flow_b):.1f}B"
+        except Exception as e:
+            print(f"[FLOW WARN] {sym}: {e}")
+    print(f"[FLOWS] calculated for {len(result)}/{len(etf_list)} ETFs")
+    return result
 
 
 def fetch_prices(symbols):
@@ -442,36 +483,41 @@ def fetch_crypto_price(yf_sym):
     return None, 0.0
 
 
-def patch_prices(data):
-    """Replace 'לא זמין' / placeholder prices with real yfinance data."""
-    # Collect all symbols needed
-    stock_symbols = set()
-    for section in ("section_3_sectors", "section_5_semis", "section_6_software"):
-        for item in data.get(section, []):
-            sym = item.get("etf") or item.get("ticker")
-            if sym:
-                stock_symbols.add(sym)
+def patch_prices(data, market_prices=None, fear_greed=None):
+    """Inject all numerical data from local sources into the Gemini text skeleton.
+    market_prices: pre-fetched dict from build_news_context (avoids double fetch).
+    fear_greed: F&G dict for gauge value injection.
+    """
+    # Use pre-fetched prices if available, otherwise fetch now
+    if market_prices is None:
+        all_syms = set(MARKET_SYMBOLS.keys())
+        for s in ("section_3_sectors", "section_5_semis", "section_6_software"):
+            for item in data.get(s, []):
+                sym = item.get("etf") or item.get("ticker")
+                if sym:
+                    all_syms.add(sym)
+        market_prices = fetch_prices(all_syms)
 
-    # Fetch stocks (batch download — works reliably for exchange-traded assets)
-    stock_prices = fetch_prices(stock_symbols)
-
-    # Patch section_3_sectors
+    # ── section_3_sectors: change% + flow_amount (AUM proxy) ──────────────────
+    etf_flows = fetch_etf_aum_flows(ETF_SECTORS)
     for item in data.get("section_3_sectors", []):
         sym = item.get("etf")
-        if sym and sym in stock_prices:
-            p, c = stock_prices[sym]
+        if sym and sym in market_prices:
+            _, c = market_prices[sym]
             item["change"] = fmt_change(c)
+        if sym and sym in etf_flows:
+            item["flow_amount"] = etf_flows[sym]
 
-    # Patch section_5_semis and section_6_software
+    # ── section_5_semis + section_6_software: price + change ──────────────────
     for section in ("section_5_semis", "section_6_software"):
         for item in data.get(section, []):
             sym = item.get("ticker")
-            if sym and sym in stock_prices:
-                p, c = stock_prices[sym]
+            if sym and sym in market_prices:
+                p, c = market_prices[sym]
                 item["price"] = fmt_price(p)
                 item["change"] = fmt_change(c)
 
-    # Patch section_4_crypto — use fast_info to get true 24h change
+    # ── section_4_crypto: price + change_24h ──────────────────────────────────
     for item in data.get("section_4_crypto", []):
         yf_sym = CRYPTO_MAP.get(item.get("ticker", ""))
         if not yf_sym:
@@ -481,8 +527,7 @@ def patch_prices(data):
             item["price"] = fmt_price(p, is_crypto=True)
             item["change_24h"] = fmt_change(c)
 
-    # Fetch and add market indices (S&P, Nasdaq, 10Y yield)
-    market_prices = fetch_prices(set(MARKET_SYMBOLS.keys()))
+    # ── markets block (indices) ────────────────────────────────────────────────
     markets = {}
     for yf_sym, key in MARKET_SYMBOLS.items():
         if yf_sym in market_prices:
@@ -498,12 +543,17 @@ def patch_prices(data):
     if markets:
         data["markets"] = markets
 
-    # Overwrite VIX value from yfinance (more accurate than Gemini estimate)
-    if "vix" in markets and data.get("section_1_situation", {}).get("gauges", {}).get("vix"):
-        data["section_1_situation"]["gauges"]["vix"]["value"] = markets["vix"]["value"]
+    # ── gauges: inject real values (VIX from yfinance, F&G from APIs) ─────────
+    gauges = data.get("section_1_situation", {}).get("gauges", {})
+    if "vix" in markets and gauges.get("vix") is not None:
+        gauges["vix"]["value"] = markets["vix"]["value"]
+    if fear_greed:
+        if fear_greed.get("stock") is not None and gauges.get("fear_greed_stock") is not None:
+            gauges["fear_greed_stock"]["value"] = str(fear_greed["stock"])
+        if fear_greed.get("crypto") is not None and gauges.get("fear_greed_crypto") is not None:
+            gauges["fear_greed_crypto"]["value"] = str(fear_greed["crypto"])
 
-    crypto_count = len(data.get("section_4_crypto", []))
-    print(f"[PRICES] patched {len(stock_prices)} stocks + {crypto_count} crypto + {len(market_prices)} indices")
+    print(f"[INJECT] {len(etf_flows)} ETF flows | {len(markets)} market indices | gauges patched")
     return data
 
 
@@ -633,26 +683,17 @@ def log_cost(model, usage):
         print(f"[COST] tracking error: {e}")
 
 
-def call_gemini(model, attempt, news_context, fear_greed):
+def call_gemini(model, attempt, news_context):
     print(f"[TRY] model={model} attempt={attempt+1}")
     today = datetime.utcnow().strftime("%Y-%m-%d")
-
-    fg_note = ""
-    if fear_greed.get("stock") is not None:
-        fg_note += (f"\nStock Fear & Greed: {fear_greed['stock']}/100 — "
-                    f"השתמש בערך זה בדיוק ב-section_1_situation.gauges.fear_greed_stock.value")
-    if fear_greed.get("crypto") is not None:
-        fg_note += (f"\nCrypto Fear & Greed: {fear_greed['crypto']}/100 — "
-                    f"השתמש בערך זה בדיוק ב-section_1_situation.gauges.fear_greed_crypto.value")
 
     full_prompt = (
         f"היום: {today}.\n"
         f"החדשות והנתונים הבאים נאספו עכשיו ממקורות חינמיים:\n\n"
-        f"{news_context}"
-        f"{fg_note}\n\n"
+        f"{news_context}\n\n"
         "הוראה קריטית: השתמש אך ורק בנתונים שסופקו למעלה. "
         "אסור להמציא חדשות שאינן בחומר. "
-        "אם אין מידע על חברה — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.\n\n"
+        "אם אין מידע על חברה ב-section_7_ai — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.\n\n"
         + JSON_PROMPT
     )
 
@@ -698,22 +739,20 @@ def generate():
     # Load previous data before generating (for merge fallback)
     prev = _load_previous()
 
-    # Fetch free news context upfront (yfinance + HN + Fear&Greed APIs)
-    news_context, fear_greed = build_news_context()
+    # Fetch free news context + all market prices upfront (single fetch, reused below)
+    news_context, fear_greed, market_prices = build_news_context()
 
     # Max attempts: 2 per model to reduce wasted API spend
-    MAX_ATTEMPTS = 2
-    # Only use Pro as last resort (1 attempt — expensive)
     MODEL_ATTEMPTS = [("gemini-2.5-flash", 2), ("gemini-2.5-pro", 1)]
 
     data = None
     for model, max_att in MODEL_ATTEMPTS:
         for attempt in range(max_att):
             try:
-                response = call_gemini(model, attempt, news_context, fear_greed)
+                response = call_gemini(model, attempt, news_context)
                 raw = clean_raw(response.text)
                 candidate = json.loads(raw)
-                candidate = patch_prices(candidate)
+                candidate = patch_prices(candidate, market_prices=market_prices, fear_greed=fear_greed)
                 issues = validate(candidate)
                 if issues:
                     print(f"[WARN] Validation failed attempt {attempt+1}: {issues[:3]}")
