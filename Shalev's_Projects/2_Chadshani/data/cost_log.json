@@ -1037,8 +1037,62 @@
       "think_tokens": 2392,
       "cost_usd": 0.01103,
       "cost_ils": 0.0408
+    },
+    {
+      "ts": "2026-04-02T17:33:52Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8331,
+      "out_tokens": 6242,
+      "think_tokens": 7281,
+      "cost_usd": 0.02798,
+      "cost_ils": 0.1035
+    },
+    {
+      "ts": "2026-04-02T17:59:32Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8483,
+      "out_tokens": 7086,
+      "think_tokens": 8084,
+      "cost_usd": 0.03106,
+      "cost_ils": 0.1149
+    },
+    {
+      "ts": "2026-04-02T18:01:06Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8483,
+      "out_tokens": 8737,
+      "think_tokens": 4594,
+      "cost_usd": 0.01934,
+      "cost_ils": 0.0715
+    },
+    {
+      "ts": "2026-04-02T18:02:19Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8472,
+      "out_tokens": 7438,
+      "think_tokens": 8942,
+      "cost_usd": 0.03416,
+      "cost_ils": 0.1264
+    },
+    {
+      "ts": "2026-04-02T18:02:54Z",
+      "model": "gemini-2.5-pro",
+      "in_tokens": 8483,
+      "out_tokens": 7830,
+      "think_tokens": 4326,
+      "cost_usd": 0.10404,
+      "cost_ils": 0.385
+    },
+    {
+      "ts": "2026-04-02T18:03:29Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8472,
+      "out_tokens": 8774,
+      "think_tokens": 3964,
+      "cost_usd": 0.01714,
+      "cost_ils": 0.0634
     }
   ],
-  "total_usd": 4.41755,
-  "total_ils": 16.1274
+  "total_usd": 4.65127,
+  "total_ils": 16.9921
 }

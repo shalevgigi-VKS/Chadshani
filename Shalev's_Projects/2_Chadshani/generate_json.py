@@ -84,13 +84,16 @@ JSON_PROMPT = """
     {"ticker": "BTC",  "note": "..."},
     {"ticker": "ETH",  "note": "..."},
     {"ticker": "SOL",  "note": "..."},
-    {"ticker": "LINK", "note": "..."}
+    {"ticker": "LINK", "note": "..."},
+    {"ticker": "XRP",  "note": "..."},
+    {"ticker": "TAO",  "note": "..."},
+    {"ticker": "KAS",  "note": "..."}
   ],
   "section_4_crypto_brief": {
     "daily_narrative": "סיפור היום בקריפטו — לפחות 3-4 משפטים",
     "smart_money": "ניתוח מודל — זרימת כסף מוסדי, ETF flows (לפחות 2-3 משפטים)",
     "whale_activity": "ניתוח מודל — פעילות לוויתנים, on-chain signals (לפחות 2-3 משפטים)",
-    "conclusion": "מסקנה ותזה למשקיע"
+    "conclusion": "מסקנה ותזה למשקיע — חייב להיות הסבר מפורט ומעמיק"
   },
   "section_5_semis": [
     {"ticker": "NVDA", "note": "..."},
@@ -150,14 +153,13 @@ JSON_PROMPT = """
   }
 }
 
-כללים:
-- section_7_ai: חדשות שסופקו בלבד. אסור להמציא שמות מוצרים, גרסאות, תאריכים.
+כללים קריטיים:
+- **חל איסור מוחלט** על שימוש בביטוי "אין חדשות חדשות" או "נתונים לא זמינים". אם אין חדשות ספציפיות, בצע ניתוח מגמת מחיר (Tech Analysis) או סקירת נרטיב כללית של התחום. כל טיקר חייב לקבל הסבר אסטרטגי.
+- section_7_ai: חדשות שסופקו בלבד. אם אין חדשות — בצע עדכון לגבי המצב הקיים של החברה/המודל.
 - gauges zones — F&G: extreme_fear(0-24)/fear(25-44)/neutral(45-54)/greed(55-74)/extreme_greed(75-100). VIX: low(<15)/medium(15-20)/high(20-30)/extreme(>30).
-- section_3_sectors flow_direction: "in" = חוזק יחסי ביום זה, "out" = חולשה, "neutral" = ניטרלי.
-- section_4_crypto_brief smart_money/whale_activity: תייג "ניתוח מודל —" בתחילת הטקסט (אין נתוני on-chain בזמן אמת).
-- section_8_watchlist: 6 rising + 6 falling לפי החדשות שסופקו. טיקרים חייבים להיות מניות/ETF בלבד (לא BTC/ETH — קריפטו שייך ל-section_4 בלבד).
-- alert.value: חייב להיות ביטוי ספציפי. דוגמאות: "קוד מקור Claude Code", "$40B", "GPT-5", "ריבית Fed". אסור לכתוב N/A, לא זמין, או שדה ריק.
-- החזר JSON בלבד. אין טקסט לפני או אחרי.
+- section_3_sectors: מיין לפי שינוי אחוזי מהגבוה לנמוך (gainers top).
+- alert.value: חייב להיות ביטוי ספציפי וחדשני.
+- החזר JSON בלבד.
 """
 
 # Models: flash (2 attempts) → pro (1 attempt, expensive last resort)
@@ -166,10 +168,17 @@ JSON_PROMPT = """
 MAX_NEWS_AGE_DAYS = 7   # skip news items older than this
 
 # Crypto ticker mapping: JSON ticker → yfinance symbol
-CRYPTO_MAP = {"BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", "LINK": "LINK-USD"}
+CRYPTO_MAP = {
+    "BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", 
+    "LINK": "LINK-USD", "XRP": "XRP-USD", "TAO": "TAO1-USD", "KAS": "KAS-USD"
+}
 
 # Market indices: yfinance symbol → JSON key
-MARKET_SYMBOLS = {"^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", "^VIX": "vix", "GC=F": "gold", "SI=F": "silver", "CL=F": "oil", "BTC-USD": "btc", "ETH-USD": "eth", "DX-Y.NYB": "dxy"}
+MARKET_SYMBOLS = {
+    "^GSPC": "sp500", "^NDX": "nasdaq", "^TNX": "yield_10y", "^DJI": "dji", 
+    "^VIX": "vix", "GC=F": "gold", "SI=F": "silver", "CL=F": "oil", 
+    "BTC-USD": "btc", "ETH-USD": "eth", "DX-Y.NYB": "dxy"
+}
 
 # Tickers to fetch news for (covers all major tracked companies + sector ETFs)
 NEWS_TICKERS = [
@@ -177,7 +186,7 @@ NEWS_TICKERS = [
     "AMD", "TSM", "AVGO", "MU", "ASML", "QCOM", "ARM", "MRVL", "LRCX",
     "CRM", "NOW", "ORCL", "ADBE", "PLTR", "SNOW",
     "XLK", "XLF", "XLE", "XLY", "XLV", "XLU",
-    "BTC-USD", "ETH-USD",
+    "BTC-USD", "ETH-USD", "SOL-USD", "LINK-USD", "XRP-USD",
 ]
 
 

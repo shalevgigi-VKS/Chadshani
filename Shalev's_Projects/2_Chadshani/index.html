@@ -109,8 +109,8 @@
             </div>
             
             <!-- Center: LIVE Indicator -->
-            <div class="flex items-center gap-2 text-red-600 font-headline font-bold">
-                <span class="w-2 h-2 rounded-full bg-red-600 pulsing-dot"></span>
+            <div class="flex items-center gap-2 text-emerald-600 font-headline font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 pulsing-dot"></span>
                 <span class="text-[10px] md:text-xs uppercase tracking-widest">LIVE</span>
             </div>
 
@@ -123,9 +123,8 @@
                 </div>
             </div>
 
-            <!-- User Actions / Search -->
+            <!-- User Actions / Status -->
             <div class="flex items-center gap-3">
-                <button class="material-symbols-outlined text-slate-500 hover:bg-slate-100 p-2 rounded-full transition-all">search</button>
                 <div id="battery-status" class="hidden md:flex items-center text-[10px] font-mono text-slate-400">
                     <span class="material-symbols-outlined text-xs">bolt</span>
                     <span id="update-ts">POLLING...</span>
@@ -165,7 +164,7 @@
                 <div class="flex items-center justify-end gap-4">
                     <div class="text-right">
                         <div class="font-bold text-sm">שלו גיגי</div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider underline text-blue-600">Chief Strategist</div>
+                        <div class="text-[10px] text-blue-600 font-black uppercase tracking-widest underline decoration-2 underline-offset-4">Chief Strategist</div>
                     </div>
                     <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-14 h-14 rounded-xl border-2 border-blue-500/20 shadow-sm object-cover">
                 </div>
@@ -173,23 +172,57 @@
                     בעולם שבו המידע זורם בלי הפסקה, האתגר האמיתי הוא לזהות את הסיגנל בתוך הרעש. הכירו את דסק <strong>חדשני</strong>.
                 </p>
                 <div class="flex justify-end gap-2 border-t border-slate-100 pt-3">
-                   <span class="text-[9px] font-mono text-blue-600 font-bold uppercase">Intelligence Hub v3.1</span>
+                   <span class="text-[9px] font-mono text-blue-600 font-bold uppercase">Intelligence Hub v3.2</span>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 min-h-screen md:mr-64 lg:mr-72 p-4 md:p-8 lg:p-10">
+        <main class="flex-1 min-h-screen md:mr-64 lg:mr-72 p-2 md:p-8 lg:p-10 mb-24 md:mb-0">
+
+            <!-- Clock Bar (Universal) -->
+            <div id="clock-bar" class="grid grid-cols-3 text-center text-[10px] md:text-xs font-headline py-4 mb-4 glass-card rounded-2xl border-0 shadow-sm">
+                <div>
+                    <div class="text-slate-400 font-bold mb-0.5 uppercase tracking-wider">שעה נוכחית</div>
+                    <div id="clock-now" class="font-black text-slate-800 tabular-nums">--:--:--</div>
+                </div>
+                <div class="border-x border-slate-100 px-2 leading-tight">
+                    <div class="text-slate-400 font-bold mb-0.5 uppercase tracking-wider">עדכון אחרון</div>
+                    <div id="clock-last" class="font-black text-emerald-600 tabular-nums">--:--</div>
+                </div>
+                <div>
+                    <div class="text-slate-400 font-bold mb-0.5 uppercase tracking-wider">עדכון הבא בעוד</div>
+                    <div id="clock-next" class="font-black text-blue-600 tabular-nums">--:--:--</div>
+                </div>
+            </div>
 
             <div id="page-macro" class="page-view space-y-10">
                 <!-- Hero Slider / Headline -->
-                <section class="relative h-[300px] md:h-[400px] rounded-[3rem] overflow-hidden glass-card group border-0 shadow-lg">
-                    <div id="macro-hero-bg" class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent flex flex-col justify-center p-8 md:p-16 z-10 text-right">
-                        <span class="text-blue-700 font-headline font-bold tracking-widest text-xs mb-3 uppercase">DAILY PERSPECTIVE / <span id="macro-date">--</span></span>
-                        <h1 id="macro-headline" class="text-3xl md:text-5xl font-black font-headline text-slate-900 mb-6 leading-tight max-w-2xl">טוען נתונים...</h1>
-                        <p id="macro-analysis" class="text-sm md:text-lg text-slate-600 max-w-xl mb-4 leading-relaxed"></p>
+                <section class="relative min-h-[450px] md:h-[500px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden glass-card group border-0 shadow-lg px-2">
+                    <div id="macro-hero-bg" class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent flex flex-col justify-center p-6 md:p-16 z-10 text-right">
+                        <span class="text-blue-700 font-headline font-bold tracking-widest text-[10px] md:text-xs mb-3 uppercase">DAILY PERSPECTIVE / <span id="macro-date">--</span></span>
+                        <h1 id="macro-headline" class="text-2xl md:text-5xl font-black font-headline text-slate-900 mb-6 leading-tight max-w-2xl">טוען נתונים...</h1>
+                        <p id="macro-analysis" class="text-sm md:text-xl text-slate-700 max-w-2xl mb-4 leading-relaxed text-justify"></p>
                     </div>
                     <div class="absolute inset-0 bg-blue-600/5 mix-blend-overlay"></div>
+                </section>
+
+                <!-- Featured Carousel (Slider) - Visible on Mobile now -->
+                <section class="space-y-4">
+                    <div class="flex justify-between items-center px-4">
+                        <h2 class="text-lg md:text-2xl font-black font-headline italic text-slate-900 underline underline-offset-8 decoration-blue-500/30">גלריית מודיעין</h2>
+                    </div>
+                    <div class="carousel-container relative h-[250px] md:h-[400px] overflow-hidden rounded-[2.5rem] shadow-xl">
+                         <div id="carousel-track" class="flex transition-transform duration-700 ease-out h-full">
+                            <!-- Populated by JS -->
+                         </div>
+                         <button onclick="carouselPrev()" class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all z-20">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                         </button>
+                         <button onclick="carouselNext()" class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all z-20">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                         </button>
+                    </div>
                 </section>
 
                 <!-- Market Intelligence Grid -->
@@ -250,31 +283,57 @@
                 <!-- Strategy & Watchlist Macro -->
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-2 surface-container-low rounded-full p-8 border border-white/50">
-                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center gap-2">
+                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center justify-end gap-2 text-right">
                             <span class="material-symbols-outlined text-blue-600">lightbulb</span>
-                            Strategy Thesis
+                            תזת השקעה ואסטרטגיה
                         </h2>
                         <div class="space-y-6">
-                            <div>
-                                <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Main Thesis</span>
-                                <p id="macro-thesis" class="font-bold text-lg mt-1 text-slate-800"></p>
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-blue-600 uppercase tracking-widest underline mb-2 block">תזה מרכזית</span>
+                                <p id="macro-thesis" class="font-bold text-lg md:text-xl mt-1 text-slate-800 leading-relaxed"></p>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="bg-red-50/50 p-4 rounded-xl border-r-4 border-red-500">
-                                    <span class="text-xs font-bold text-red-600">RISKS</span>
-                                    <p id="macro-risks" class="text-xs mt-1 text-slate-600 leading-relaxed"></p>
+                                <div class="bg-red-50/50 p-6 rounded-3xl border-r-4 border-red-500 text-right">
+                                    <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2 underline">סיכונים</span>
+                                    <p id="macro-risks" class="text-sm mt-1 text-slate-800 leading-relaxed font-bold"></p>
                                 </div>
-                                <div class="bg-green-50/50 p-4 rounded-xl border-r-4 border-green-600">
-                                    <span class="text-xs font-bold text-green-600">OPPORTUNITIES</span>
-                                    <p id="macro-opps" class="text-xs mt-1 text-slate-600 leading-relaxed"></p>
+                                <div class="bg-green-50/50 p-6 rounded-3xl border-r-4 border-green-600 text-right">
+                                    <span class="text-xs font-bold text-green-600 uppercase tracking-widest block mb-2 underline">הזדמנויות</span>
+                                    <p id="macro-opps" class="text-sm mt-1 text-slate-800 leading-relaxed font-bold"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card rounded-full p-8">
-                        <h2 class="text-xl font-black font-headline mb-6 text-slate-800">Focus Watchlist</h2>
+                    <div class="glass-card rounded-[2.5rem] p-8 border-0 shadow-sm">
+                        <h2 class="text-xl font-black font-headline mb-6 text-slate-900 text-right italic underline underline-offset-8 decoration-blue-500/10">טיקרים למעקב ממוקד</h2>
                         <div id="macro-watchlist" class="space-y-4">
                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- About Section (Restored v2 style) -->
+                <section class="glass-card p-8 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border-0 shadow-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full -mr-32 -mt-32 blur-3xl transition-all group-hover:bg-blue-600/10"></div>
+                    <div class="flex flex-col md:flex-row items-center md:items-start gap-10 relative z-10">
+                        <!-- Left: Bio Text -->
+                        <div class="flex-1 text-right order-2 md:order-1">
+                            <h2 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic mb-4 underline underline-offset-8 decoration-blue-500/20">אודותיי</h2>
+                            <p class="text-sm md:text-lg text-slate-600 leading-relaxed font-medium text-justify">
+                                בעולם שבו המידע זורם בלי הפסקה, האתגר האמיתי הוא לזהות את הסיגנל בתוך הרעש. מעבר לכותרות ולתנודות היומיומיות, הבנה אמיתית של המציאות דורשת פרספקטיבה עמוקה יותר — לכן בניתי את דסק <strong class="text-blue-600">חדשני</strong>, כדי לייצר בהירות, להישאר עם היד על הדופק, ולהבין את המחר כבר היום.
+                            </p>
+                            <div class="mt-8 flex justify-end gap-3">
+                                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded-xl text-[10px] font-black text-blue-600 uppercase tracking-widest">Global Markets</div>
+                                <div class="bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl text-[10px] font-black text-emerald-600 uppercase tracking-widest">AI & Technology</div>
+                            </div>
+                        </div>
+                        <!-- Right: Photo + Name -->
+                        <div class="flex flex-col items-center md:items-end flex-shrink-0 order-1 md:order-2">
+                             <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-48 md:w-64 rounded-[2rem] md:rounded-[3rem] object-cover shadow-2xl border-4 border-white/50 group-hover:scale-105 transition-transform duration-500">
+                             <div class="text-center md:text-right mt-6">
+                                 <h3 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic">שלו גיגי</h3>
+                                 <p class="text-[10px] md:text-xs font-black text-blue-600 uppercase tracking-[0.2em] mt-1 font-bold italic">״אנליסט״ פיננסי-טכנולוגי</p>
+                             </div>
                         </div>
                     </div>
                 </section>
@@ -282,24 +341,30 @@
 
             <!-- PAGE: SECTORS -->
             <div id="page-sectors" class="page-view hidden space-y-10">
-                <section class="glass-card rounded-full p-8 md:p-10">
+                <section class="glass-card rounded-[3rem] p-8 md:p-10">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                        <div>
-                            <h2 class="text-3xl font-black font-headline text-slate-900 italic">Sector Money Flow</h2>
-                            <p class="text-slate-500 text-sm mt-1">ניתוח זרימת כספים מוסדיים במגזרי ה-S&P 500</p>
+                        <div class="text-right">
+                            <h2 class="text-3xl font-black font-headline text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">זרימת הון ומפת סקטורים</h2>
+                            <p class="text-slate-500 text-sm mt-3 font-bold uppercase tracking-widest">Sector Money Flow Analysis</p>
                         </div>
-                        <div class="text-right bg-blue-50 px-6 py-3 rounded-2xl border border-blue-100">
-                            <span id="total-net-flow" class="text-3xl font-headline font-bold text-blue-600">+$1.2B</span>
-                            <p class="text-[9px] text-blue-400 uppercase tracking-widest font-black mt-1">Total Net Flow (30 Days)</p>
+                        <div class="flex flex-col items-end gap-2">
+                             <div class="text-right bg-blue-600 px-8 py-4 rounded-[2rem] border border-blue-400/20 shadow-xl shadow-blue-500/10">
+                                <span id="total-net-flow" class="text-3xl font-headline font-black text-white">--</span>
+                                <p class="text-[9px] text-blue-100 uppercase tracking-widest font-black mt-1 italic">30D Flow Balance</p>
+                             </div>
+                             <div class="text-[10px] font-black text-slate-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> כסף נכנס
+                                <span class="w-2 h-2 rounded-full bg-rose-500 ml-2"></span> כסף יוצא
+                             </div>
                         </div>
                     </div>
-                    <div id="sectors-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div id="sectors-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         <!-- Populated by JS -->
                     </div>
                 </section>
 
                 <section class="space-y-6">
-                    <h2 class="text-2xl font-black font-headline text-slate-900">Micro Intelligence (News)</h2>
+                    <h2 class="text-2xl font-black font-headline text-slate-900 text-right italic underline underline-offset-8 decoration-emerald-500/20">חדשות מיקרו ומודיעין סקטורים</h2>
                     <div id="micro-news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Populated by JS -->
                     </div>
@@ -309,38 +374,38 @@
             <!-- PAGE: CRYPTO -->
             <div id="page-crypto" class="page-view hidden space-y-10">
                 <!-- Crypto Market Snapshot -->
-                <section class="grid grid-cols-2 md:grid-cols-4 gap-4" id="crypto-market-grid">
-                    <!-- Populated by JS -->
+                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="crypto-market-grid">
+                    <!-- Populated by JS: Includes BTC, ETH, SOL, LINK, XRP, TAO, KAS -->
                 </section>
 
                 <!-- Crypto Brief -->
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="surface-container-low rounded-full p-8 border border-amber-200 bg-amber-50/20">
-                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center gap-2 text-amber-900">
+                    <div class="surface-container-low rounded-[2.5rem] p-8 md:p-10 border border-amber-200 bg-amber-50/20 text-right">
+                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center justify-end gap-2 text-amber-900 font-headline italic underline underline-offset-8 decoration-amber-500/20">
                             <span class="material-symbols-outlined text-amber-600">history_edu</span>
-                            Crypto Story of the Day
+                            סיפור היום בקריפטו
                         </h2>
                         <div class="space-y-6">
                             <div>
-                                <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline">Daily Narrative</span>
-                                <p id="crypto-narrative" class="text-sm mt-2 text-slate-700 leading-relaxed"></p>
+                                <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">נרטיב יומי</span>
+                                <p id="crypto-narrative" class="text-sm md:text-base mt-2 text-slate-800 leading-relaxed font-medium"></p>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
-                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline">Smart Money Flow</span>
-                                    <p id="crypto-smart" class="text-xs mt-2 text-slate-600 leading-relaxed"></p>
+                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">זרימת כסף חכם</span>
+                                    <p id="crypto-smart" class="text-xs md:text-sm mt-2 text-slate-700 leading-relaxed font-bold"></p>
                                 </div>
                                 <div>
-                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline">Whale Activity</span>
-                                    <p id="crypto-whale" class="text-xs mt-2 text-slate-600 leading-relaxed"></p>
+                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">פעילות לוויתנים</span>
+                                    <p id="crypto-whale" class="text-xs md:text-sm mt-2 text-slate-700 leading-relaxed font-bold"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card rounded-full p-8 flex flex-col">
-                         <h2 class="text-2xl font-black font-headline mb-6 text-slate-800">Tactical Conclusion</h2>
-                         <div class="flex-1 flex flex-col justify-center bg-blue-50/50 p-8 rounded-3xl border border-blue-100">
-                            <p id="crypto-conclusion" class="text-lg md:text-xl font-bold text-blue-900 text-center leading-relaxed"></p>
+                    <div class="glass-card rounded-[2.5rem] p-10 flex flex-col text-right">
+                         <h2 class="text-2xl font-black font-headline mb-6 text-slate-900 italic underline underline-offset-8 decoration-blue-500/20">מסקנה ופעולה טקטית</h2>
+                         <div class="flex-1 flex flex-col justify-center bg-blue-600 p-8 rounded-[2rem] border border-blue-400/20 shadow-2xl shadow-blue-600/20">
+                            <p id="crypto-conclusion" class="text-lg md:text-2xl font-black text-white text-center leading-relaxed italic"></p>
                          </div>
                     </div>
                 </section>
@@ -446,6 +511,8 @@
             const h = window.location.hash.replace('#', '');
             if (['macro', 'sectors', 'crypto', 'ai', 'watchlist'].includes(h)) showPage(h);
             else showPage('macro');
+            updateClock();
+            setInterval(updateClock, 1000);
             loadData();
         });
 
@@ -514,14 +581,26 @@
             // Page 2: Sectors
             const s3 = d.section_3_sectors;
             if (s3) {
+                // Sort by change descending (Gainers on top)
+                s3.sort((a, b) => {
+                    const valA = parseFloat(a.change?.replace('%','').replace('+','') || '0');
+                    const valB = parseFloat(b.change?.replace('%','').replace('+','') || '0');
+                    return valB - valA;
+                });
+                
                 const grid = document.getElementById('sectors-grid');
                 grid.innerHTML = s3.map(s => {
-                    const color = s.flow_direction === 'in' ? 'text-green-600' : (s.flow_direction === 'out' ? 'text-red-600' : 'text-slate-500');
+                    const color = s.flow_direction === 'in' ? 'text-emerald-500' : (s.flow_direction === 'out' ? 'text-rose-500' : 'text-slate-500');
+                    const isPositive = parseFloat(s.change?.replace('%','').replace('+','') || '0') >= 0;
                     return `
-                        <div class="bg-surface-container-low/50 p-5 rounded-3xl text-center group hover:bg-blue-600 transition-all duration-300">
-                            <div class="text-[10px] font-black mb-1 group-hover:text-blue-100 uppercase tracking-tighter">${s.name}</div>
-                            <div class="text-[11px] font-bold text-blue-600 group-hover:text-white mb-2">${s.etf}</div>
-                            <div class="text-lg font-headline font-black ${color} group-hover:text-white">${s.flow_amount || '—'}</div>
+                        <div class="glass-card p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-md transition-all text-center group hover:bg-slate-900">
+                            <div class="text-blue-600 font-headline font-black text-[10px] mb-1 uppercase tracking-widest group-hover:text-blue-400">${s.etf}</div>
+                            <div class="text-sm font-black text-slate-800 mb-3 group-hover:text-white">${s.name}</div>
+                            <div class="text-2xl font-headline font-black ${isPositive ? 'text-emerald-500' : 'text-rose-500'} mb-1">${s.change || '0%'}</div>
+                            <div class="text-[9px] font-bold text-slate-400 uppercase mb-4 group-hover:text-slate-500">${s.flow_amount || '--'}</div>
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 group-hover:bg-slate-800 group-hover:border-slate-700">
+                                <p class="text-[10px] text-slate-600 leading-tight font-medium line-clamp-3 group-hover:text-slate-400">${s.note}</p>
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -554,11 +633,23 @@
             if (s4) {
                 const grid = document.getElementById('crypto-market-grid');
                 grid.innerHTML = s4.map(c => `
-                    <div class="glass-card p-6 rounded-3xl border border-amber-100">
-                        <div class="text-[10px] font-black text-slate-400 mb-2 uppercase tracking-tighter">${c.ticker} / USD</div>
-                        <div class="text-2xl font-bold font-headline text-slate-900">${c.price || '—'}</div>
-                        <div class="text-xs font-bold ${c.change_24h?.startsWith('+') ? 'text-green-600' : 'text-red-600'} mt-1">${c.change_24h || ''}</div>
-                        <p class="text-[9px] text-slate-500 leading-tight mt-3 font-medium">${c.note}</p>
+                    <div class="glass-card p-6 rounded-[2.5rem] border border-amber-100/50 hover:border-amber-300 transition-all group">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <img src="https://coinicons-api.vercel.app/api/icon/${c.ticker?.toLowerCase()}" class="w-10 h-10 rounded-full shadow-lg group-hover:scale-110 transition-transform" onerror="this.src='https://cryptoicons.org/api/icon/${c.ticker?.toLowerCase()}/64'">
+                                <div class="text-right">
+                                    <div class="text-sm font-black text-slate-800">${c.ticker}</div>
+                                    <div class="text-[9px] text-amber-600 font-bold uppercase tracking-widest italic">ASSET_INDEX</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xl font-headline font-black text-slate-900">${c.price || '---'}</div>
+                                <div class="text-[10px] font-bold ${c.change_24h?.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}">${c.change_24h || '--'}</div>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50/50 p-4 rounded-[1.5rem] border border-amber-100">
+                            <p class="text-[11px] text-slate-700 leading-relaxed font-medium text-justify">${c.note}</p>
+                        </div>
                     </div>
                 `).join('');
             }
@@ -617,6 +708,58 @@
                 </div>
             `).join('');
         }
+
+        // Clock Logic
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('he-IL', { hour12: false });
+            document.getElementById('clock-now').textContent = timeStr;
+
+            // Last Update - from JSON or generated_ts
+            // Next Update - manual calc for 07:00 / 19:00 IL
+            const ilTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jerusalem"}));
+            const hours = ilTime.getHours();
+            let nextUpdate = new Date(ilTime);
+            nextUpdate.setSeconds(0);
+            nextUpdate.setMinutes(0);
+            if (hours < 7) {
+                nextUpdate.setHours(7);
+            } else if (hours < 19) {
+                nextUpdate.setHours(19);
+            } else {
+                nextUpdate.setHours(7);
+                nextUpdate.setDate(nextUpdate.getDate() + 1);
+            }
+            const diff = nextUpdate - ilTime;
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            document.getElementById('clock-next').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+        
+        // Carousel Logic
+        let currentIdx = 0;
+        function renderCarousel() {
+             const images = ['1.png','2.png','3.png','4.png','5.png','6.jpg','7.png','8.png','9.jpg','10.jpg','11.jpg'];
+             const track = document.getElementById('carousel-track');
+             track.innerHTML = images.map(img => `
+                <div class="min-w-full h-full">
+                    <img src="assets/karusela/${img}" class="w-full h-full object-cover">
+                </div>
+             `).join('');
+        }
+        function carouselNext() {
+            const track = document.getElementById('carousel-track');
+            currentIdx = (currentIdx + 1) % 11;
+            track.style.transform = `translateX(${currentIdx * 100}%)`;
+        }
+        function carouselPrev() {
+            const track = document.getElementById('carousel-track');
+            currentIdx = (currentIdx - 1 + 11) % 11;
+            track.style.transform = `translateX(${currentIdx * 100}%)`;
+        }
+        renderCarousel();
+        setInterval(carouselNext, 5000);
 
         function renderTicker(d) {
             const m = d.markets;
