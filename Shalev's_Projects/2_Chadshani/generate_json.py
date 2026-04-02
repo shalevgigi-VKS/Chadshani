@@ -242,10 +242,21 @@ def fetch_yfinance_news_batch(tickers, max_per=2):
 
 _AI_RSS_FEEDS = [
     # (label, url, item_tag, title_tag, desc_tag)
+    # General AI tech news
     ("TechCrunch AI",  "https://techcrunch.com/category/artificial-intelligence/feed/", "item",  "title", "description"),
     ("VentureBeat AI", "https://venturebeat.com/category/ai/feed/",                     "item",  "title", "description"),
     ("The Verge",      "https://www.theverge.com/rss/index.xml",                        "entry", "title", "summary"),
     ("ArsTechnica",    "https://feeds.arstechnica.com/arstechnica/index",               "item",  "title", "description"),
+    # Official company feeds
+    ("OpenAI Blog",    "https://openai.com/blog/rss.xml",                               "item",  "title", "description"),
+    ("Google DeepMind","https://deepmind.google/blog/feed/basic",                       "item",  "title", "description"),
+    ("Meta AI Eng",    "https://engineering.fb.com/category/ai-research/feed/",         "item",  "title", "description"),
+    # Google News per-company — ensures model news is always present
+    ("GNews Anthropic", "https://news.google.com/rss/search?q=anthropic+claude&hl=en-US&gl=US&ceid=US:en", "item", "title", "description"),
+    ("GNews Gemini",    "https://news.google.com/rss/search?q=google+gemini+AI&hl=en-US&gl=US&ceid=US:en", "item", "title", "description"),
+    ("GNews Llama",     "https://news.google.com/rss/search?q=meta+llama+AI&hl=en-US&gl=US&ceid=US:en",    "item", "title", "description"),
+    ("GNews Grok",      "https://news.google.com/rss/search?q=xai+grok&hl=en-US&gl=US&ceid=US:en",         "item", "title", "description"),
+    ("GNews Perplexity","https://news.google.com/rss/search?q=perplexity+AI&hl=en-US&gl=US&ceid=US:en",    "item", "title", "description"),
 ]
 
 _AI_KEYWORDS = {
@@ -347,9 +358,9 @@ def build_news_context():
             lines.append(f"Crypto Fear & Greed Index: {fg['crypto']}/100")
         lines.append("")
 
-    ai_rss = fetch_ai_rss(max_per_feed=4)
+    ai_rss = fetch_ai_rss(max_per_feed=5)
     if ai_rss:
-        lines.append("=== חדשות AI — RSS (TechCrunch/VentureBeat/TheVerge/ArsTechnica) ===")
+        lines.append("=== חדשות AI — RSS (TechCrunch/VentureBeat/TheVerge/ArsTechnica/OpenAI/Anthropic/DeepMind/MetaAI) ===")
         lines.extend(ai_rss)
         lines.append("")
 
