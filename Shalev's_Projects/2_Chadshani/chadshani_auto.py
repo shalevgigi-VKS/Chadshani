@@ -138,6 +138,13 @@ def main():
             s = item.get("body", "") or item.get("summary", "")
             if not s or "אין חדשות" in s or s.strip() in PLACEHOLDERS:
                 issues.append(f"section_2_news placeholder body: {s[:30]!r}")
+        ai_section = data.get("section_7_ai", [])
+        if len(ai_section) < 4:
+            issues.append(f"section_7_ai has {len(ai_section)} items (need 4)")
+        placeholder_ai = sum(1 for item in ai_section
+                             if "אין חדשות חדשות" in (item.get("update", "") or ""))
+        if placeholder_ai >= 3:
+            issues.append(f"section_7_ai: {placeholder_ai}/6 companies have no news (threshold: max 2)")
         if issues:
             print("[VALIDATE] FAIL:")
             for i in issues:
