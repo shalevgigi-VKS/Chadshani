@@ -125,7 +125,7 @@
 
             <!-- User Actions / Status -->
             <div class="flex items-center gap-3">
-                <div id="battery-status" class="hidden md:flex items-center text-[10px] font-mono text-slate-400">
+                <div id="battery-status" class="hidden md:flex items-center text-[10px] font-mono text-emerald-500 font-black">
                     <span class="material-symbols-outlined text-xs">bolt</span>
                     <span id="update-ts">POLLING...</span>
                 </div>
@@ -133,11 +133,11 @@
         </div>
     </header>
 
-    <!-- Global Sticky Slider / News Ticker -->
-    <section id="global-slider" class="sticky top-[68px] z-40 bg-white/50 backdrop-blur-md border-b border-slate-100 overflow-hidden h-12 md:h-16 flex items-center shadow-sm">
-        <div class="carousel-container relative w-full h-full overflow-hidden">
-             <div id="carousel-track" class="flex transition-transform duration-700 ease-out h-full">
-                <!-- Populated by JS -->
+    <!-- Global Sticky Market Ticker -->
+    <section id="global-slider" class="sticky top-[68px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm">
+        <div class="ticker-wrap w-full">
+             <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline">
+                <!-- Ticker contents populated by JS -->
              </div>
         </div>
     </section>
@@ -214,6 +214,24 @@
                         <p id="macro-analysis" class="text-sm md:text-xl text-slate-700 max-w-2xl mb-4 leading-relaxed text-justify"></p>
                     </div>
                     <div class="absolute inset-0 bg-blue-600/5 mix-blend-overlay"></div>
+                </section>
+
+                <!-- Intelligence Gallery (Restore v2.0 - Below clocks/Hero) -->
+                <section class="space-y-4">
+                    <div class="flex justify-between items-center px-4">
+                        <h2 class="text-lg md:text-2xl font-black font-headline italic text-slate-900 underline underline-offset-8 decoration-blue-500/30">גלריית מודיעין</h2>
+                    </div>
+                    <div class="carousel-container relative h-[300px] md:h-[500px] overflow-hidden rounded-[2.5rem] shadow-2xl">
+                         <div id="carousel-track" class="flex transition-transform duration-700 ease-out h-full">
+                            <!-- Populated by JS -->
+                         </div>
+                         <button onclick="carouselPrev()" class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all z-20">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                         </button>
+                         <button onclick="carouselNext()" class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all z-20">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                         </button>
+                    </div>
                 </section>
 
 
@@ -768,7 +786,8 @@
                     <span class="font-bold ${i.c?.startsWith('+') ? 'text-green-600' : 'text-red-600'}">${i.c || ''}</span>
                 </div>
             `).join('<span class="w-[1px] h-3 bg-slate-200"></span>');
-            document.getElementById('desktop-ticker').innerHTML = tickerHtml + tickerHtml; // Double for loop
+            document.getElementById('desktop-ticker').innerHTML = tickerHtml + tickerHtml; 
+            document.getElementById('sticky-ticker').innerHTML = tickerHtml + tickerHtml; 
         }
 
         function renderGauges(g) {
