@@ -919,22 +919,21 @@ function renderSectors(arr) {
     const el = document.getElementById('s3-sectors');
     if (!el || !arr || !arr.length) return;
     const getAmt = s => Math.abs(parseFloat((s.flow_amount || s.amount || '0').replace(/[^0-9.]/g, '')));
-    const sorted = [...arr].sort((a, b) => {
-        const aIn = a.flow_direction === 'in';
-        const bIn = b.flow_direction === 'in';
-        if (aIn !== bIn) return aIn ? -1 : 1;
-        return getAmt(b) - getAmt(a);
-    });
+    const getChg = s => parseFloat((s.change || '0%').replace('%','')) || 0;
+    // Sort: biggest gainer (highest change%) on top → biggest loser on bottom
+    const sorted = [...arr].sort((a, b) => getChg(b) - getChg(a));
     const maxAmt = Math.max(...sorted.map(getAmt)) || 1;
     el.innerHTML = sorted.map(s => {
         const isIn = s.flow_direction === 'in';
         const isOut = s.flow_direction === 'out';
-        const chgUp = parseFloat((s.change || '0').replace(/[^0-9.\-]/g, '')) >= 0;
-        const pct = Math.min(95, (getAmt(s) / maxAmt) * 95);
-        const barColor = isIn ? 'bg-emerald-500' : isOut ? 'bg-rose-400' : 'bg-slate-300';
-        const amtColor = isIn ? 'text-emerald-600' : isOut ? 'text-rose-500' : 'text-slate-500';
-        const flowLabel = isIn ? 'Inflow' : isOut ? 'Outflow' : 'נייטרלי';
-        const flowClass = isIn ? 'flow-in' : isOut ? 'flow-out' : 'flow-neutral';
+        const chgVal = getChg(s);
+        const chgUp = chgVal >= 0;
+        const maxChg = Math.max(...sorted.map(s => Math.abs(getChg(s)))) || 1;
+        const pct = Math.min(95, (Math.abs(chgVal) / maxChg) * 95);
+        const barColor = chgUp ? 'bg-emerald-500' : 'bg-rose-400';
+        const amtColor = chgUp ? 'text-emerald-600' : 'text-rose-500';
+        const flowLabel = chgUp ? 'Inflow' : 'Outflow';
+        const flowClass = chgUp ? 'flow-in' : 'flow-out';
         const amt = s.flow_amount || s.amount || '';
         return `
         <div class="py-3 border-b border-slate-100 last:border-0">

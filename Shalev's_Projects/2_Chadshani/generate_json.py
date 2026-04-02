@@ -499,13 +499,20 @@ def patch_prices(data, market_prices=None, fear_greed=None):
                     all_syms.add(sym)
         market_prices = fetch_prices(all_syms)
 
-    # ── section_3_sectors: change% + flow_amount (AUM proxy) ──────────────────
+    # ── section_3_sectors: change% + flow_amount + flow_direction (all local) ──
     etf_flows = fetch_etf_aum_flows(ETF_SECTORS)
     for item in data.get("section_3_sectors", []):
         sym = item.get("etf")
         if sym and sym in market_prices:
             _, c = market_prices[sym]
             item["change"] = fmt_change(c)
+            # flow_direction derived from actual price change — overrides Gemini
+            if c > 0.15:
+                item["flow_direction"] = "in"
+            elif c < -0.15:
+                item["flow_direction"] = "out"
+            else:
+                item["flow_direction"] = "neutral"
         if sym and sym in etf_flows:
             item["flow_amount"] = etf_flows[sym]
 
