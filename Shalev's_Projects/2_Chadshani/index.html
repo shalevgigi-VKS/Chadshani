@@ -65,14 +65,13 @@
             0%, 100% { opacity: 1; }
             50% { opacity: .3; }
         }
-        .ticker-wrap { overflow: hidden; white-space: nowrap; }
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
         .ticker-move {
             display: inline-block;
-            animation: ticker 30s linear infinite;
-        }
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(100%); }
+            animation: ticker 15s linear infinite;
         }
         .mesh-bg {
             background-color: #f5f7f9;
@@ -114,14 +113,6 @@
                 <span class="text-[10px] md:text-xs uppercase tracking-widest">שידור חי</span>
             </div>
 
-            <!-- Ticker (Desktop) -->
-            <div class="hidden lg:flex flex-1 mx-12 overflow-hidden items-center border-x border-slate-200 px-4">
-                <div class="ticker-wrap w-full">
-                    <div id="desktop-ticker" class="ticker-move flex gap-8 items-center text-sm font-headline">
-                        <!-- Ticker contents populated by JS -->
-                    </div>
-                </div>
-            </div>
 
             <!-- User Actions / Status -->
             <div class="flex items-center gap-3">
@@ -579,9 +570,8 @@
             if (s3) {
                 // Sort by change descending (Gainers on top)
                 s3.sort((a, b) => {
-                    const valA = parseFloat(a.change?.replace('%','').replace('+','') || '0');
-                    const valB = parseFloat(b.change?.replace('%','').replace('+','') || '0');
-                    return valB - valA;
+                    const parsePct = s => parseFloat(s?.replace('%','').replace('+','') || '0');
+                    return parsePct(b.change) - parsePct(a.change);
                 });
                 
                 const grid = document.getElementById('sectors-grid');
@@ -615,11 +605,13 @@
                     `;
                 }).join('');
                 
-                // Sum logic for Total Net Flow (simplified display)
-                const totalIn = s3.filter(s => s.flow_direction === 'in').length;
-                const totalOut = s3.filter(s => s.flow_direction === 'out').length;
-                const sign = totalIn >= totalOut ? '+' : '-';
-                document.getElementById('total-net-flow').textContent = sign + "$" + (totalIn * 0.4).toFixed(1) + "B"; 
+                // Real mathematical flow summation
+                const totalFlowValue = s3.reduce((acc, s) => {
+                    const amount = parseFloat(s.flow_amount?.replace('$','').replace('B','') || '0');
+                    return acc + (s.flow_direction === 'in' ? Math.abs(amount) : -Math.abs(amount));
+                }, 0);
+                const flowSign = totalFlowValue >= 0 ? '+' : '';
+                document.getElementById('total-net-flow').textContent = `${flowSign}$${totalFlowValue.toFixed(1)}B`; 
             }
 
             const s2 = d.section_2_news;
@@ -673,23 +665,38 @@
             }
 
             // Page 4: AI
+            const aiLogoMap = {
+                'OpenAI': 'openai.com',
+                'Google': 'google.com',
+                'Anthropic': 'anthropic.com',
+                'Meta': 'meta.com',
+                'xAI': 'x.ai',
+                'Perplexity': 'perplexity.ai'
+            };
             const s7 = d.section_7_ai;
             if (s7) {
                 const grid = document.getElementById('ai-models-grid');
-                grid.innerHTML = s7.map(a => `
-                    <div class="flex flex-col md:flex-row-reverse items-start gap-4 p-5 hover:bg-slate-50 rounded-[2rem] transition-all group border border-transparent hover:border-slate-100 bg-white/50 shadow-sm w-full">
-                        <div class="w-14 h-14 rounded-2xl bg-slate-900 shadow-lg flex items-center justify-center text-white font-black text-xl group-hover:bg-blue-600 transition-all flex-shrink-0 self-end md:self-start">${a.company[0]}</div>
-                        <div class="flex-1 text-right w-full overflow-hidden">
-                            <div class="flex justify-between items-center mb-1 flex-row-reverse gap-2">
-                                <span class="font-black text-slate-900 text-base md:text-lg italic break-words line-clamp-1">${a.company}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[8px] font-black font-mono ${a.status === 'GA' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'} flex-shrink-0">${a.status}</span>
+                grid.innerHTML = s7.map(a => {
+                    const companyName = a.company || '';
+                    const domain = Object.keys(aiLogoMap).find(k => companyName.includes(k)) ? aiLogoMap[Object.keys(aiLogoMap).find(k => companyName.includes(k))] : null;
+                    const logoUrl = domain ? `https://logo.clearbit.com/${domain}` : '';
+                    return `
+                        <div class="flex flex-col md:flex-row-reverse items-start gap-4 p-5 hover:bg-slate-50 rounded-[2rem] transition-all group border border-transparent hover:border-slate-100 bg-white/50 shadow-sm w-full">
+                            <div class="w-14 h-14 rounded-2xl bg-slate-900 shadow-lg flex items-center justify-center text-white font-black text-xl group-hover:bg-blue-600 transition-all flex-shrink-0 self-end md:self-start overflow-hidden">
+                                ${logoUrl ? `<img src="${logoUrl}" class="w-full h-full object-cover">` : (companyName[0] || '?')}
                             </div>
-                            <div class="text-sm md:text-base font-black text-blue-600 mb-2 leading-none underline decoration-2 underline-offset-4 break-words">${a.product}</div>
-                            <div class="text-xs md:text-sm text-slate-700 leading-relaxed font-bold break-words">${a.update}</div>
-                            ${a.last_known_update ? `<div class="text-[9px] text-slate-400 mt-3 font-mono uppercase tracking-[0.2em] font-black border-t border-slate-100 pt-2">Last: ${a.last_known_update}</div>` : ''}
+                            <div class="flex-1 text-right w-full overflow-hidden">
+                                <div class="flex justify-between items-center mb-1 flex-row-reverse gap-2">
+                                    <span class="font-black text-slate-900 text-base md:text-lg italic break-words line-clamp-1">${a.company}</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[8px] font-black font-mono ${a.status === 'GA' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'} flex-shrink-0">${a.status}</span>
+                                </div>
+                                <div class="text-sm md:text-base font-black text-blue-600 mb-2 leading-none underline decoration-2 underline-offset-4 break-words">${a.product}</div>
+                                <div class="text-xs md:text-sm text-slate-700 leading-relaxed font-bold break-words text-justify">${a.update}</div>
+                                ${a.last_known_update ? `<div class="text-[9px] text-slate-400 mt-3 font-mono uppercase tracking-[0.2em] font-black border-t border-slate-100 pt-2">Last: ${a.last_known_update}</div>` : ''}
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             const s5 = d.section_5_semis || [];
@@ -788,8 +795,9 @@
                     <span class="font-bold ${i.c?.startsWith('+') ? 'text-green-600' : 'text-red-600'}">${i.c || ''}</span>
                 </div>
             `).join('<span class="w-[1px] h-3 bg-slate-200"></span>');
-            document.getElementById('desktop-ticker').innerHTML = tickerHtml + tickerHtml; 
-            document.getElementById('sticky-ticker').innerHTML = tickerHtml + tickerHtml; 
+            
+            const st = document.getElementById('sticky-ticker');
+            if (st) st.innerHTML = tickerHtml + tickerHtml; 
         }
 
         function renderGauges(g) {
@@ -804,13 +812,13 @@
             }
             if (g.fear_greed_stock) {
                 const val = parseInt(g.fear_greed_stock.value) || 0;
-                document.getElementById('fg-stock-value').textContent = g.fear_greed_stock.value;
+                document.getElementById('fg-stock-value').textContent = val + " / 100";
                 document.getElementById('fg-stock-label').textContent = g.fear_greed_stock.label;
                 document.getElementById('fg-stock-bar').style.width = val + '%';
             }
             if (g.fear_greed_crypto) {
                 const val = parseInt(g.fear_greed_crypto.value) || 0;
-                document.getElementById('fg-crypto-value').textContent = g.fear_greed_crypto.value;
+                document.getElementById('fg-crypto-value').textContent = val + " / 100";
                 document.getElementById('fg-crypto-label').textContent = g.fear_greed_crypto.label;
                 document.getElementById('fg-crypto-bar').style.width = val + '%';
             }
