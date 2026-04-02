@@ -23,6 +23,14 @@ def read_cost_log():
     return {"runs": [], "total_usd": 0.0, "total_ils": 0.0}
 
 
+def monthly_cost_ils():
+    """Sum cost_ils for current calendar month only (matches Google billing reset)."""
+    log = read_cost_log()
+    month = datetime.utcnow().strftime("%Y-%m")
+    return sum(r.get("cost_ils", 0.0) for r in log.get("runs", [])
+               if r.get("ts", "").startswith(month))
+
+
 def notify(title, message, tags="white_check_mark"):
     """שליחת התראה דרך ntfy.sh JSON API — תמיכה מלאה בעברית."""
     try:
@@ -64,19 +72,18 @@ def main():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     print(f"[START] chadshani_auto — {now}")
 
-    # Budget check — abort if limit reached
-    log = read_cost_log()
-    total_ils = log.get("total_ils", 0.0)
-    pct = total_ils / BUDGET_ILS * 100
-    print(f"[BUDGET] ₪{total_ils:.2f} / ₪{BUDGET_ILS:.0f} ({pct:.1f}% used)")
-    if total_ils >= BUDGET_ILS:
-        msg = f"תקציב API מוצה: ₪{total_ils:.2f} / ₪{BUDGET_ILS:.0f} — עדכון הופסק"
+    # Budget check — monthly only (resets on 1st, matches Google billing)
+    month_ils = monthly_cost_ils()
+    pct = month_ils / BUDGET_ILS * 100
+    print(f"[BUDGET] this month: ₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} ({pct:.1f}%)")
+    if month_ils >= BUDGET_ILS:
+        msg = f"תקציב חודשי מוצה: ₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} — עדכון הופסק"
         print(f"[BUDGET] EXCEEDED — {msg}")
         notify("חדשני — תקציב מוצה ⛔", msg, tags="x")
         sys.exit(1)
-    if total_ils >= BUDGET_ILS * 0.9:
+    if month_ils >= BUDGET_ILS * 0.9:
         notify("חדשני — אזהרת תקציב ⚠️",
-               f"נוצלו {pct:.0f}% מהתקציב — ₪{total_ils:.2f} מתוך ₪{BUDGET_ILS:.0f}",
+               f"נוצלו {pct:.0f}% מהתקציב החודשי — ₪{month_ils:.2f} מתוך ₪{BUDGET_ILS:.0f}",
                tags="warning")
 
     # Step 1: Generate JSON (sets GEMINI_API_KEY from environment)
@@ -149,12 +156,11 @@ def main():
         sys.exit(1)
 
     print(f"[DONE] Update deployed — {now}")
-    log_after = read_cost_log()
-    total_after = log_after.get("total_ils", 0.0)
-    last_run = log_after.get("runs", [{}])[-1]
+    last_run = read_cost_log().get("runs", [{}])[-1]
     run_ils = last_run.get("cost_ils", 0.0)
-    remaining = BUDGET_ILS - total_after
-    cost_line = f"עלות ריצה: ₪{run_ils:.4f} | סה\"כ: ₪{total_after:.2f} | נשאר: ₪{remaining:.2f}"
+    month_after = monthly_cost_ils()
+    remaining = BUDGET_ILS - month_after
+    cost_line = f"ריצה: ₪{run_ils:.4f} | חודש: ₪{month_after:.2f}/₪{BUDGET_ILS:.0f} | נשאר: ₪{remaining:.2f}"
     notify("חדשני — עודכן ✅", f"האתר עודכן בכל נתוני השוק החדשים\n{cost_line}")
 
 
