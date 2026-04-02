@@ -32,8 +32,12 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 1. ✅ ~~תיקון trigger חדשני (cron → local)~~
 2. ✅ ~~Quality Control Skill~~
 3. ✅ ~~HANDOFF.md לכל פרויקט~~
-4. **⬅ כאן עצרנו** — הרץ `setup_tasks.ps1` כ-Admin
-5. שחזור חדשני עם נתונים אמיתיים (validate end-to-end)
+4. ✅ ~~Task Scheduler נרשם: Chadshani-0645, Chadshani-1845~~
+5. ✅ ~~Budget guard + cost בכל notification~~
+6. ✅ ~~האתר חזר לאוויר (200 OK)~~
+7. **⬅ כאן עצרנו** — הגדר GEMINI_API_KEY (ראה מטה) → ריצה ב-18:45 היום תאמת הכל
+8. שדרוג חדשני v3
+9. תיקון + deploy אבולוציה (Vercel migration)
 6. תיקון + deploy אבולוציה (Vercel migration)
 7. חדשני v3
 
@@ -61,6 +65,20 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | QC Skill (חדשני) | `~/.claude/skills/active/chadshani_quality_control.md` |
 | chadshani workflow | `.github/workflows/chadshani-2.yml` |
 | Task Scheduler setup | `Shalev's_Projects/2_Chadshani/setup_tasks.ps1` |
+
+---
+
+## פעולה אחת נדרשת ממך
+
+```powershell
+# הגדר GEMINI_API_KEY (פעם אחת, PowerShell רגיל):
+[System.Environment]::SetEnvironmentVariable('GEMINI_API_KEY','YOUR_KEY_HERE','User')
+```
+
+לאחר מכן Tasks יריצו `chadshani_auto.py` אוטומטית ב-06:45 וב-18:45 כל יום.
+
+⚠️ **מצב תקציב:** כבר נוצלו **15.44₪ מתוך 20₪** (77%) — נשארו ~38 ריצות.
+כשיגיע ל-18₪ (90%) תקבל התראה. כשיגיע ל-20₪ הריצות נעצרות אוטומטית.
 
 ---
 
