@@ -53,7 +53,10 @@ def notify(title, message, tags="white_check_mark"):
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_DIR = os.path.abspath(os.path.join(PROJECT_DIR, "..", ".."))
-DATA_REL = os.path.join("Shalev's_Projects", "2_Chadshani", "data", "latest.json")
+DATA_REL     = os.path.join("Shalev's_Projects", "2_Chadshani", "data", "latest.json")
+INDEX_REL    = os.path.join("Shalev's_Projects", "2_Chadshani", "index.html")
+INDEX_REAL   = os.path.join(PROJECT_DIR, "index_backup_ORIGINAL.html")
+INDEX_MAINT  = os.path.join(PROJECT_DIR, "index_maintenance.html")
 
 
 def run(cmd, cwd=None, env=None):
@@ -86,7 +89,22 @@ def main():
                f"נוצלו {pct:.0f}% מהתקציב החודשי — ₪{month_ils:.2f} מתוך ₪{BUDGET_ILS:.0f}",
                tags="warning")
 
-    # Step 1: Generate JSON (sets GEMINI_API_KEY from environment)
+    # Step 1: Switch to maintenance page (site must not show stale data during update)
+    import shutil
+    shutil.copy2(INDEX_MAINT, os.path.join(REPO_DIR, INDEX_REL))
+    if not run(["git", "add", INDEX_REL], cwd=REPO_DIR):
+        sys.exit(1)
+    commit_maint = subprocess.run(
+        ["git", "commit", "-m", f"maintenance: updating data {now}"],
+        capture_output=True, text=True, cwd=REPO_DIR
+    )
+    if commit_maint.returncode == 0:
+        run(["git", "push"], cwd=REPO_DIR)
+        print("[MAINTENANCE] site switched to maintenance page")
+    else:
+        print("[MAINTENANCE] no index change needed — skipping maintenance commit")
+
+    # Step 2: Generate JSON (sets GEMINI_API_KEY from environment)
     generate_script = os.path.join(PROJECT_DIR, "generate_json.py")
     result = subprocess.run(
         [sys.executable, generate_script],
@@ -132,8 +150,9 @@ def main():
         notify("חדשני — שגיאה באימות", str(e), tags="x")
         sys.exit(1)
 
-    # Step 3: Stage only the data file
-    if not run(["git", "add", DATA_REL], cwd=REPO_DIR):
+    # Step 3: Restore real site + stage data + index together
+    shutil.copy2(INDEX_REAL, os.path.join(REPO_DIR, INDEX_REL))
+    if not run(["git", "add", DATA_REL, INDEX_REL], cwd=REPO_DIR):
         sys.exit(1)
 
     # Step 4: Commit (skip if nothing changed)

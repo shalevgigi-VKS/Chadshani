@@ -12,6 +12,11 @@ Last updated: 2026-04-02
 - לאחר החלטה: אם Task Scheduler → הרץ `setup_task.ps1` כ-Admin (קיים ב-EvolutionSchematic כדוגמה)
 - שלב הבא בפרויקט: שחזור v2 עם נתונים אמיתיים → ואז v3
 
+## כלל קריטי — אסור לפרוס ללא נתונים
+**חדשני לא עולה לאוויר ללא עדכון מלא של כלל הנתונים באתר.**
+סדר חובה: generate_json.py → validate → commit → push → deploy
+אסור לעלות רק index.html ללא latest.json מעודכן באותה ריצה.
+
 ## החלטות מחייבות
 - merge_with_previous הוסרה לחלוטין — אין זיוף נתונים
 - Gemini Flash max 2 attempts, Pro max 1 — לא לשנות
