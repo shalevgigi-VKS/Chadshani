@@ -169,19 +169,19 @@
             </nav>
 
             <!-- Profile Widget -->
-            <div class="mt-auto glass-card p-5 rounded-2xl flex flex-col gap-3">
-                <div class="flex items-center justify-end gap-4">
+            <div class="mt-auto border-t border-slate-100 pt-6 px-2 flex flex-col gap-4">
+                <div class="flex items-center justify-end gap-3">
                     <div class="text-right">
-                        <div class="font-bold text-sm">שלו גיגי</div>
-                        <div class="text-[10px] text-blue-600 font-black uppercase tracking-widest underline decoration-2 underline-offset-4">אנליסט ראשי</div>
+                        <div class="font-black text-slate-800 text-sm">שלו גיגי</div>
+                        <div class="text-[9px] text-blue-600 font-black uppercase tracking-widest">אנליסט ראשי</div>
                     </div>
-                    <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-14 h-14 rounded-xl border-2 border-blue-500/20 shadow-sm object-cover">
+                    <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-10 h-10 rounded-lg object-cover ring-2 ring-blue-500/10">
                 </div>
-                <p class="text-[11px] leading-relaxed text-slate-500 text-right">
-                    בעולם שבו המידע זורם בלי הפסקה, האתגר האמיתי הוא לזהות את הסיגנל בתוך הרעש. הכירו את דסק <strong>חדשני</strong>.
+                <p class="text-[10px] leading-relaxed text-slate-500 text-right font-medium">
+                    זיהוי הסיגנל בתוך הרעש. הניתוח המדויק לכל מה שקורה בשווקים. הכירו את דסק <strong>חדשני</strong>.
                 </p>
-                <div class="flex justify-end gap-2 border-t border-slate-100 pt-3">
-                   <span class="text-[9px] font-mono text-blue-600 font-bold uppercase font-black">דסק מודיעין v3.2</span>
+                <div class="flex justify-end gap-2 pt-2">
+                   <span class="text-[8px] font-mono text-blue-600/50 font-bold uppercase">Intelligence Hub v3.2.3</span>
                 </div>
             </div>
         </aside>
@@ -677,16 +677,16 @@
             if (s7) {
                 const grid = document.getElementById('ai-models-grid');
                 grid.innerHTML = s7.map(a => `
-                    <div class="flex items-start gap-4 p-5 hover:bg-slate-50 rounded-[2rem] transition-all group border border-transparent hover:border-slate-100 bg-white/50 shadow-sm">
-                        <div class="w-14 h-14 rounded-2xl bg-slate-900 shadow-lg flex items-center justify-center text-white font-black text-xl group-hover:bg-blue-600 transition-all">${a.company[0]}</div>
-                        <div class="flex-1 text-right">
-                            <div class="flex justify-between items-center mb-1 flex-row-reverse">
-                                <span class="font-black text-slate-900 text-base md:text-lg italic">${a.company}</span>
-                                <span class="px-3 py-1 rounded-full text-[9px] font-black font-mono ${a.status === 'GA' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}">${a.status}</span>
+                    <div class="flex flex-col md:flex-row-reverse items-start gap-4 p-5 hover:bg-slate-50 rounded-[2rem] transition-all group border border-transparent hover:border-slate-100 bg-white/50 shadow-sm w-full">
+                        <div class="w-14 h-14 rounded-2xl bg-slate-900 shadow-lg flex items-center justify-center text-white font-black text-xl group-hover:bg-blue-600 transition-all flex-shrink-0 self-end md:self-start">${a.company[0]}</div>
+                        <div class="flex-1 text-right w-full overflow-hidden">
+                            <div class="flex justify-between items-center mb-1 flex-row-reverse gap-2">
+                                <span class="font-black text-slate-900 text-base md:text-lg italic break-words line-clamp-1">${a.company}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[8px] font-black font-mono ${a.status === 'GA' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'} flex-shrink-0">${a.status}</span>
                             </div>
-                            <div class="text-sm md:text-base font-black text-blue-600 mb-2 leading-none underline decoration-2 underline-offset-4">${a.product}</div>
-                            <div class="text-xs md:text-sm text-slate-700 leading-relaxed font-bold">${a.update}</div>
-                            ${a.last_known_update ? `<div class="text-[9px] text-slate-400 mt-3 font-mono uppercase tracking-[0.2em] font-black border-t border-slate-100 pt-2">Last Update: ${a.last_known_update}</div>` : ''}
+                            <div class="text-sm md:text-base font-black text-blue-600 mb-2 leading-none underline decoration-2 underline-offset-4 break-words">${a.product}</div>
+                            <div class="text-xs md:text-sm text-slate-700 leading-relaxed font-bold break-words">${a.update}</div>
+                            ${a.last_known_update ? `<div class="text-[9px] text-slate-400 mt-3 font-mono uppercase tracking-[0.2em] font-black border-t border-slate-100 pt-2">Last: ${a.last_known_update}</div>` : ''}
                         </div>
                     </div>
                 `).join('');
