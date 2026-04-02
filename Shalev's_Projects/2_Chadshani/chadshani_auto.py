@@ -128,6 +128,9 @@ def main():
         headline = data.get("section_1_situation", {}).get("headline", "")
         if not headline or headline in PLACEHOLDERS:
             issues.append("headline missing or placeholder")
+        alert_value = data.get("section_1_situation", {}).get("alert", {}).get("value", "")
+        if not alert_value or alert_value in PLACEHOLDERS or alert_value == "N/A":
+            issues.append(f"alert.value is invalid: {alert_value!r}")
         markets = data.get("markets", {})
         for key in ("sp500", "nasdaq", "vix"):
             if key not in markets:
@@ -182,11 +185,16 @@ def main():
         sys.exit(1)
 
     print(f"[DONE] Update deployed — {now}")
-    last_run = read_cost_log().get("runs", [{}])[-1]
-    run_ils = last_run.get("cost_ils", 0.0)
+    # Cost summary: show last run + monthly total from local log
+    # Note: local calc may undercount thinking tokens — actual Google bill is authoritative
+    runs_today = [r for r in read_cost_log().get("runs", [])
+                  if r.get("ts", "").startswith(datetime.utcnow().strftime("%Y-%m-%d"))]
+    run_ils = sum(r.get("cost_ils", 0.0) for r in runs_today)
     month_after = monthly_cost_ils()
     remaining = BUDGET_ILS - month_after
-    cost_line = f"ריצה: ₪{run_ils:.4f} | חודש: ₪{month_after:.2f}/₪{BUDGET_ILS:.0f} | נשאר: ₪{remaining:.2f}"
+    cost_line = (f"ריצה: ₪{run_ils:.4f} | חודש מקומי: ₪{month_after:.2f}/₪{BUDGET_ILS:.0f} "
+                 f"| נשאר: ₪{remaining:.2f}\n"
+                 f"(חיוב אמיתי — בדוק Google AI Studio)")
     notify("חדשני — עודכן ✅", f"האתר עודכן בכל נתוני השוק החדשים\n{cost_line}")
 
 

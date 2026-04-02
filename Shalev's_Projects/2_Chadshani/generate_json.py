@@ -50,7 +50,7 @@ JSON_PROMPT = """
       {"label": "גורמי חיכוך", "value": "..."},
       {"label": "סביבת מסחר", "value": "..."}
     ],
-    "alert": {"title": "התרעת מעקב קריטית", "value": "[ערך/סכום מרכזי]", "description": "...", "impact": "HIGH / MEDIUM / LOW VOLATILITY"},
+    "alert": {"title": "התרעת מעקב קריטית", "value": "[מילה/ביטוי קצר — שם אירוע, חברה, מוצר, או סכום. לעולם לא N/A — תמיד משהו ספציפי]", "description": "...", "impact": "HIGH / MEDIUM / LOW VOLATILITY"},
     "gauges": {
       "vix": {"zone": "low/medium/high/extreme", "label": "תיאור מצב VIX"},
       "fear_greed_stock": {"label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"},
@@ -153,7 +153,8 @@ JSON_PROMPT = """
 - gauges zones — F&G: extreme_fear(0-24)/fear(25-44)/neutral(45-54)/greed(55-74)/extreme_greed(75-100). VIX: low(<15)/medium(15-20)/high(20-30)/extreme(>30).
 - section_3_sectors flow_direction: "in" = חוזק יחסי ביום זה, "out" = חולשה, "neutral" = ניטרלי.
 - section_4_crypto_brief smart_money/whale_activity: תייג "ניתוח מודל —" בתחילת הטקסט (אין נתוני on-chain בזמן אמת).
-- section_8_watchlist: 6 rising + 6 falling לפי החדשות שסופקו.
+- section_8_watchlist: 6 rising + 6 falling לפי החדשות שסופקו. טיקרים חייבים להיות מניות/ETF בלבד (לא BTC/ETH — קריפטו שייך ל-section_4 בלבד).
+- alert.value: חייב להיות ביטוי ספציפי. דוגמאות: "קוד מקור Claude Code", "$40B", "GPT-5", "ריבית Fed". אסור לכתוב N/A, לא זמין, או שדה ריק.
 - החזר JSON בלבד. אין טקסט לפני או אחרי.
 """
 
@@ -636,10 +637,13 @@ def clean_raw(raw):
 # Note: Google Search grounding removed — news fetched via yfinance + HN (free)
 # Savings: ~$0.035/run × 3/day × 30 = ~100 ILS/month eliminated
 _PRICING = {
-    "gemini-2.5-flash": {"in": 0.075, "out": 0.30},
-    "gemini-2.5-pro":   {"in": 1.25,  "out": 10.00},
+    # Gemini 2.5 Flash: input $0.075/M, output $0.30/M, THINKING $3.50/M
+    # Thinking tokens are billed separately and NOT included in candidates_token_count
+    "gemini-2.5-flash": {"in": 0.075, "out": 0.30, "think": 3.50},
+    # Gemini 2.5 Pro: input $1.25/M, output $10.00/M, thinking $3.50/M
+    "gemini-2.5-pro":   {"in": 1.25,  "out": 10.00, "think": 3.50},
 }
-USD_TO_ILS = 3.65   # approximate; update if needed
+USD_TO_ILS = 3.70   # updated: ~3.70 ILS/USD (April 2026)
 COST_LOG = os.path.join(os.path.dirname(__file__), "data", "cost_log.json")
 
 
@@ -656,13 +660,17 @@ def _save_cost_log(log):
 
 
 def log_cost(model, usage):
-    """Calculate cost from usage_metadata and append to cost_log.json."""
+    """Calculate cost including thinking tokens (Gemini 2.5 billing model)."""
     try:
         p = _PRICING.get(model, _PRICING["gemini-2.5-flash"])
-        in_tok  = getattr(usage, "prompt_token_count", 0) or 0
-        out_tok = getattr(usage, "candidates_token_count", 0) or 0
-        cost_usd = (in_tok / 1_000_000 * p["in"] +
-                    out_tok / 1_000_000 * p["out"])
+        in_tok    = getattr(usage, "prompt_token_count", 0) or 0
+        out_tok   = getattr(usage, "candidates_token_count", 0) or 0
+        # Thinking tokens: field name varies across SDK versions
+        think_tok = (getattr(usage, "thoughts_token_count", 0) or
+                     getattr(usage, "thinking_token_count", 0) or 0)
+        cost_usd = (in_tok    / 1_000_000 * p["in"] +
+                    out_tok   / 1_000_000 * p["out"] +
+                    think_tok / 1_000_000 * p.get("think", 0))
         cost_ils = cost_usd * USD_TO_ILS
         log = _load_cost_log()
         log["runs"].append({
@@ -670,15 +678,17 @@ def log_cost(model, usage):
             "model": model,
             "in_tokens": in_tok,
             "out_tokens": out_tok,
+            "think_tokens": think_tok,
             "cost_usd": round(cost_usd, 5),
             "cost_ils": round(cost_ils, 4),
         })
         log["total_usd"] = round(log["total_usd"] + cost_usd, 5)
         log["total_ils"] = round(log["total_ils"] + cost_ils, 4)
         _save_cost_log(log)
-        print(f"[COST] run=${cost_usd:.5f} / ₪{cost_ils:.4f} | "
-              f"total=${log['total_usd']:.4f} / ₪{log['total_ils']:.3f} "
-              f"(budget ₪20.00 — {log['total_ils']/20*100:.1f}% used)")
+        think_note = f" think={think_tok}" if think_tok else ""
+        print(f"[COST] in={in_tok} out={out_tok}{think_note} | "
+              f"run=${cost_usd:.5f}/₪{cost_ils:.4f} | "
+              f"month: see chadshani_auto budget check")
     except Exception as e:
         print(f"[COST] tracking error: {e}")
 
@@ -718,6 +728,12 @@ _CONTENT_PLACEHOLDERS = {
 }
 
 
+_NO_NEWS_PHRASES = {
+    "אין חדשות חדשות מהשבוע האחרון.", "אין חדשות חדשות מהשבוע האחרון",
+    "אין חדשות", "אין עדכון", "לא זמין", "לא זמין.", "N/A",
+}
+
+
 def _load_previous():
     """Load the last written latest.json, or return empty dict."""
     path = os.path.join(os.path.dirname(__file__), "data", "latest.json")
@@ -728,6 +744,28 @@ def _load_previous():
         except Exception:
             pass
     return {}
+
+
+def merge_prev_no_news(data, prev):
+    """For section_7_ai: if Gemini returned 'no news' for a company,
+    replace with the previous run's data for that company.
+    Rule: never show empty — always show last known real content.
+    """
+    if not prev:
+        return data
+    prev_ai = {item["company"]: item for item in prev.get("section_7_ai", [])}
+    for item in data.get("section_7_ai", []):
+        update = (item.get("update") or "").strip()
+        if update in _NO_NEWS_PHRASES and item["company"] in prev_ai:
+            prev_item = prev_ai[item["company"]]
+            prev_update = (prev_item.get("update") or "").strip()
+            if prev_update and prev_update not in _NO_NEWS_PHRASES:
+                item["update"] = prev_item["update"]
+                item["product"] = prev_item.get("product", item.get("product", ""))
+                item["last_known_update"] = prev_item.get("last_known_update", item.get("last_known_update", ""))
+                item["status"] = prev_item.get("status", item.get("status", "GA"))
+                print(f"[MERGE] section_7_ai {item['company']}: used previous data ({item['last_known_update']})")
+    return data
 
 
 
@@ -753,6 +791,7 @@ def generate():
                 raw = clean_raw(response.text)
                 candidate = json.loads(raw)
                 candidate = patch_prices(candidate, market_prices=market_prices, fear_greed=fear_greed)
+                candidate = merge_prev_no_news(candidate, prev)
                 issues = validate(candidate)
                 if issues:
                     print(f"[WARN] Validation failed attempt {attempt+1}: {issues[:3]}")
