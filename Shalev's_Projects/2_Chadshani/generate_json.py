@@ -86,6 +86,7 @@ JSON_PROMPT = """
     {"ticker": "SOL",  "note": "..."},
     {"ticker": "LINK", "note": "..."},
     {"ticker": "XRP",  "note": "..."},
+    {"ticker": "ADA",  "note": "..."},
     {"ticker": "TAO",  "note": "..."},
     {"ticker": "KAS",  "note": "..."}
   ],
@@ -170,7 +171,7 @@ MAX_NEWS_AGE_DAYS = 7   # skip news items older than this
 # Crypto ticker mapping: JSON ticker → yfinance symbol
 CRYPTO_MAP = {
     "BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD", 
-    "LINK": "LINK-USD", "XRP": "XRP-USD", "TAO": "TAO1-USD", "KAS": "KAS-USD"
+    "LINK": "LINK-USD", "XRP": "XRP-USD", "TAO": "TAO1-USD", "KAS": "KAS-USD", "ADA": "ADA-USD"
 }
 
 # Market indices: yfinance symbol → JSON key
@@ -186,7 +187,7 @@ NEWS_TICKERS = [
     "AMD", "TSM", "AVGO", "MU", "ASML", "QCOM", "ARM", "MRVL", "LRCX",
     "CRM", "NOW", "ORCL", "ADBE", "PLTR", "SNOW",
     "XLK", "XLF", "XLE", "XLY", "XLV", "XLU",
-    "BTC-USD", "ETH-USD", "SOL-USD", "LINK-USD", "XRP-USD",
+    "BTC-USD", "ETH-USD", "SOL-USD", "LINK-USD", "XRP-USD", "ADA-USD",
 ]
 
 
