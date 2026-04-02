@@ -125,7 +125,7 @@
 
             <!-- User Actions / Status -->
             <div class="flex items-center gap-3">
-                <div id="battery-status" class="hidden md:flex items-center text-[10px] font-mono text-emerald-500 font-black">
+                <div id="battery-status" class="flex items-center text-[10px] font-mono text-emerald-500 font-black">
                     <span class="material-symbols-outlined text-xs">bolt</span>
                     <span id="update-ts">POLLING...</span>
                 </div>
@@ -390,7 +390,7 @@
 
                 <!-- Crypto Brief -->
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="surface-container-low rounded-[2.5rem] p-8 md:p-10 border border-amber-200 bg-amber-50/20 text-right">
+                    <div class="surface-container-low rounded-[2.5rem] p-8 md:p-10 border border-amber-200 bg-amber-50/20 text-right" dir="rtl">
                         <h2 class="text-2xl font-black font-headline mb-6 flex items-center justify-end gap-2 text-amber-900 font-headline italic underline underline-offset-8 decoration-amber-500/20">
                             <span class="material-symbols-outlined text-amber-600">history_edu</span>
                             סיפור היום בקריפטו
@@ -500,9 +500,8 @@
 
         // Handle initial hash
         window.addEventListener('load', () => {
-            const h = window.location.hash.replace('#', '');
-            if (['macro', 'sectors', 'crypto', 'ai', 'watchlist'].includes(h)) showPage(h);
-            else showPage('macro');
+            // Always force macro on load to the top
+            showPage('macro');
             updateClock();
             setInterval(updateClock, 1000);
             loadData();
@@ -560,9 +559,12 @@
                 const items = [...(wl.rising || []).slice(0, 3), ...(wl.falling || []).slice(0, 3)];
                 container.innerHTML = items.map(i => `
                     <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-2xl transition-all border border-transparent hover:border-slate-100">
-                        <div class="flex flex-col items-start">
-                            <span class="font-headline font-black text-slate-800">${i.ticker}</span>
-                            <span class="text-[9px] text-slate-400 font-bold uppercase">${i.note}</span>
+                        <div class="flex items-center gap-3">
+                            <img src="https://financialmodelingprep.com/image-stock/${i.ticker}.png" class="w-8 h-8 rounded-lg shadow-sm border border-slate-100" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${i.ticker}&background=0050d4&color=fff&bold=true'">
+                            <div class="flex flex-col items-start">
+                                <span class="font-headline font-black text-slate-800">${i.ticker}</span>
+                                <span class="text-[9px] text-slate-400 font-bold uppercase overflow-hidden whitespace-nowrap overflow-ellipsis" style="max-width: 120px;">${i.note}</span>
+                            </div>
                         </div>
                         <div class="text-right">
                              <div class="text-xs font-bold ${i.signal === 'BUY' ? 'text-green-600' : 'text-red-600'}">${i.signal}</div>
@@ -644,7 +646,7 @@
                     <div class="glass-card p-6 rounded-[2rem] border border-amber-100/50 hover:border-amber-300 transition-all group flex flex-col justify-between h-full">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-3">
-                                <img src="https://static.coinpaprika.com/coin/${c.ticker?.toLowerCase()}-${c.ticker === 'BTC' ? 'bitcoin' : (c.ticker === 'ETH' ? 'ethereum' : (c.ticker === 'SOL' ? 'solana' : (c.ticker === 'XRP' ? 'xrp' : (c.ticker === 'LINK' ? 'chainlink' : (c.ticker === 'ADA' ? 'cardano' : 'coin')))))}/logo.png" class="w-9 h-9 rounded-full shadow-lg group-hover:scale-110 transition-transform" onerror="this.src='https://coinicons-api.vercel.app/api/icon/${c.ticker?.toLowerCase()}'">
+                                <img src="https://static.coinpaprika.com/coin/${c.ticker?.toLowerCase()}-${c.ticker === 'BTC' ? 'bitcoin' : (c.ticker === 'ETH' ? 'ethereum' : (c.ticker === 'SOL' ? 'solana' : (c.ticker === 'XRP' ? 'xrp' : (c.ticker === 'LINK' ? 'chainlink' : (c.ticker === 'ADA' ? 'cardano' : (c.ticker === 'TAO' ? 'bittensor' : (c.ticker === 'KAS' ? 'kaspa' : 'crypto')))))))}/logo.png" class="w-9 h-9 rounded-full shadow-lg group-hover:scale-110 transition-transform" onerror="this.onerror=null; this.src='https://coinicons-api.vercel.app/api/icon/${c.ticker?.toLowerCase()}'">
                                 <div class="text-right">
                                     <div class="text-sm font-black text-slate-800">${c.ticker}</div>
                                     <div class="text-[8px] text-amber-600 font-bold uppercase tracking-widest italic">מדד נכס</div>
@@ -698,7 +700,7 @@
                 <div class="glass-card p-6 rounded-[2rem] border border-blue-100/50 hover:border-blue-300 transition-all group">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-2xl bg-slate-900 group-hover:bg-blue-600 transition-colors flex items-center justify-center text-xs font-black text-white">${item.ticker}</div>
+                            <img src="https://financialmodelingprep.com/image-stock/${item.ticker}.png" class="w-12 h-12 rounded-2xl shadow-lg group-hover:scale-105 transition-transform border border-slate-100" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${item.ticker}&background=0050d4&color=fff&bold=true'">
                             <div>
                                 <div class="text-sm font-black text-slate-800">${item.ticker}</div>
                                 <div class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">מוליכים למחצה / תוכנה</div>
