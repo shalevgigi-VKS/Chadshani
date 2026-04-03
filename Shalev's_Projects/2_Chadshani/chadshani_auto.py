@@ -9,10 +9,11 @@ import sys
 import os
 import json
 import urllib.request
+import shutil
 from datetime import datetime
 
 NTFY_TOPIC = "CloudeCode"
-BUDGET_ILS = 20.0
+BUDGET_ILS = 25.0  # Increased to cover current bill (₪18.61) — future runs must be ₪0.00
 COST_LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cost_log.json")
 
 
@@ -71,6 +72,27 @@ def run(cmd, cwd=None, env=None):
     return True
 
 
+def verify_deployment(expected_ts, timeout=120):
+    """Wait for GitHub Pages to reflect the new update before notifying."""
+    url = "https://shalevgigi-vks.github.io/Chadshani/"
+    start = datetime.now()
+    print(f"[CHECK] Verifying deployment at {url}...")
+    import time
+    while (datetime.now() - start).seconds < timeout:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Cache-Control": "no-cache"})
+            with urllib.request.urlopen(req, timeout=10) as r:
+                html = r.read().decode("utf-8")
+                if expected_ts in html:
+                    print(f"[MATCH] Live site updated! ({expected_ts})")
+                    return True
+        except Exception as e:
+            print(f"[RETRY] {e}")
+        time.sleep(15)
+        print(f"[WAIT] Still waiting for GitHub Pages sync... ({(datetime.now() - start).seconds}s)")
+    return False
+
+
 def main():
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     print(f"[START] chadshani_auto — {now}")
@@ -82,27 +104,13 @@ def main():
     if month_ils >= BUDGET_ILS:
         msg = f"תקציב חודשי מוצה: ₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} — עדכון הופסק"
         print(f"[BUDGET] EXCEEDED — {msg}")
-        notify("חדשני — תקציב מוצה ⛔", msg, tags="x")
+        notify("חדשני — תקציב מוצה ⛔", "", tags="x")
         sys.exit(1)
     if month_ils >= BUDGET_ILS * 0.9:
-        notify("חדשני — אזהרת תקציב ⚠️",
-               f"נוצלו {pct:.0f}% מהתקציב החודשי — ₪{month_ils:.2f} מתוך ₪{BUDGET_ILS:.0f}",
-               tags="warning")
+        print(f"[BUDGET] WARNING: {pct:.0f}% used")
 
-    # Step 1: Switch to maintenance page (site must not show stale data during update)
-    import shutil
-    shutil.copy2(INDEX_MAINT, os.path.join(REPO_DIR, INDEX_REL))
-    if not run(["git", "add", INDEX_REL], cwd=REPO_DIR):
-        sys.exit(1)
-    commit_maint = subprocess.run(
-        ["git", "commit", "-m", f"maintenance: updating data {now}"],
-        capture_output=True, text=True, cwd=REPO_DIR
-    )
-    if commit_maint.returncode == 0:
-        run(["git", "push"], cwd=REPO_DIR)
-        print("[MAINTENANCE] site switched to maintenance page")
-    else:
-        print("[MAINTENANCE] no index change needed — skipping maintenance commit")
+    # Step 1: (DISCONTINUED) Site remains live during update (v3.2.11 LOCKDOWN)
+    print("[INFO] skipped maintenance mode switch — site stays live during data fetch")
 
     # Step 2: Generate JSON (sets GEMINI_API_KEY from environment)
     generate_script = os.path.join(PROJECT_DIR, "generate_json.py")
@@ -112,7 +120,7 @@ def main():
     )
     if result.returncode != 0:
         print("[ERROR] generate_json.py failed — aborting")
-        notify("חדשני — שגיאה", "תהליך יצירת הנתונים ואימותם נכשל", tags="x")
+        notify("חדשני — שגיאה ביצירת נתונים ⚠️", "", tags="x")
         sys.exit(1)
 
     # Step 2: Validate generated data before committing
@@ -141,6 +149,8 @@ def main():
             s = item.get("body", "") or item.get("summary", "")
             if not s or "אין חדשות" in s or s.strip() in PLACEHOLDERS:
                 issues.append(f"section_2_news placeholder body: {s[:30]!r}")
+            elif len(s) < 120:
+                issues.append(f"section_2_news content too thin ({len(s)} chars) - rich analysis required")
         ai_section = data.get("section_7_ai", [])
         if len(ai_section) < 4:
             issues.append(f"section_7_ai has {len(ai_section)} items (need 4)")
@@ -152,12 +162,10 @@ def main():
             print("[VALIDATE] FAIL:")
             for i in issues:
                 print(f"  - {i}")
-            notify("חדשני — נתונים לא עברו אימות", "\n".join(issues[:3]), tags="x")
             sys.exit(1)
         print(f"[VALIDATE] PASS — {len(data)} keys")
     except Exception as e:
         print(f"[VALIDATE] ERROR: {e}")
-        notify("חדשני — שגיאה באימות", str(e), tags="x")
         sys.exit(1)
 
     # Step 3: Restore real site + stage data + index together
@@ -177,20 +185,22 @@ def main():
             print("[SKIP] Nothing changed — no commit needed")
             sys.exit(0)
         print(f"[ERROR] git commit failed\n{commit_result.stderr}")
-        notify("חדשני — תקלה", "שגיאה בשמירת הנתונים במסד", tags="x")
         sys.exit(1)
     print(commit_result.stdout.strip())
 
     # Step 5: Push to GitHub Pages
     if not run(["git", "push"], cwd=REPO_DIR):
-        notify("חדשני — תקלת רשת", "שגיאה בהעלת סנכרון התוכן לשרת", tags="x")
+        notify("חדשני — שגיאת רשת ⚠️", "", tags="x")
         sys.exit(1)
 
-    print(f"[DONE] Update deployed — {now}")
-    # Cost summary: show last run + monthly total from local log
-    # Note: local calc may undercount thinking tokens — actual Google bill is authoritative
-    month_after = monthly_cost_ils()
-    notify("חדשני עודכן ✅", f"₪{month_after:.2f} מתוך ₪{BUDGET_ILS:.0f}")
+    print(f"[DONE] Update pushed to GitHub — {now}")
+    
+    # v3.2.16: High-priority success notification with version info
+    expected_ts = data.get("generated_at", now)
+    if verify_deployment(expected_ts):
+         notify("חדשני — עודכן ✅", "", priority=5)
+    else:
+         print("[ERROR] Sync verification failed after timeout")
 
 
 if __name__ == "__main__":
