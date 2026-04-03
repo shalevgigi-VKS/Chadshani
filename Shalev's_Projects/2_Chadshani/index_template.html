@@ -122,6 +122,12 @@
                 radial-gradient(at 100% 0%, rgba(254, 156, 244, 0.05) 0px, transparent 50%);
         }
         .hidden { display: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Circular gauge ring */
+        .gauge-ring {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         /* Active state for navigation */
         .nav-item.active {
             background: white;
@@ -147,7 +153,7 @@
                 </div>
                 <div class="flex flex-col items-start text-right">
                     <span class="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-0.5">חדשני</span>
-                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Terminal (v3.2.17)</span>
+                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Terminal (v3.3.0)</span>
                 </div>
             </div>
             
@@ -161,7 +167,7 @@
             </div>
 
 
-            <!-- User Actions / Status (Mobile Optimized v3.2.16) -->
+            <!-- User Actions / Status (Mobile Optimized v3.2.17) -->
             <div class="flex items-center gap-4">
                 <div id="battery-status" class="flex flex-col items-end text-[10px] font-black group">
                     <div class="flex items-center gap-1.5 text-emerald-500 uppercase tracking-widest mb-0.5">
@@ -183,6 +189,11 @@
                 <span class="text-blue-600">PRODUCING ALPHA...</span>
              </div>
         </div>
+    </section>
+
+    <!-- Mobile Pill Ticker (hidden on desktop) -->
+    <section id="mobile-pill-ticker" class="md:hidden overflow-x-auto no-scrollbar px-4 py-2 flex gap-2 bg-white/60 backdrop-blur-sm border-b border-slate-100" dir="ltr" style="-ms-overflow-style:none;scrollbar-width:none">
+        <!-- Populated by JS -->
     </section>
 
     <div class="flex flex-row">
@@ -232,7 +243,8 @@
         <!-- Main Content -->
         <main class="flex-1 min-h-screen md:mr-64 lg:mr-72 p-2 md:p-8 lg:p-10 mb-24 md:mb-0">
 
-            <!-- Unified Dashboard Top Bar -->
+            <div id="page-macro" class="page-view space-y-10">
+            <!-- Unified Dashboard Top Bar (Macro page only) -->
             <div id="dashboard-bar" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card p-4 rounded-3xl border-0 shadow-sm text-center entrance-anim">
                     <div class="text-slate-400 font-bold text-[10px] uppercase tracking-wider mb-1">שעה נוכחית</div>
@@ -254,8 +266,6 @@
                     </div>
                 </div>
             </div>
-
-            <div id="page-macro" class="page-view space-y-10">
                 <!-- Hero Section: Daily Focus -->
                 <section class="relative h-[480px] md:h-[550px] rounded-[3rem] overflow-hidden group shadow-2xl entrance-anim">
                     <div class="absolute inset-0 z-0">
@@ -270,11 +280,9 @@
                             <span>פרספקטיבה יומית / <span id="macro-date">--</span></span>
                         </div>
                         <h1 id="macro-headline" class="text-xl md:text-4xl font-black font-headline text-white mb-4 leading-[1.1] w-full drop-shadow-2xl">טוען נתונים...</h1>
-                        <p id="macro-analysis" class="text-xs md:text-lg text-slate-100 w-full mb-6 leading-relaxed font-black text-justify drop-shadow-2xl"></p>
-                        
-                        <div class="flex flex-row-reverse gap-4 opacity-0 pointer-events-none">
-                            <button class="px-8 py-3 bg-white text-blue-600 rounded-2xl font-black text-sm">קרא עוד</button>
-                        </div>
+                        <p id="macro-analysis" class="text-xs md:text-lg text-slate-100 w-full mb-4 leading-relaxed font-black text-justify drop-shadow-2xl"></p>
+                        <!-- Intelligence Cards from section_1_situation.cards -->
+                        <div id="macro-intel-chips" class="flex flex-wrap gap-2 mt-2"></div>
                     </div>
                 </section>
 
@@ -301,47 +309,66 @@
                 <section class="grid grid-cols-1 lg:grid-cols-4 gap-6 entrance-anim" style="animation-delay: 0.4s">
                     <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- VIX -->
-                        <div class="surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
+                        <div class="bg-surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
                             <div class="flex justify-between items-start mb-4">
                                 <span class="font-bold text-slate-600">VIX (Volatility)</span>
                                 <span class="material-symbols-outlined text-blue-500">show_chart</span>
                             </div>
                             <div id="vix-value" class="text-4xl font-headline font-black mb-2 text-center">--</div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                            <!-- Mobile: circular ring -->
+                            <div class="relative w-16 h-16 mx-auto my-2 md:hidden">
+                                <div class="absolute inset-0 rounded-full border-4 border-blue-100"></div>
+                                <div id="vix-circle" class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 gauge-ring" style="transform:rotate(0deg)"></div>
+                            </div>
+                            <!-- Desktop: flat bar -->
+                            <div class="hidden md:block h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                                 <div id="vix-bar" class="h-full bg-green-500 w-0 transition-all duration-1000"></div>
                             </div>
                             <p id="vix-label" class="text-xs text-slate-800 font-black mt-3 italic text-center"></p>
                             <p id="vix-desc" class="text-[10px] text-slate-500 mt-1 leading-tight font-bold text-center"></p>
                         </div>
                         <!-- Fear & Greed Stocks -->
-                        <div class="surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
+                        <div class="bg-surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
                             <div class="flex justify-between items-start mb-4">
                                 <span class="font-bold text-slate-600">פחד ותאוות בצע (מניות)</span>
                                 <span class="material-symbols-outlined text-orange-500">local_fire_department</span>
                             </div>
                             <div id="fg-stock-value" class="text-4xl font-headline font-black mb-2 text-center">--</div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                            <!-- Mobile: circular ring -->
+                            <div class="relative w-16 h-16 mx-auto my-2 md:hidden">
+                                <div class="absolute inset-0 rounded-full border-4 border-orange-100"></div>
+                                <div id="fg-stock-circle" class="absolute inset-0 rounded-full border-4 border-transparent border-t-orange-500 gauge-ring" style="transform:rotate(0deg)"></div>
+                            </div>
+                            <!-- Desktop: flat bar -->
+                            <div class="hidden md:block h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                                 <div id="fg-stock-bar" class="h-full bg-blue-600 w-0 transition-all duration-1000"></div>
                             </div>
                             <p id="fg-stock-label" class="text-xs text-slate-800 font-black mt-3 italic text-center"></p>
                             <p id="fg-stock-desc" class="text-[10px] text-slate-500 mt-1 leading-tight font-bold text-center"></p>
                         </div>
                         <!-- Fear & Greed Crypto -->
-                        <div class="surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
+                        <div class="bg-surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
                             <div class="flex justify-between items-start mb-4">
                                 <span class="font-bold text-slate-600">פחד ותאוות בצע (קריפטו)</span>
                                 <span class="material-symbols-outlined text-purple-500">currency_bitcoin</span>
                             </div>
                             <div id="fg-crypto-value" class="text-4xl font-headline font-black mb-2 text-center">--</div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div id="fg-crypto-bar" class="h-full bg-purple-600 w-3/4 transition-all duration-1000"></div>
+                            <!-- Mobile: circular ring -->
+                            <div class="relative w-16 h-16 mx-auto my-2 md:hidden">
+                                <div class="absolute inset-0 rounded-full border-4 border-purple-100"></div>
+                                <div id="fg-crypto-circle" class="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-600 gauge-ring" style="transform:rotate(0deg)"></div>
+                            </div>
+                            <!-- Desktop: flat bar -->
+                            <div class="hidden md:block h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div id="fg-crypto-bar" class="h-full bg-purple-600 w-0 transition-all duration-1000"></div>
                             </div>
                             <p id="fg-crypto-label" class="text-xs text-slate-800 font-black mt-3 italic text-center"></p>
                             <p id="fg-crypto-desc" class="text-[10px] text-slate-500 mt-1 leading-tight font-bold text-center"></p>
                         </div>
                     </div>
                     <!-- Critical Alert -->
-                    <div id="critical-alert-box" class="bg-red-50 border border-red-200 p-6 rounded-full flex flex-col justify-between">
+                    <div id="critical-alert-box" class="relative overflow-hidden bg-red-50 border border-red-200 p-6 rounded-full flex flex-col justify-between">
+                        <div class="absolute right-0 top-0 h-full w-1.5 bg-error rounded-r-full"></div>
                         <div>
                             <div class="flex items-center gap-3 text-red-600 mb-2">
                                 <span class="material-symbols-outlined font-bold text-sm">warning</span>
@@ -483,7 +510,7 @@
                                 <span class="text-[10px] font-black text-slate-400 uppercase">זרימת כסף (24h)</span>
                                 <span class="text-[10px] font-black text-emerald-500 uppercase">INFLOW</span>
                             </div>
-                            <p class="text-xs text-slate-500 leading-tight font-bold italic">ניתוח פעילות On-chain ו-Spot Volume מראה על איסוף מסיבי בטווחי המחיר הנוכחיים.</p>
+                            <p id="crypto-smart-money-summary" class="text-xs text-slate-500 leading-tight font-bold italic"></p>
                         </div>
                     </div>
                 </section>
@@ -517,9 +544,8 @@
                          <div class="p-10 rounded-[3rem] border-2 border-purple-500/30 bg-purple-500/10 backdrop-blur-md">
                             <p id="crypto-conclusion" class="text-2xl md:text-4xl font-black text-white leading-tight italic drop-shadow-lg font-headline"></p>
                          </div>
-                         <div class="mt-8 flex gap-4">
-                            <span class="px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/30">Bullish Sentiment</span>
-                            <span class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-500/30">Strong Alpha</span>
+                         <div class="mt-8 flex gap-4" id="crypto-conclusion-badges">
+                            <!-- Populated dynamically by JS based on F&G value -->
                          </div>
                     </div>
                 </section>
@@ -530,7 +556,7 @@
                 <section class="grid grid-cols-1 gap-8">
                     <!-- AI Frontier -->
                     <div class="glass-card rounded-[3rem] p-8 md:p-10 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-blue-600 blur-[4px]"></div>
+                        <div class="absolute top-0 right-0 w-1 h-full bg-blue-600 blur-[4px]"></div>
                         <div class="flex flex-row items-center gap-4 mb-10">
                             <span class="material-symbols-outlined text-blue-600 text-4xl">psychology</span>
                             <div>
@@ -628,6 +654,10 @@
                 renderAll(d);
             } catch (e) {
                 console.error("Data load error:", e);
+                const tsEl = document.getElementById('update-ts');
+                const hl = document.getElementById('macro-headline');
+                if (tsEl) tsEl.textContent = '⚠️ לא זמין';
+                if (hl) hl.textContent = 'לא ניתן לטעון נתונים. נסה לרענן את הדף.';
             }
         }
 
@@ -655,7 +685,16 @@
                     document.getElementById('alert-title').textContent = s1.alert.title;
                     document.getElementById('alert-value').textContent = s1.alert.value;
                     document.getElementById('alert-desc').textContent = s1.alert.description;
-                    document.getElementById('alert-impact').textContent = s1.alert.impact + " IMPACT";
+                    document.getElementById('alert-impact').textContent = s1.alert.impact;
+                }
+                // B4: Intelligence chips from cards array
+                if (s1.cards) {
+                    const colors = ['bg-blue-600/80', 'bg-rose-600/80', 'bg-emerald-600/80'];
+                    document.getElementById('macro-intel-chips').innerHTML = s1.cards.map((c, i) => `
+                        <div class="${colors[i] || 'bg-slate-600/80'} text-white px-3 py-1.5 rounded-full text-[10px] font-black backdrop-blur-sm">
+                            <span class="opacity-70 uppercase tracking-widest">${c.label}:</span> ${c.value}
+                        </div>
+                    `).join('');
                 }
             }
 
@@ -802,13 +841,39 @@
                 document.getElementById('crypto-smart').textContent = cb.smart_money;
                 document.getElementById('crypto-whale').textContent = cb.whale_activity;
                 document.getElementById('crypto-conclusion').textContent = cb.conclusion;
-                
-                // Update local F&G on crypto page
+                // B2: Smart money summary in sidebar
+                const smEl = document.getElementById('crypto-smart-money-summary');
+                if (smEl) smEl.textContent = cb.smart_money ? cb.smart_money.slice(0, 120) + '...' : '';
+
+                // Update local F&G on crypto page + B1: dynamic badges
                 if (d.section_1_situation?.gauges?.fear_greed_crypto) {
                     const g = d.section_1_situation.gauges.fear_greed_crypto;
+                    const fgVal = parseInt(g.value) || 0;
                     document.getElementById('crypto-fng-val').textContent = g.value;
                     document.getElementById('crypto-fng-label').textContent = g.label;
                     document.getElementById('crypto-fng-bar').style.width = g.value + '%';
+                    // B1: Dynamic conclusion badges
+                    const badgesEl = document.getElementById('crypto-conclusion-badges');
+                    if (badgesEl) {
+                        let sentiment, sentimentColor, alpha, alphaColor;
+                        if (fgVal < 25) {
+                            sentiment = 'Extreme Fear'; sentimentColor = 'bg-red-500/20 text-red-400 border-red-500/30';
+                            alpha = 'High Risk'; alphaColor = 'bg-red-500/20 text-red-400 border-red-500/30';
+                        } else if (fgVal < 50) {
+                            sentiment = 'Bearish Sentiment'; sentimentColor = 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+                            alpha = 'Weak Alpha'; alphaColor = 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+                        } else if (fgVal < 75) {
+                            sentiment = 'Neutral / Greed'; sentimentColor = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+                            alpha = 'Moderate Alpha'; alphaColor = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+                        } else {
+                            sentiment = 'Bullish Sentiment'; sentimentColor = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                            alpha = 'Strong Alpha'; alphaColor = 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+                        }
+                        badgesEl.innerHTML = `
+                            <span class="px-4 py-2 ${sentimentColor} rounded-full text-[10px] font-black uppercase tracking-widest border">${sentiment}</span>
+                            <span class="px-4 py-2 ${alphaColor} rounded-full text-[10px] font-black uppercase tracking-widest border">${alpha}</span>
+                        `;
+                    }
                 }
             }
 
@@ -982,7 +1047,20 @@
             `).join('<span class="w-[1px] h-3 bg-slate-200"></span>');
             
             const st = document.getElementById('sticky-ticker');
-            if (st) st.innerHTML = tickerHtml + tickerHtml + tickerHtml + tickerHtml; 
+            if (st) st.innerHTML = tickerHtml + tickerHtml + tickerHtml + tickerHtml;
+
+            // D1: Mobile pill ticker
+            const pillEl = document.getElementById('mobile-pill-ticker');
+            if (pillEl) {
+                pillEl.innerHTML = items.map(i => {
+                    const pos = i.c?.startsWith('+');
+                    return `<div class="flex-shrink-0 flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
+                        <span class="text-[10px] font-black text-slate-500 uppercase">${i.l}</span>
+                        <span class="text-[11px] font-black text-slate-800">${i.v || '—'}</span>
+                        <span class="text-[10px] font-black ${pos ? 'text-emerald-500' : 'text-rose-500'}">${i.c || ''}</span>
+                    </div>`;
+                }).join('');
+            }
         }
 
         function renderGauges(g) {
@@ -994,7 +1072,10 @@
                 const color = val < 15 ? '#10b981' : (val < 25 ? '#f59e0b' : '#ef4444');
                 document.getElementById('vix-bar').style.width = pct + '%';
                 document.getElementById('vix-bar').style.backgroundColor = color;
-                
+                // D2: rotate circle ring
+                const vc = document.getElementById('vix-circle');
+                if (vc) vc.style.transform = `rotate(${pct * 3.6}deg)`;
+
                 let desc = "השוק רגוע ויציב";
                 if (val > 20) desc = "תנודתיות גוברת בשווקים";
                 if (val > 30) desc = "שיא של פחד ואי-ודאות";
@@ -1005,7 +1086,10 @@
                 document.getElementById('fg-stock-value').textContent = val + " / 100";
                 document.getElementById('fg-stock-label').textContent = g.fear_greed_stock.label;
                 document.getElementById('fg-stock-bar').style.width = val + '%';
-                
+                // D2: rotate circle ring
+                const fsc = document.getElementById('fg-stock-circle');
+                if (fsc) fsc.style.transform = `rotate(${val * 3.6}deg)`;
+
                 let desc = "סנטימנט מאוזן";
                 if (val < 25) desc = "פחד קיצוני - כסף בורח לבטיחות";
                 if (val > 75) desc = "תאוות בצע קיצונית - זהירות נדרשת";
@@ -1016,7 +1100,10 @@
                 document.getElementById('fg-crypto-value').textContent = val + " / 100";
                 document.getElementById('fg-crypto-label').textContent = g.fear_greed_crypto.label;
                 document.getElementById('fg-crypto-bar').style.width = val + '%';
-                
+                // D2: rotate circle ring
+                const fcc = document.getElementById('fg-crypto-circle');
+                if (fcc) fcc.style.transform = `rotate(${val * 3.6}deg)`;
+
                 let desc = "קריפטו במצב המתנה";
                 if (val < 25) desc = "פאניקה בשוק - הזדמנות פוטנציאלית?";
                 if (val > 75) desc = "אופוריה בשוק - סיכון גבוה למימוש";
