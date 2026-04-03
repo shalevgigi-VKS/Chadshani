@@ -1,49 +1,867 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html dir="rtl" lang="he">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חדשני — תחזוקה</title>
+    <meta charset="utf-8"/>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shalevgigi-vks.github.io/Chadshani/">
+    <meta property="og:title" content="חדשני v3 | טרמינל מודיעין שוק">
+    <meta property="og:description" content="ניתוח מעמיק של שוקי ההון, AI, קריפטו וסקטורים — עדכון יומי">
+    <meta property="og:image" content="https://shalevgigi-vks.github.io/Chadshani/chadshani_logo.jpg">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:locale" content="he_IL">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="חדשני v3 | טרמינל מודיעין שוק">
+    <meta name="twitter:description" content="ניתוח מעמיק של שוקי ההון, AI, קריפטו וסקטורים — עדכון יומי">
+    <meta name="twitter:image" content="https://shalevgigi-vks.github.io/Chadshani/chadshani_logo.jpg">
+
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>חדשני v3 | Market Intelligence Terminal</title>
+    <!-- Favicon -->
+    <link rel="icon" href="chadshani_logo.jpg" type="image/jpeg">
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                colors: {
+                  "surface": "#f5f7f9",
+                  "on-surface": "#2c2f31",
+                  "primary": "#0050d4",
+                  "primary-dim": "#0046bb",
+                  "secondary": "#535171",
+                  "error": "#b31b25",
+                  "tertiary": "#8e3a8a",
+                  "outline-variant": "#abadaf",
+                  "surface-container-lowest": "#ffffff",
+                  "surface-container-low": "#eef1f3",
+                  "surface-container": "#e5e9eb",
+                },
+                fontFamily: {
+                  "headline": ["Space Grotesk", "sans-serif"],
+                  "body": ["Heebo", "sans-serif"],
+                  "label": ["Inter", "sans-serif"]
+                },
+                borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "1.5rem"},
+              },
+            },
+          }
+    </script>
+    
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #0f172a; 
-            color: #f8fafc; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            text-align: center; 
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: radial-gradient(circle at top left, #f5f7f9, #e5e9eb 100%);
         }
-        .container { 
-            background: #1e293b; 
-            padding: 3rem; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
-            max-width: 500px;
+        h1, h2, h3, h4, .font-headline {
+            font-weight: 800 !important;
         }
-        h1 { color: #e2e8f0; margin-bottom: 1rem; }
-        p { color: #94a3b8; font-size: 1.1rem; line-height: 1.5; }
-        .spinner {
-            margin: 20px auto;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            border-top-color: #3b82f6;
-            animation: spin 1s ease-in-out infinite;
+        p {
+            text-align: justify;
+            text-justify: inter-word;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .pulsing-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .3; }
+        }
+        :root {
+            --ticker-speed: 60s;
+        }
+        @media (max-width: 768px) {
+            :root { --ticker-speed: 25s; }
+        }
+        @keyframes ticker-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+        .ticker-move {
+            display: flex;
+            gap: 2rem;
+            width: max-content;
+            animation: ticker-right var(--ticker-speed) linear infinite;
+        }
+        .mesh-bg {
+            background-color: #f5f7f9;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(123, 156, 255, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(254, 156, 244, 0.05) 0px, transparent 50%);
+        }
+        .hidden { display: none; }
+        /* Active state for navigation */
+        .nav-item.active {
+            background: white;
+            color: #0050d4;
+            box-shadow: 0 4px 20px rgba(37,99,235,0.1);
+        }
+        .mobile-nav-item.active {
+            color: #0050d4;
+            background: rgba(0, 80, 212, 0.05);
+            border-radius: 1rem;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>חדשני כרגע תחת תחזוקה טכנית</h1>
-        <div class="spinner"></div>
-        <p>אנו מבצעים שדרוג מערכות, כיול נתונים, והטמעת מודלים מדויקים יותר לזמן אמת.<br>הדסק ישוב לפעילות מלאה ברגע שהתהליך יושלם בהצלחה.</p>
+<body class="mesh-bg text-on-surface font-body overflow-x-hidden pb-20 md:pb-0">
+
+    <!-- Top Sticky Header -->
+    <header class="bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl sticky top-0 z-50 shadow-[0_16px_64px_-12px_rgba(0,0,0,0.04)]">
+        <div class="flex flex-row justify-between items-center w-full px-4 md:px-6 py-3">
+            <!-- Brand Section -->
+            <div class="flex items-center gap-3">
+                <img src="chadshani_logo.jpg" alt="חדשני" class="w-10 h-10 md:w-11 md:h-11 rounded-xl object-cover border border-black/5 shadow-sm">
+                <div class="flex flex-col items-start text-right">
+                    <span class="text-xl md:text-2xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none">חדשני v3.2</span>
+                    <span class="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-widest hidden md:block">טרמינל מודיעין שוק</span>
+                </div>
+            </div>
+            
+            <!-- Center: LIVE Indicator -->
+            <div class="flex items-center gap-2 text-emerald-600 font-headline font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 pulsing-dot"></span>
+                <span class="text-[10px] md:text-xs uppercase tracking-widest">שידור חי</span>
+            </div>
+
+
+            <!-- User Actions / Status -->
+            <div class="flex items-center gap-3">
+                <div id="battery-status" class="flex items-center text-[10px] font-mono text-emerald-500 font-black">
+                    <span class="material-symbols-outlined text-xs">bolt</span>
+                    <span id="update-ts">POLLING...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Sticky Market Ticker -->
+    <section id="global-slider" class="sticky top-[68px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm">
+        <div class="ticker-wrap w-full">
+             <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline">
+                <!-- Ticker contents populated by JS -->
+             </div>
+        </div>
+    </section>
+
+    <div class="flex flex-row">
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="hidden md:flex bg-slate-50/50 fixed right-0 h-full w-64 lg:w-72 border-l border-slate-200 flex-col py-8 px-4 gap-8 z-40">
+            <nav class="flex flex-col gap-2">
+                <a href="#macro" id="nav-macro" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all active" onclick="showPage('macro')">
+                    <span class="font-bold text-right flex-1">שוק ההון (מאקרו)</span>
+                    <span class="material-symbols-outlined">public</span>
+                </a>
+                <a href="#sectors" id="nav-sectors" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('sectors')">
+                    <span class="font-bold text-right flex-1">סקטורים וזרימת כסף</span>
+                    <span class="material-symbols-outlined">account_tree</span>
+                </a>
+                <a href="#crypto" id="nav-crypto" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('crypto')">
+                    <span class="font-bold text-right flex-1">עולם הקריפטו</span>
+                    <span class="material-symbols-outlined">currency_bitcoin</span>
+                </a>
+                <a href="#ai" id="nav-ai" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('ai')">
+                    <span class="font-bold text-right flex-1">חזית ה-AI</span>
+                    <span class="material-symbols-outlined">psychology</span>
+                </a>
+                <a href="#watchlist" id="nav-watchlist" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('watchlist')">
+                    <span class="font-bold text-right flex-1">טיקרים למעקב</span>
+                    <span class="material-symbols-outlined">list_alt</span>
+                </a>
+            </nav>
+
+            <!-- Profile Widget -->
+            <div class="mt-auto border-t border-slate-100 pt-6 px-2">
+                <div class="flex flex-row-reverse items-start gap-4">
+                    <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-16 h-28 lg:w-20 lg:h-32 rounded-2xl object-cover shadow-lg border-2 border-white ring-1 ring-slate-100 transition-transform group-hover:scale-105">
+                    <div class="flex-1 text-right">
+                        <div class="font-black text-slate-900 text-lg lg:text-xl leading-none mb-1">שלו גיגי</div>
+                        <div class="text-[9px] text-blue-600 font-bold uppercase tracking-widest mb-3 italic underline decoration-2 underline-offset-4">אנליסט ראשי</div>
+                        <p class="text-[11px] leading-relaxed text-slate-500 font-medium h-fit">
+                            זיהוי הסיגנל בתוך הרעש. הניתוח המדויק לכל מה שקורה בשווקים. <strong>דסק חדשני</strong>.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-4 opacity-40">
+                   <span class="text-[7px] font-mono font-black uppercase tracking-tighter">Powered by intelligence v3.2.5</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-h-screen md:mr-64 lg:mr-72 p-2 md:p-8 lg:p-10 mb-24 md:mb-0">
+
+            <!-- Clock Bar (Universal) -->
+            <div id="clock-bar" class="grid grid-cols-3 text-center text-[10px] md:text-xs font-headline py-4 mb-4 glass-card rounded-2xl border-0 shadow-sm">
+                <div>
+                    <div class="text-slate-400 font-bold mb-0.5 uppercase tracking-wider">שעה נוכחית</div>
+                    <div id="clock-now" class="font-black text-slate-800 tabular-nums">--:--:--</div>
+                </div>
+                <div class="border-x border-slate-100 px-2 leading-tight">
+                    <div class="text-slate-400 font-bold mb-0.5 uppercase tracking-wider">עדכון אחרון</div>
+                    <div id="clock-last" class="font-black text-emerald-600 tabular-nums">--:--</div>
+                </div>
+                <div>
+                    <div class="text-slate-400 font-bold mb-0.5 uppercase tracking-wider">עדכון הבא בעוד</div>
+                    <div id="clock-next" class="font-black text-blue-600 tabular-nums">--:--:--</div>
+                </div>
+            </div>
+
+            <div id="page-macro" class="page-view space-y-10">
+                <!-- Hero Slider / Headline -->
+                <section class="relative min-h-[450px] md:h-[500px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden glass-card group border-0 shadow-lg px-2">
+                    <div id="macro-hero-bg" class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent flex flex-col justify-center p-6 md:p-16 z-10 text-right">
+                        <span class="text-blue-700 font-headline font-bold tracking-widest text-[10px] md:text-xs mb-3 uppercase">פרספקטיבה יומית / <span id="macro-date">--</span></span>
+                        <h1 id="macro-headline" class="text-2xl md:text-5xl font-black font-headline text-slate-900 mb-6 leading-tight max-w-2xl">טוען נתונים...</h1>
+                        <p id="macro-analysis" class="text-sm md:text-xl text-slate-700 max-w-2xl mb-4 leading-relaxed text-justify"></p>
+                    </div>
+                    <div class="absolute inset-0 bg-blue-600/5 mix-blend-overlay"></div>
+                </section>
+
+                <!-- Intelligence Gallery (Restore v2.0 - Below clocks/Hero) -->
+                <section class="space-y-4">
+                    <div class="flex justify-between items-center px-4">
+                        <h2 class="text-lg md:text-2xl font-black font-headline italic text-slate-900 underline underline-offset-8 decoration-blue-500/30">גלריית מודיעין</h2>
+                    </div>
+                    <div class="carousel-container relative h-[300px] md:h-[500px] overflow-hidden rounded-[2.5rem] shadow-2xl">
+                         <div id="carousel-track" class="flex transition-transform duration-700 ease-out h-full">
+                            <!-- Populated by JS -->
+                         </div>
+                         <button onclick="carouselPrev()" class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all z-20">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                         </button>
+                         <button onclick="carouselNext()" class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white flex items-center justify-center hover:bg-white hover:text-blue-600 transition-all z-20">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                         </button>
+                    </div>
+                </section>
+
+
+                <!-- Market Intelligence Grid -->
+                <section class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- VIX -->
+                        <div class="surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="font-bold text-slate-600">VIX (Volatility)</span>
+                                <span class="material-symbols-outlined text-blue-500">show_chart</span>
+                            </div>
+                            <div id="vix-value" class="text-4xl font-headline font-black mb-2 text-center">--</div>
+                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div id="vix-bar" class="h-full bg-green-500 w-0 transition-all duration-1000"></div>
+                            </div>
+                            <p id="vix-label" class="text-xs text-slate-800 font-black mt-3 italic text-center"></p>
+                            <p id="vix-desc" class="text-[10px] text-slate-500 mt-1 leading-tight font-bold text-center"></p>
+                        </div>
+                        <!-- Fear & Greed Stocks -->
+                        <div class="surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="font-bold text-slate-600">פחד ותאוות בצע (מניות)</span>
+                                <span class="material-symbols-outlined text-orange-500">local_fire_department</span>
+                            </div>
+                            <div id="fg-stock-value" class="text-4xl font-headline font-black mb-2 text-center">--</div>
+                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div id="fg-stock-bar" class="h-full bg-blue-600 w-0 transition-all duration-1000"></div>
+                            </div>
+                            <p id="fg-stock-label" class="text-xs text-slate-800 font-black mt-3 italic text-center"></p>
+                            <p id="fg-stock-desc" class="text-[10px] text-slate-500 mt-1 leading-tight font-bold text-center"></p>
+                        </div>
+                        <!-- Fear & Greed Crypto -->
+                        <div class="surface-container-lowest glass-card p-6 rounded-full border border-slate-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="font-bold text-slate-600">פחד ותאוות בצע (קריפטו)</span>
+                                <span class="material-symbols-outlined text-purple-500">currency_bitcoin</span>
+                            </div>
+                            <div id="fg-crypto-value" class="text-4xl font-headline font-black mb-2 text-center">--</div>
+                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div id="fg-crypto-bar" class="h-full bg-purple-600 w-3/4 transition-all duration-1000"></div>
+                            </div>
+                            <p id="fg-crypto-label" class="text-xs text-slate-800 font-black mt-3 italic text-center"></p>
+                            <p id="fg-crypto-desc" class="text-[10px] text-slate-500 mt-1 leading-tight font-bold text-center"></p>
+                        </div>
+                    </div>
+                    <!-- Critical Alert -->
+                    <div id="critical-alert-box" class="bg-red-50 border border-red-200 p-6 rounded-full flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-3 text-red-600 mb-2">
+                                <span class="material-symbols-outlined font-bold text-sm">warning</span>
+                                <span class="font-bold uppercase tracking-tighter text-xs">התרעה קריטית</span>
+                            </div>
+                            <h3 id="alert-title" class="font-bold text-lg mb-1 text-red-900 leading-tight"></h3>
+                            <p id="alert-value" class="font-black text-xl text-red-600 mb-1"></p>
+                            <p id="alert-desc" class="text-xs text-red-800 leading-tight"></p>
+                        </div>
+                        <div id="alert-impact" class="bg-red-600 text-white text-[9px] py-1 px-3 rounded-full w-fit font-bold mt-4 italic">השפעה גבוהה</div>
+                    </div>
+                </section>
+
+                <!-- Strategy & Watchlist Macro -->
+                <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 surface-container-low rounded-full p-8 border border-white/50">
+                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center justify-end gap-2 text-right">
+                            <span class="material-symbols-outlined text-blue-600">lightbulb</span>
+                            תזת השקעה ואסטרטגיה
+                        </h2>
+                        <div class="space-y-6">
+                            <div class="text-right">
+                                <span class="text-xs font-bold text-blue-600 uppercase tracking-widest underline mb-2 block">תזה מרכזית</span>
+                                <p id="macro-thesis" class="font-bold text-lg md:text-xl mt-1 text-slate-800 leading-relaxed"></p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-red-50/50 p-6 rounded-3xl border-r-4 border-red-500 text-right">
+                                    <span class="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2 underline">סיכונים</span>
+                                    <p id="macro-risks" class="text-sm mt-1 text-slate-800 leading-relaxed font-bold"></p>
+                                </div>
+                                <div class="bg-green-50/50 p-6 rounded-3xl border-r-4 border-green-600 text-right">
+                                    <span class="text-xs font-bold text-green-600 uppercase tracking-widest block mb-2 underline">הזדמנויות</span>
+                                    <p id="macro-opps" class="text-sm mt-1 text-slate-800 leading-relaxed font-bold"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-[2.5rem] p-8 border-0 shadow-sm">
+                        <h2 class="text-xl font-black font-headline mb-6 text-slate-900 text-right italic underline underline-offset-8 decoration-blue-500/10">טיקרים למעקב ממוקד</h2>
+                        <div id="macro-watchlist" class="space-y-4">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- About Section (Restored v2 style - Side by Side) -->
+                <section class="glass-card p-10 md:p-16 rounded-[3rem] md:rounded-[4rem] border-0 shadow-2xl relative overflow-hidden group mt-12 mb-20 bg-white">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full -mr-32 -mt-32 blur-3xl transition-all group-hover:bg-blue-600/10"></div>
+                    <div class="flex flex-col md:flex-row items-center md:items-stretch gap-12 relative z-10">
+                        <!-- Left: Bio Text -->
+                        <div class="flex-1 text-right order-2 md:order-1 flex flex-col justify-center">
+                            <div class="inline-block bg-blue-600 text-white px-6 py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest mb-6 w-fit ml-auto">אודותיי / ABOUT ME</div>
+                            <p class="text-base md:text-xl text-slate-700 leading-relaxed font-bold text-justify">
+                                בעולם שבו המידע זורם בלי הפסקה, האתגר האמיתי הוא לזהות את הסיגנל בתוך הרעש. מעבר לכותרות ולתנודות היומיומיות, הבנה אמיתית של המציאות דורשת פרספקטיבה עמוקה יותר — לכן בניתי את דסק <strong class="text-blue-600 underline decoration-4 underline-offset-4">חדשני</strong>, כדי לייצר בהירות, להישאר עם היד על הדופק, ולהבין את המחר כבר היום.
+                            </p>
+                            <div class="mt-8 flex justify-end gap-3">
+                                <div class="bg-blue-50 border border-blue-100 px-4 py-2 rounded-xl text-[10px] font-black text-blue-600 uppercase tracking-widest">Global Markets</div>
+                                <div class="bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl text-[10px] font-black text-emerald-600 uppercase tracking-widest">AI & Technology</div>
+                            </div>
+                        </div>
+                        <!-- Right: Photo + Name -->
+                        <div class="flex flex-col items-center md:items-end flex-shrink-0 order-1 md:order-2">
+                             <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-56 md:w-80 h-full max-h-[500px] rounded-[2.5rem] md:rounded-[3.5rem] object-cover shadow-2xl border-8 border-white group-hover:scale-[1.02] transition-transform duration-500 shadow-blue-500/10">
+                             <div class="text-center md:text-right mt-6">
+                                 <h3 class="text-3xl md:text-5xl font-black font-headline text-slate-900 italic">שלו גיגי</h3>
+                                 <p class="text-xs md:text-sm font-black text-blue-600 uppercase tracking-[0.2em] mt-2 font-bold italic">״אנליסט״ פיננסי-טכנולוגי</p>
+                             </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PAGE: SECTORS -->
+            <div id="page-sectors" class="page-view hidden space-y-10">
+                <section class="glass-card rounded-[3rem] p-8 md:p-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+                        <div class="text-right">
+                            <h2 class="text-3xl font-black font-headline text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">זרימת הון ומפת סקטורים</h2>
+                            <p class="text-slate-500 text-sm mt-3 font-bold uppercase tracking-widest">Sector Money Flow Analysis</p>
+                        </div>
+                        <div class="flex flex-col items-end gap-2">
+                             <div class="text-right bg-blue-600 px-8 py-4 rounded-[2rem] border border-blue-400/20 shadow-xl shadow-blue-500/10">
+                                <span id="total-net-flow" class="text-3xl font-headline font-black text-white">--</span>
+                                <p class="text-[9px] text-blue-100 uppercase tracking-widest font-black mt-1 italic">30D Flow Balance</p>
+                             </div>
+                             <div class="text-[10px] font-black text-slate-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> כסף נכנס
+                                <span class="w-2 h-2 rounded-full bg-rose-500 ml-2"></span> כסף יוצא
+                             </div>
+                        </div>
+                    </div>
+                    <div id="sectors-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+
+                <section class="space-y-6">
+                    <h2 class="text-2xl font-black font-headline text-slate-900 text-right italic underline underline-offset-8 decoration-emerald-500/20">חדשות מיקרו ומודיעין סקטורים</h2>
+                    <div id="micro-news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- PAGE: CRYPTO -->
+            <div id="page-crypto" class="page-view hidden space-y-10">
+                <!-- Crypto Market Snapshot -->
+                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="crypto-market-grid">
+                    <!-- Populated by JS: Includes BTC, ETH, SOL, LINK, XRP, TAO, KAS -->
+                </section>
+
+                <!-- Crypto Brief -->
+                <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="surface-container-low rounded-[2.5rem] p-8 md:p-10 border border-amber-200 bg-amber-50/20 text-right" dir="rtl">
+                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center justify-end gap-2 text-amber-900 font-headline italic underline underline-offset-8 decoration-amber-500/20">
+                            <span class="material-symbols-outlined text-amber-600">history_edu</span>
+                            סיפור היום בקריפטו
+                        </h2>
+                        <div class="space-y-6">
+                            <div>
+                                <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">נרטיב יומי</span>
+                                <p id="crypto-narrative" class="text-sm md:text-base mt-2 text-slate-800 leading-relaxed font-medium"></p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">זרימת כסף חכם</span>
+                                    <p id="crypto-smart" class="text-xs md:text-sm mt-2 text-slate-700 leading-relaxed font-bold"></p>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">פעילות לוויתנים</span>
+                                    <p id="crypto-whale" class="text-xs md:text-sm mt-2 text-slate-700 leading-relaxed font-bold"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-[2.5rem] p-10 flex flex-col text-right">
+                         <h2 class="text-2xl font-black font-headline mb-6 text-slate-900 italic underline underline-offset-8 decoration-blue-500/20">מסקנה ופעולה טקטית</h2>
+                         <div class="flex-1 flex flex-col justify-center bg-blue-600 p-8 rounded-[2rem] border border-blue-400/20 shadow-2xl shadow-blue-600/20">
+                            <p id="crypto-conclusion" class="text-lg md:text-2xl font-black text-white text-center leading-relaxed italic"></p>
+                         </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PAGE: AI -->
+            <div id="page-ai" class="page-view hidden space-y-10">
+                <section class="grid grid-cols-1 gap-8">
+                    <!-- AI Frontier -->
+                    <div class="glass-card rounded-[3rem] p-8 md:p-10 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-blue-600 blur-[4px]"></div>
+                        <h2 class="text-3xl font-black font-headline mb-8 text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">מעקב חזית ה-AI (Frontier)</h2>
+                        <div id="ai-models-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PAGE: WATCHLIST -->
+            <div id="page-watchlist" class="page-view hidden space-y-10">
+                <section class="glass-card rounded-[3rem] p-8 md:p-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+                        <div>
+                            <h2 class="text-3xl font-black font-headline text-slate-900 italic underline">טיקרים למעקב (Watchlist)</h2>
+                            <p class="text-slate-500 text-sm mt-1">מניות ואינדיקטורים מובילים במעקב דסק חדשני</p>
+                        </div>
+                    </div>
+                    <div id="ai-ledger-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+            </div>
+
+
+        </main>
     </div>
+
+    <!-- Mobile Navigation Bar -->
+    <nav class="md:hidden fixed bottom-6 left-6 right-6 w-auto z-50 flex flex-row justify-around items-center px-1 py-2 bg-white/95 backdrop-blur-2xl rounded-full border border-slate-100 shadow-[0_16px_32px_-12px_rgba(0,0,0,0.15)]">
+        <a href="#macro" id="mob-macro" class="mobile-nav-item flex flex-col items-center justify-center p-3 active" onclick="showPage('macro')">
+            <span class="material-symbols-outlined mb-1">public</span>
+            <span class="text-[9px] font-bold">מאקרו</span>
+        </a>
+        <a href="#sectors" id="mob-sectors" class="mobile-nav-item flex flex-col items-center justify-center p-3" onclick="showPage('sectors')">
+            <span class="material-symbols-outlined mb-1">account_tree</span>
+            <span class="text-[9px] font-bold">סקטורים</span>
+        </a>
+        <a href="#crypto" id="mob-crypto" class="mobile-nav-item flex flex-col items-center justify-center p-3" onclick="showPage('crypto')">
+            <span class="material-symbols-outlined mb-1">currency_bitcoin</span>
+            <span class="text-[9px] font-bold">קריפטו</span>
+        </a>
+        <a href="#ai" id="mob-ai" class="mobile-nav-item flex flex-col items-center justify-center p-3" onclick="showPage('ai')">
+            <span class="material-symbols-outlined mb-1">psychology</span>
+            <span class="text-[9px] font-bold">AI</span>
+        </a>
+        <a href="#watchlist" id="mob-watchlist" class="mobile-nav-item flex flex-col items-center justify-center p-3" onclick="showPage('watchlist')">
+            <span class="material-symbols-outlined mb-1">list_alt</span>
+            <span class="text-[9px] font-bold">מעקב</span>
+        </a>
+    </nav>
+
+    <script>
+        // Router / Page Management
+        function showPage(pageId) {
+            // Update UI
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            const target = document.getElementById('page-' + pageId);
+            if (target) target.classList.remove('hidden');
+
+            // Update Nav
+            document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('nav-' + pageId)?.classList.add('active');
+            document.getElementById('mob-' + pageId)?.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Hash update
+            history.pushState(null, null, '#' + pageId);
+        }
+
+        // Handle initial hash
+        window.addEventListener('load', () => {
+            // Always force macro on load to the top
+            showPage('macro');
+            updateClock();
+            setInterval(updateClock, 1000);
+            loadData();
+        });
+
+        // Data Loading & Rendering
+        async function loadData() {
+            try {
+                const res = await fetch('data/latest.json?v=' + Date.now());
+                const d = await res.json();
+                renderAll(d);
+            } catch (e) {
+                console.error("Data load error:", e);
+            }
+        }
+
+        function renderAll(d) {
+            if (!d) return;
+
+            // Header Ticker
+            renderTicker(d);
+            const updateTime = d.generated_at ? new Date(d.generated_at).toLocaleTimeString('he-IL', {hour:'2-digit', minute:'2-digit'}) : 'LIVE';
+            document.getElementById('update-ts').textContent = updateTime;
+            document.getElementById('clock-last').textContent = updateTime;
+
+            // Page 1: Macro
+            const s1 = d.section_1_situation;
+            if (s1) {
+                document.getElementById('macro-headline').textContent = s1.headline;
+                document.getElementById('macro-analysis').textContent = s1.analysis;
+                document.getElementById('macro-date').textContent = d.generated_at ? new Date(d.generated_at).toLocaleDateString('he-IL', {day:'2-digit', month:'short'}) : '';
+                
+                if (s1.gauges) {
+                    renderGauges(s1.gauges);
+                }
+                
+                if (s1.alert) {
+                    document.getElementById('alert-title').textContent = s1.alert.title;
+                    document.getElementById('alert-value').textContent = s1.alert.value;
+                    document.getElementById('alert-desc').textContent = s1.alert.description;
+                    document.getElementById('alert-impact').textContent = s1.alert.impact + " IMPACT";
+                }
+            }
+
+            const s8 = d.section_8_conclusion;
+            if (s8) {
+                document.getElementById('macro-thesis').textContent = s8.thesis;
+                document.getElementById('macro-risks').textContent = s8.risks;
+                document.getElementById('macro-opps').textContent = s8.opportunities;
+            }
+
+            const wl = d.section_8_watchlist;
+            if (wl) {
+                const container = document.getElementById('macro-watchlist');
+                const items = [...(wl.rising || []).slice(0, 3), ...(wl.falling || []).slice(0, 3)];
+                container.innerHTML = items.map(i => `
+                    <div class="flex justify-between items-center p-3 hover:bg-slate-50 rounded-2xl transition-all border border-transparent hover:border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <img src="https://financialmodelingprep.com/image-stock/${i.ticker}.png" class="w-8 h-8 rounded-lg shadow-sm border border-slate-100" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${i.ticker}&background=0050d4&color=fff&bold=true'">
+                            <div class="flex flex-col items-start px-2">
+                                <span class="font-headline font-black text-slate-800 leading-none mb-1">${i.ticker}</span>
+                                <span class="text-[10px] text-slate-500 font-bold uppercase leading-tight">${i.note}</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                             <div class="text-xs font-bold ${i.signal === 'BUY' ? 'text-green-600' : 'text-red-600'}">${i.signal}</div>
+                             <div class="text-[10px] text-slate-500">${i.reason}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Page 2: Sectors
+            const s3 = d.section_3_sectors;
+            if (s3) {
+                // Sort by change descending (Gainers on top)
+                s3.sort((a, b) => {
+                    const parsePct = s => parseFloat(s?.replace('%','').replace('+','') || '0');
+                    return parsePct(b.change) - parsePct(a.change);
+                });
+                
+                const grid = document.getElementById('sectors-grid');
+                grid.innerHTML = s3.map(s => {
+                    const color = s.flow_direction === 'in' ? 'text-emerald-500' : (s.flow_direction === 'out' ? 'text-rose-500' : 'text-slate-500');
+                    const isPositive = parseFloat(s.change?.replace('%','').replace('+','') || '0') >= 0;
+                    return `
+                        <div class="glass-card p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all text-right group hover:bg-slate-900 flex flex-col h-full">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="text-blue-600 font-headline font-black text-[10px] uppercase tracking-widest group-hover:text-blue-400">${s.etf}</div>
+                                <span class="material-symbols-outlined text-sm ${s.flow_direction === 'in' ? 'text-emerald-500' : 'text-rose-500'}">${s.flow_direction === 'in' ? 'south_east' : 'north_west'}</span>
+                            </div>
+                            <div class="text-sm font-black text-slate-800 mb-2 group-hover:text-white">${s.name}</div>
+                            <div class="text-2xl font-headline font-black ${isPositive ? 'text-emerald-500' : 'text-rose-500'} mb-1">${s.change || '0%'}</div>
+                            
+                            <!-- Flow Bar (Visual) -->
+                            <div class="mt-auto pt-4">
+                                <div class="flex justify-between items-center text-[9px] font-bold mb-1 uppercase tracking-tighter group-hover:text-slate-400">
+                                    <span>שלושים יום</span>
+                                    <span class="${color}">${s.flow_amount || '--'}</span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden group-hover:bg-slate-800">
+                                    <div class="h-full ${s.flow_direction === 'in' ? 'bg-emerald-500' : 'bg-rose-500'}" style="width: ${Math.min(Math.abs(parseFloat(s.flow_amount?.replace('$','').replace('B','') || '0')) * 25, 100)}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 mt-4 group-hover:bg-slate-800 group-hover:border-slate-700">
+                                <p class="text-[10px] text-slate-600 leading-tight font-medium overflow-hidden group-hover:text-slate-400" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">${s.note}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Real mathematical flow summation
+                const totalFlowValue = s3.reduce((acc, s) => {
+                    const amount = parseFloat(s.flow_amount?.replace('$','').replace('B','') || '0');
+                    return acc + (s.flow_direction === 'in' ? Math.abs(amount) : -Math.abs(amount));
+                }, 0);
+                const flowSign = totalFlowValue >= 0 ? '+' : '';
+                document.getElementById('total-net-flow').textContent = `${flowSign}$${totalFlowValue.toFixed(1)}B`; 
+            }
+
+            const s2 = d.section_2_news;
+            if (s2) {
+                const grid = document.getElementById('micro-news-grid');
+                grid.innerHTML = s2.map((n, i) => `
+                    <div class="glass-card p-6 rounded-3xl border-r-4 border-blue-500">
+                        <span class="text-[10px] font-mono text-slate-400 font-bold">${String(i+1).padStart(2,'0')} / ANALYSIS</span>
+                        <h3 class="font-black text-slate-900 mt-2 mb-3 leading-snug text-lg">${n.title}</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">${n.body}</p>
+                        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+                            <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">SO WHAT?</span>
+                            <p class="text-[11px] text-blue-900 mt-1 font-medium italic">"${n.so_what}"</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Page 3: Crypto
+            const s4 = d.section_4_crypto;
+            if (s4) {
+                const grid = document.getElementById('crypto-market-grid');
+                grid.innerHTML = s4.map(c => `
+                    <div class="glass-card p-6 rounded-[2rem] border border-amber-100/50 hover:border-amber-300 transition-all group flex flex-col justify-between h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <img src="https://static.coinpaprika.com/coin/${c.ticker?.toLowerCase()}-${c.ticker === 'BTC' ? 'bitcoin' : (c.ticker === 'ETH' ? 'ethereum' : (c.ticker === 'SOL' ? 'solana' : (c.ticker === 'XRP' ? 'xrp' : (c.ticker === 'LINK' ? 'chainlink' : (c.ticker === 'ADA' ? 'cardano' : (c.ticker === 'TAO' ? 'bittensor' : (c.ticker === 'KAS' ? 'kaspa' : 'crypto')))))))}/logo.png" class="w-9 h-9 rounded-full shadow-lg group-hover:scale-110 transition-transform" onerror="this.onerror=null; this.src='https://coinicons-api.vercel.app/api/icon/${c.ticker?.toLowerCase()}'">
+                                <div class="text-right">
+                                    <div class="text-sm font-black text-slate-800">${c.ticker}</div>
+                                    <div class="text-[8px] text-amber-600 font-bold uppercase tracking-widest italic">מדד נכס</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xl font-headline font-black text-slate-900">${c.price || '---'}</div>
+                                <div class="text-[10px] font-bold ${c.change_24h?.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}">${c.change_24h || '--'}</div>
+                            </div>
+                        </div>
+                        <div class="bg-amber-50/50 p-3 rounded-xl border border-amber-100 mt-auto">
+                            <p class="text-[10px] text-slate-700 leading-relaxed font-medium text-justify">${c.note}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const cb = d.section_4_crypto_brief;
+            if (cb) {
+                document.getElementById('crypto-narrative').textContent = cb.daily_narrative;
+                document.getElementById('crypto-smart').textContent = cb.smart_money;
+                document.getElementById('crypto-whale').textContent = cb.whale_activity;
+                document.getElementById('crypto-conclusion').textContent = cb.conclusion;
+            }
+
+            // Page 4: AI
+            const aiLogoMap = {
+                'OpenAI': 'openai.com',
+                'Google': 'google.com',
+                'Anthropic': 'anthropic.com',
+                'Meta': 'meta.com',
+                'xAI': 'x.ai',
+                'Perplexity': 'perplexity.ai'
+            };
+            const s7 = d.section_7_ai;
+            if (s7) {
+                const grid = document.getElementById('ai-models-grid');
+                grid.innerHTML = s7.map(a => {
+                    const companyName = a.company || '';
+                    const domain = Object.keys(aiLogoMap).find(k => companyName.includes(k)) ? aiLogoMap[Object.keys(aiLogoMap).find(k => companyName.includes(k))] : null;
+                    const logoUrl = domain ? `https://logo.clearbit.com/${domain}` : '';
+                    return `
+                        <div class="flex flex-col md:flex-row-reverse items-start gap-4 p-5 hover:bg-slate-50 rounded-[2rem] transition-all group border border-transparent hover:border-slate-100 bg-white/50 shadow-sm w-full">
+                            <div class="w-14 h-14 rounded-2xl bg-slate-900 shadow-lg flex items-center justify-center text-white font-black text-xl group-hover:bg-blue-600 transition-all flex-shrink-0 self-end md:self-start overflow-hidden">
+                                ${logoUrl ? `<img src="${logoUrl}" class="w-full h-full object-cover">` : (companyName[0] || '?')}
+                            </div>
+                            <div class="flex-1 text-right w-full overflow-hidden">
+                                <div class="flex justify-between items-center mb-1 flex-row-reverse gap-2">
+                                    <span class="font-black text-slate-900 text-base md:text-lg italic break-words line-clamp-1">${a.company}</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[8px] font-black font-mono ${a.status === 'GA' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'} flex-shrink-0">${a.status}</span>
+                                </div>
+                                <div class="text-sm md:text-base font-black text-blue-600 mb-2 leading-none underline decoration-2 underline-offset-4 break-words">${a.product}</div>
+                                <div class="text-xs md:text-sm text-slate-700 leading-relaxed font-bold break-words text-justify">${a.update}</div>
+                                ${a.last_known_update ? `<div class="text-[9px] text-slate-400 mt-3 font-mono uppercase tracking-[0.2em] font-black border-t border-slate-100 pt-2">Last: ${a.last_known_update}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const s5 = d.section_5_semis || [];
+            const s6 = d.section_6_software || [];
+            const ledger = [...s5, ...s6];
+            const ledgerContainer = document.getElementById('ai-ledger-grid');
+            ledgerContainer.innerHTML = ledger.map(item => `
+                <div class="glass-card p-6 rounded-[2rem] border border-blue-100/50 hover:border-blue-300 transition-all group">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <img src="https://financialmodelingprep.com/image-stock/${item.ticker}.png" class="w-12 h-12 rounded-2xl shadow-lg group-hover:scale-105 transition-transform border border-slate-100" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${item.ticker}&background=0050d4&color=fff&bold=true'">
+                            <div>
+                                <div class="text-sm font-black text-slate-800">${item.ticker}</div>
+                                <div class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">מוליכים למחצה / תוכנה</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-black text-slate-900">${item.price}</div>
+                            <div class="text-xs font-bold ${item.change?.startsWith('+') ? 'text-green-600' : 'text-red-600'}">${item.change}</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">ניתוח טכני / פונדמנטלי</span>
+                        <p class="text-xs text-slate-700 leading-relaxed font-medium">${item.note}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Clock Logic
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('he-IL', { hour12: false });
+            document.getElementById('clock-now').textContent = timeStr;
+
+            // Last Update - from JSON or generated_ts
+            // Next Update - manual calc for 07:00 / 19:00 IL
+            const ilTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Jerusalem"}));
+            const hours = ilTime.getHours();
+            let nextUpdate = new Date(ilTime);
+            nextUpdate.setSeconds(0);
+            nextUpdate.setMinutes(0);
+            if (hours < 7) {
+                nextUpdate.setHours(7);
+            } else if (hours < 19) {
+                nextUpdate.setHours(19);
+            } else {
+                nextUpdate.setHours(7);
+                nextUpdate.setDate(nextUpdate.getDate() + 1);
+            }
+            const diff = nextUpdate - ilTime;
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            document.getElementById('clock-next').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+        
+        // Carousel Logic
+        let currentIdx = 0;
+        function renderCarousel() {
+             const images = ['1.png','2.png','3.png','4.png','5.png','6.jpg','7.png','8.png','9.jpg','10.jpg','11.jpg'];
+             const track = document.getElementById('carousel-track');
+             track.innerHTML = images.map(img => `
+                <div class="min-w-full h-full">
+                    <img src="assets/karusela/${img}" class="w-full h-full object-cover">
+                </div>
+             `).join('');
+        }
+        function carouselNext() {
+            const track = document.getElementById('carousel-track');
+            currentIdx = (currentIdx + 1) % 11;
+            track.style.transform = `translateX(${currentIdx * 100}%)`;
+        }
+        function carouselPrev() {
+            const track = document.getElementById('carousel-track');
+            currentIdx = (currentIdx - 1 + 11) % 11;
+            track.style.transform = `translateX(${currentIdx * 100}%)`;
+        }
+        renderCarousel();
+        setInterval(carouselNext, 5000);
+
+        function renderTicker(d) {
+            const m = d.markets;
+            if (!m) return;
+            const items = [
+                { l: 'S&P 500', v: m.sp500?.price, c: m.sp500?.change },
+                { l: 'Nasdaq', v: m.nasdaq?.price, c: m.nasdaq?.change },
+                { l: 'Bitcoin', v: m.btc?.price, c: m.btc?.change },
+                { l: 'Gold', v: m.gold?.price, c: m.gold?.change },
+                { l: 'Silver', v: m.silver?.price, c: m.silver?.change }
+            ];
+            const tickerHtml = items.map(i => `
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-500 font-bold uppercase text-[10px]">${i.l}</span>
+                    <span class="font-black text-slate-800">${i.v || '—'}</span>
+                    <span class="font-bold ${i.c?.startsWith('+') ? 'text-green-600' : 'text-red-600'}">${i.c || ''}</span>
+                </div>
+            `).join('<span class="w-[1px] h-3 bg-slate-200"></span>');
+            
+            const st = document.getElementById('sticky-ticker');
+            if (st) st.innerHTML = tickerHtml + tickerHtml + tickerHtml + tickerHtml; 
+        }
+
+        function renderGauges(g) {
+            if (g.vix) {
+                const val = parseFloat(g.vix.value) || 0;
+                document.getElementById('vix-value').textContent = g.vix.value;
+                document.getElementById('vix-label').textContent = g.vix.label;
+                const pct = Math.min(val / 40 * 100, 100);
+                const color = val < 15 ? '#10b981' : (val < 25 ? '#f59e0b' : '#ef4444');
+                document.getElementById('vix-bar').style.width = pct + '%';
+                document.getElementById('vix-bar').style.backgroundColor = color;
+                
+                let desc = "השוק רגוע ויציב";
+                if (val > 20) desc = "תנודתיות גוברת בשווקים";
+                if (val > 30) desc = "שיא של פחד ואי-ודאות";
+                document.getElementById('vix-desc').textContent = desc;
+            }
+            if (g.fear_greed_stock) {
+                const val = parseInt(g.fear_greed_stock.value) || 0;
+                document.getElementById('fg-stock-value').textContent = val + " / 100";
+                document.getElementById('fg-stock-label').textContent = g.fear_greed_stock.label;
+                document.getElementById('fg-stock-bar').style.width = val + '%';
+                
+                let desc = "סנטימנט מאוזן";
+                if (val < 25) desc = "פחד קיצוני - כסף בורח לבטיחות";
+                if (val > 75) desc = "תאוות בצע קיצונית - זהירות נדרשת";
+                document.getElementById('fg-stock-desc').textContent = desc;
+            }
+            if (g.fear_greed_crypto) {
+                const val = parseInt(g.fear_greed_crypto.value) || 0;
+                document.getElementById('fg-crypto-value').textContent = val + " / 100";
+                document.getElementById('fg-crypto-label').textContent = g.fear_greed_crypto.label;
+                document.getElementById('fg-crypto-bar').style.width = val + '%';
+                
+                let desc = "קריפטו במצב המתנה";
+                if (val < 25) desc = "פאניקה בשוק - הזדמנות פוטנציאלית?";
+                if (val > 75) desc = "אופוריה בשוק - סיכון גבוה למימוש";
+                document.getElementById('fg-crypto-desc').textContent = desc;
+            }
+        }
+    </script>
 </body>
 </html>
