@@ -123,12 +123,12 @@ JSON_PROMPT = """
     {"ticker": "SNOW",  "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI",          "product": "[שם מוצר עיקרי]", "updates": ["[עדכון 1 — שחרור מודל / גרסה חדשה]", "[עדכון 2 — יכולת חדשה]", "[עדכון 3 — שינוי תמחור / API]", "[עדכון 4 — שיתוף פעולה / עסקה]", "[עדכון 5 — ביצועים / benchmark]", "[עדכון 6 — הגעה לשוק חדש / מוצר צדדי]", "[עדכון 7 — מדיניות / בטיחות / רגולציה]"], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Google/Gemini",   "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude","product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Meta/Llama",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "xAI/Grok",        "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Perplexity",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
+    {"company": "OpenAI",          "product": "[שם מוצר עיקרי]", "updates": ["[עדכון 1 — שחרור מודל / גרסה חדשה]", "[עדכון 2 — יכולת חדשה / Feature]", "[עדכון 3 — שינוי תמחור / API]", "[עדכון 4 — שיתוף פעולה / עסקה]", "[עדכון 5 — ביצועים / Benchmark]", "[עדכון 6 — הגעה לשוק חדש / מוצר צדדי]", "[עדכון 7 — מדיניות / בטיחות / רגולציה]", "[עדכון 8 — תגובת שוק / מחיר מניה / השפעה פיננסית]", "[עדכון 9 — מחקר / פרסום אקדמי / פטנט]", "[עדכון 10 — תחרות / השוואה לשחקנים אחרים בשוק]"], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Google/Gemini",   "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude","product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Meta/Llama",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "xAI/Grok",        "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Perplexity",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -159,7 +159,7 @@ JSON_PROMPT = """
 כללים קריטיים — מדיניות "אפס תוכן דל" (v3.2.13):
 - **חל איסור מוחלט** על שימוש בביטוי "אין חדשות חדשות", "מידע לא זמין", "לא חלו שינויים" או "Placeholder".
 - **עושר במידע (MUST)**: כל פסקה (Analysis, Narrative, Conclusion) חייבת להיות מפורטת (לפחות 4-5 משפטים), מקצועית ומעמיקה. אם אין חדשות דחופות, בצע ניתוח טכני (Chart Context) או רעיוני (Investment Thesis) רלוונטי.
-- **section_7_ai**: שדה `updates` הוא **מערך** של 4 משפטים בעברית. כל משפט מכסה זווית שונה: שחרור מוצר, יכולת חדשה, עסקה/שותפות, ביצועים. אם אין חדשות לחברה — מערך עם פריט אחד: "אין חדשות רלוונטיות מהשבוע האחרון."
+- **section_7_ai**: שדה `updates` הוא **מערך** של בדיוק 10 נקודות בעברית לכל חברה. כל נקודה מכסה זווית שונה: (1) שחרור מודל/גרסה, (2) יכולת חדשה, (3) תמחור/API, (4) שיתוף פעולה/עסקה, (5) ביצועים/benchmark, (6) שוק חדש/מוצר צדדי, (7) מדיניות/בטיחות, (8) תגובת שוק/מניה, (9) מחקר/פרסום, (10) תחרות/השוואה. אם אין חדשות בנושא מסוים — כתוב ניתוח רקע רלוונטי. אסור לכתוב "אין חדשות".
 - **alert.value**: חייב להיות שונה לחלוטין מ-alert.title. השתמש ב-'קריטי' / 'גבוה' / 'בינוני' — לא שם אירוע.
 - **איסור כפילויות**: נושא שהופיע ב-"התרעה קריטית" (Alert) או בפרספקטיבה היומית — **אסור** שיופיע שוב בחדשות המיקרו או ב-AI.
 - **עולם הקריפטו**: הרחב את הניתוח על זרימת כסף ל-ETFs, פעילות לוויתנים ב-On-chain, וקשר למקרו (סביבת ריבית). הפוך את הניתוח ל-"חי" ורלוונטי לרגע זה.
@@ -190,7 +190,7 @@ MARKET_SYMBOLS = {
 # Tickers to fetch news for (covers all major tracked companies + sector ETFs)
 NEWS_TICKERS = [
     "NVDA", "MSFT", "GOOGL", "META", "AMZN", "AAPL",
-    "AMD", "TSM", "AVGO", "MU", "ASML", "QCOM", "ARM", "MRVL", "LRCX",
+    "AMD", "TSM", "AVGO", "MU", "ASML", "QCOM", "ARM", "MRVL", "LRCX", "AMAT",
     "CRM", "NOW", "ORCL", "ADBE", "PLTR", "SNOW",
     "XLK", "XLF", "XLE", "XLY", "XLV", "XLU",
     "BTC-USD", "ETH-USD", "SOL-USD", "LINK-USD", "XRP-USD", "ADA-USD",
@@ -416,7 +416,7 @@ def build_news_context():
     # Fetch all market prices upfront — used both as Gemini context and for JSON injection
     all_symbols = set(MARKET_SYMBOLS.keys()) | set(ETF_SECTORS)
     for section_tickers in [
-        ["NVDA","TSM","AMD","AVGO","MU","ASML","QCOM","ARM","MRVL","LRCX"],
+        ["NVDA","TSM","AMD","AVGO","MU","ASML","QCOM","ARM","MRVL","LRCX","AMAT"],
         ["MSFT","GOOGL","META","AMZN","CRM","NOW","ORCL","ADBE","PLTR","SNOW"],
     ]:
         all_symbols.update(section_tickers)
@@ -571,6 +571,29 @@ def fetch_coingecko_price(coin_id):
         print(f"[COINGECKO WARN] {coin_id}: {e}")
     return None, 0.0
 
+
+def fetch_coingecko_global():
+    """Fetch global crypto market stats from CoinGecko free API (no key required)."""
+    try:
+        req = urllib.request.Request(
+            "https://api.coingecko.com/api/v3/global",
+            headers={"User-Agent": "Mozilla/5.0 (compatible; Chadshani/3.0)"}
+        )
+        with urllib.request.urlopen(req, timeout=10) as r:
+            d = json.loads(r.read())["data"]
+        result = {
+            "market_cap_usd": d["total_market_cap"]["usd"],
+            "btc_dominance": round(d["market_cap_percentage"]["btc"], 1),
+            "eth_dominance": round(d["market_cap_percentage"]["eth"], 1),
+            "volume_24h": d["total_volume"]["usd"],
+            "change_24h": round(d["market_cap_change_percentage_24h_usd"], 2),
+        }
+        print(f"[COINGECKO] Global: market_cap=${result['market_cap_usd']/1e12:.2f}T BTC.D={result['btc_dominance']}%")
+        return result
+    except Exception as e:
+        print(f"[WARN] CoinGecko global: {e}")
+        return None
+
 def patch_prices(data, market_prices=None, fear_greed=None):
     """Inject all numerical data from local sources into the Gemini text skeleton.
     market_prices: pre-fetched dict from build_news_context (avoids double fetch).
@@ -652,6 +675,11 @@ def patch_prices(data, market_prices=None, fear_greed=None):
         if fear_greed.get("crypto") is not None and gauges.get("fear_greed_crypto") is not None:
             gauges["fear_greed_crypto"]["value"] = str(fear_greed["crypto"])
 
+    # ── crypto_global: total market cap, BTC dominance (CoinGecko free) ──────────
+    cg = fetch_coingecko_global()
+    if cg:
+        data["crypto_global"] = cg
+
     print(f"[INJECT] {len(etf_flows)} ETF flows | {len(markets)} market indices | gauges patched")
     return data
 
@@ -671,7 +699,7 @@ def validate(data):
             issues.append(f"crypto {item.get('ticker')} price missing")
     # Required sections must be present and non-empty
     for section, min_items in [("section_2_news", 4), ("section_3_sectors", 11),
-                                ("section_5_semis", 10), ("section_6_software", 10),
+                                ("section_5_semis", 11), ("section_6_software", 10),
                                 ("section_7_ai", 4)]:
         items = data.get(section, [])
         count = len(items)
@@ -940,8 +968,8 @@ def generate():
     # Fetch free news context + all market prices upfront (single fetch, reused below)
     news_context, fear_greed, market_prices = build_news_context()
 
-    # Models: gemini-2.0-flash-lite-preview-02-05 (STRICT ZERO-COST LOCKDOWN v3.2.11)
-    MODEL_ATTEMPTS = [("models/gemini-2.0-flash-lite-preview-02-05", 3)]
+    # Models: gemini-flash-lite-latest (free tier alias — v3.3.4)
+    MODEL_ATTEMPTS = [("models/gemini-flash-lite-latest", 3)]
 
     data = None
     for model, max_att in MODEL_ATTEMPTS:
