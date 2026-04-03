@@ -1,4 +1,4 @@
-# Chadshani — Technical Handoff (v3.3.2)
+# Chadshani — Technical Handoff (v3.3.7)
 
 _Last updated: 2026-04-03_
 
@@ -170,10 +170,97 @@ If validation fails → script exits without committing. Fix in generate_json.py
 
 ---
 
+## Recovery Runbook
+
+### אם קיבלת ntfy שגיאה:
+
+| הודעה | סיבה | פעולה |
+|---|---|---|
+| "שגיאה ביצירת נתונים" | `generate_json.py` נכשל | בדוק `GEMINI_API_KEY`, בדוק RSS accessibility |
+| "ולידציה נכשלה" | נתונים גרועים מגמיני | הרץ ידנית, בדוק `data/latest.json` |
+| "latest.json חסר" | `generate_json.py` לא סיים לכתוב | בדוק שגיאות Python ב-Task Scheduler log |
+| "JSON פגום" | קובץ נחתך באמצע | הרץ ידנית מחדש |
+| "git add/commit נכשל" | בעיית git repo | בדוק `git status` ב-`e:\Claude` |
+| "שגיאת רשת" (push) | בעיית internet / GitHub auth | בדוק internet + `git push` ידנית |
+| "האתר לא עודכן" (watchdog) | ריצה לא הצליחה בשקט | הרץ ידנית, בדוק Task Scheduler |
+| "האתר לא נגיש" (watchdog) | GitHub Pages down / DNS | בדוק https://shalevgigi-vks.github.io/Chadshani |
+
+### הרצה ידנית (מכל terminal):
+
+```powershell
+python "e:\Claude\Shalev's_Projects\2_Chadshani\chadshani_auto.py"
+```
+
+### אם האתר ישן מ-24 שעות:
+
+1. הרץ `chadshani_auto.py` ידנית — עקוב אחרי output
+2. אם `generate_json.py` נכשל: בדוק `GEMINI_API_KEY` מוגדר
+   ```powershell
+   [System.Environment]::GetEnvironmentVariable('GEMINI_API_KEY','User')
+   ```
+3. אם ולידציה נכשלה: פתח `data/latest.json` וחפש את השדה הבעייתי
+4. גיבוי תמיד זמין ב-`git log` — הגרסה האחרונה של `data/latest.json`
+
+### בדיקת מצב Task Scheduler:
+
+```powershell
+Get-ScheduledTask -TaskName "chadshani*" | Select TaskName, State, LastRunTime, LastTaskResult
+```
+
+`LastTaskResult = 0` = הצלחה. כל מספר אחר = כשל.
+
+### Watchdog tasks:
+
+| Task | זמן | מטרה |
+|---|---|---|
+| `chadshani-watchdog-0800` | 08:00 יומי | בדיקה 1h15m אחרי ריצת 06:45 |
+| `chadshani-watchdog-2000` | 20:00 יומי | בדיקה 1h15m אחרי ריצת 18:45 |
+
+---
+
+## Performance — Frontend Build (v3.3.7+)
+
+### Tailwind CSS — Static Build (NOT CDN)
+
+The site uses a **pre-built, purged Tailwind CSS** file instead of the CDN Play script.
+
+| Resource | Before | After |
+|----------|--------|-------|
+| Tailwind CDN (runtime scan) | 356KB + browser scan | 0 |
+| `assets/tailwind.min.css` | — | 40KB (purged) |
+| Tailwind runtime JS | 356KB | 0 |
+
+**When to regenerate `assets/tailwind.min.css`:**
+Only when `index_template.html` adds new Tailwind classes.
+```bash
+cd "Shalev's_Projects/2_Chadshani"
+npm run build:css          # one-time build
+npm run watch:css          # during development
+```
+
+**Never edit `assets/tailwind.min.css` directly** — it is auto-generated from `index_template.html` via `tailwind.config.js`.
+
+### Other Optimizations Applied
+- `preconnect` for `fonts.googleapis.com` + `fonts.gstatic.com`
+- Material Symbols subsetted via `icon_names=` param (20 icons only)
+- `latest.json` cache: 5-minute window (`Math.floor(Date.now()/300000)`) instead of no-cache
+
+### Rebuild After Template Changes
+```bash
+npm run build:css && cp index_template.html index.html
+git add assets/tailwind.min.css index_template.html index.html
+git commit -m "fix(chadshani): rebuild CSS + sync template"
+git push
+```
+
+---
+
 ## Version History
 
 | Version | Date | Key Changes |
 |---------|------|-------------|
+| v3.3.7 | 2026-04-03 | Performance: static Tailwind CSS (40KB vs 356KB CDN), preconnect fonts, Material Symbols subset, JSON 5-min cache |
+| v3.3.6 | 2026-04-03 | Gemini 2.5-flash-lite (richer content), notification title-only, trailing-comma JSON repair, Task Scheduler path fix |
 | v3.3.2 | 2026-04-03 | Notification fix (TypeError + verify_deployment), heading unification (.page-h2), browser tab title, AI 7 updates/company, TECH_HANDOFF rewrite |
 | v3.3.1 | 2026-04-03 | 10 UI fixes: hero height, sidebar bio removed, alert dedup, RTL crypto cards, F&G legend, Hebrew "מסקנה טקטית", narrative icons, Google favicon logos |
 | v3.3.0 | 2026-04-03 | Mobile design: pill ticker, circular gauges, alert bar |
