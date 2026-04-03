@@ -66,6 +66,8 @@ JSON_PROMPT = """
     {"title": "...", "body": "...", "so_what": "..."},
     {"title": "...", "body": "...", "so_what": "..."},
     {"title": "...", "body": "...", "so_what": "..."},
+    {"title": "...", "body": "...", "so_what": "..."},
+    {"title": "...", "body": "...", "so_what": "..."},
     {"title": "...", "body": "...", "so_what": "..."}
   ],
   "section_3_sectors": [
@@ -698,7 +700,7 @@ def validate(data):
         if item.get("price") in ("לא זמין", "$...", None):
             issues.append(f"crypto {item.get('ticker')} price missing")
     # Required sections must be present and non-empty
-    for section, min_items in [("section_2_news", 4), ("section_3_sectors", 11),
+    for section, min_items in [("section_2_news", 6), ("section_3_sectors", 11),
                                 ("section_5_semis", 11), ("section_6_software", 10),
                                 ("section_7_ai", 4)]:
         items = data.get(section, [])
