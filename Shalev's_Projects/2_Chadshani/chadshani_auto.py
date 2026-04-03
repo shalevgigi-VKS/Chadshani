@@ -32,6 +32,14 @@ def monthly_cost_ils():
                if r.get("ts", "").startswith(month))
 
 
+def daily_cost_ils():
+    """Sum cost_ils for current UTC calendar day."""
+    log = read_cost_log()
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    return sum(r.get("cost_ils", 0.0) for r in log.get("runs", [])
+               if r.get("ts", "").startswith(today))
+
+
 def notify(title, message, tags="white_check_mark", priority=3):
     """שליחת התראה דרך ntfy.sh JSON API — תמיכה מלאה בעברית."""
     try:
@@ -113,6 +121,12 @@ def main():
         sys.exit(1)
     if month_ils >= BUDGET_ILS * 0.9:
         print(f"[BUDGET] WARNING: {pct:.0f}% used")
+        notify("חדשני — תקציב 90% ⚠️", f"₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} השתמשו החודש", tags="x", priority=4)
+
+    # Daily cost spike check
+    day_ils = daily_cost_ils()
+    if day_ils > 1.5:
+        notify("חדשני — עלות יומית חריגה 💸", f"₪{day_ils:.2f} היום", tags="x", priority=4)
 
     # Step 1: (DISCONTINUED) Site remains live during update (v3.2.11 LOCKDOWN)
     print("[INFO] skipped maintenance mode switch — site stays live during data fetch")
@@ -172,17 +186,33 @@ def main():
             print("[VALIDATE] FAIL:")
             for i in issues:
                 print(f"  - {i}")
+            notify("חדשני — ולידציה נכשלה ⚠️", issues[0], tags="x", priority=4)
             sys.exit(1)
         print(f"[VALIDATE] PASS — {len(data)} keys")
+    except FileNotFoundError:
+        print("[VALIDATE] ERROR: latest.json not found")
+        notify("חדשני — latest.json חסר ⚠️", "", tags="x", priority=4)
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"[VALIDATE] ERROR: JSON corrupt — {e}")
+        notify("חדשני — JSON פגום ⚠️", str(e)[:80], tags="x", priority=4)
+        sys.exit(1)
     except Exception as e:
         print(f"[VALIDATE] ERROR: {e}")
+        notify("חדשני — שגיאת ולידציה ⚠️", str(e)[:80], tags="x", priority=4)
         sys.exit(1)
 
     # Step 3: Restore real site + stage data + index together
     dst_index = os.path.join(REPO_DIR, INDEX_REL)
-    if os.path.abspath(INDEX_REAL) != os.path.abspath(dst_index):
-        shutil.copy2(INDEX_REAL, dst_index)
+    try:
+        if os.path.abspath(INDEX_REAL) != os.path.abspath(dst_index):
+            shutil.copy2(INDEX_REAL, dst_index)
+    except Exception as e:
+        print(f"[ERROR] Failed to copy index template: {e}")
+        notify("חדשני — שגיאה בהעתקת template ⚠️", str(e)[:80], tags="x", priority=4)
+        sys.exit(1)
     if not run(["git", "add", DATA_REL, INDEX_REL], cwd=REPO_DIR):
+        notify("חדשני — git add נכשל ⚠️", "", tags="x", priority=4)
         sys.exit(1)
 
     # Step 4: Commit (skip if nothing changed)
@@ -193,8 +223,10 @@ def main():
     if commit_result.returncode != 0:
         if "nothing to commit" in commit_result.stdout or "nothing to commit" in commit_result.stderr:
             print("[SKIP] Nothing changed — no commit needed")
+            notify("חדשני — ללא שינויים ℹ️", "", priority=2)
             sys.exit(0)
         print(f"[ERROR] git commit failed\n{commit_result.stderr}")
+        notify("חדשני — git commit נכשל ⚠️", commit_result.stderr[:80], tags="x", priority=4)
         sys.exit(1)
     print(commit_result.stdout.strip())
 
@@ -208,11 +240,16 @@ def main():
     # v3.2.16: High-priority success notification with version info
     expected_ts = data.get("generated_at", now)
     if verify_deployment(expected_ts):
-        notify("חדשני — עודכן ✅", f"עדכון הושלם בהצלחה — {now}", priority=5)
+        notify("חדשני — עודכן ✅", "", priority=5)
     else:
         print("[WARN] Sync verification timed out — sending notification anyway")
-        notify("חדשני — עודכן (אימות נכשל) ⚠️", f"פוש הצליח אך לא אומת — {now}", priority=3)
+        notify("חדשני — עודכן (אימות נכשל) ⚠️", "", priority=3)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"[FATAL] Unhandled exception: {e}")
+        notify("חדשני — שגיאה לא צפויה ⚠️", str(e)[:80], tags="x", priority=4)
+        sys.exit(1)

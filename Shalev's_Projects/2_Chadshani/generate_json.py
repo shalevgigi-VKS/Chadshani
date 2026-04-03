@@ -764,6 +764,8 @@ def clean_raw(raw):
     raw = re.sub(r'[\x00-\x08\x0a-\x1f\x7f]', '', raw)
     # Strip Unicode directional/invisible marks
     raw = re.sub(r'[\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]', '', raw)
+    # Remove trailing commas before ] or } (invalid JSON, common in LLM output)
+    raw = re.sub(r',\s*([\]}])', r'\1', raw)
     return raw
 
 
@@ -850,6 +852,7 @@ def call_gemini(model, attempt, news_context):
             system_instruction=SYSTEM_PROMPT,
             temperature=0.3,
             max_output_tokens=16384,
+            response_mime_type="application/json",
             # No google_search tool — news fetched via free sources
         ),
     )
@@ -970,8 +973,8 @@ def generate():
     # Fetch free news context + all market prices upfront (single fetch, reused below)
     news_context, fear_greed, market_prices = build_news_context()
 
-    # Models: gemini-flash-lite-latest (free tier alias — v3.3.4)
-    MODEL_ATTEMPTS = [("models/gemini-flash-lite-latest", 3)]
+    # Models: gemini-2.5-flash-lite (richer content — v3.3.6)
+    MODEL_ATTEMPTS = [("models/gemini-2.5-flash-lite", 3)]
 
     data = None
     for model, max_att in MODEL_ATTEMPTS:
