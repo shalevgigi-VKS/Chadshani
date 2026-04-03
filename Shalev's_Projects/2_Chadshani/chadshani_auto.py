@@ -143,6 +143,10 @@ def main():
         [sys.executable, generate_script],
         cwd=PROJECT_DIR
     )
+    if result.returncode == 2:
+        print("[SKIP] Gemini unavailable — deploy aborted, site stays unchanged")
+        notify("חדשני — דולג ⏭", "Gemini לא זמין, נסיון הבא ב-18:45", tags="warning", priority=3)
+        sys.exit(0)
     if result.returncode != 0:
         print("[ERROR] generate_json.py failed — aborting")
         notify("חדשני — שגיאה ביצירת נתונים ⚠️", "", tags="x")

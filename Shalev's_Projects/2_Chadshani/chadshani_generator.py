@@ -142,10 +142,8 @@ def generate():
 
     if data is None:
         if prev:
-            print("[FALLBACK] Using last known good latest.json — refreshing timestamp only")
-            data = prev
-            data["generated_at"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-            data["_fallback"] = True
+            print("[FALLBACK] All models failed — site NOT updated. Deploy aborted.")
+            sys.exit(2)  # exit 2 = fallback signal: auto.py skips deploy, no stale data pushed
         else:
             print("ERROR: All models exhausted and no fallback available")
             sys.exit(1)
