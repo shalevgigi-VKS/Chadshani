@@ -141,16 +141,16 @@
     <header class="bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl sticky top-0 z-50 shadow-[0_16px_64px_-12px_rgba(0,0,0,0.04)]">
         <div class="flex flex-row justify-between items-center w-full px-4 md:px-6 py-3">
             <!-- Brand Section -->
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
                 <div class="relative group">
-                    <img src="chadshani_logo.jpg" alt="חדשני" class="w-20 h-20 md:w-24 md:h-24 rounded-3xl object-cover border-4 border-white shadow-2xl ring-1 ring-black/5 hover:scale-105 transition-all duration-500">
-                    <div class="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-600 rounded-full border-4 border-white flex items-center justify-center z-20 shadow-lg">
-                        <span class="material-symbols-outlined text-white text-[14px] font-black">star</span>
+                    <img src="chadshani_logo.jpg" alt="חדשני" class="w-14 h-14 md:w-24 md:h-24 rounded-2xl md:rounded-3xl object-cover border-2 md:border-4 border-white shadow-xl md:shadow-2xl ring-1 ring-black/5 hover:scale-105 transition-all duration-500">
+                    <div class="absolute -bottom-0.5 -right-0.5 w-6 h-6 md:w-8 md:h-8 bg-blue-600 rounded-full border-2 md:border-4 border-white flex items-center justify-center z-20 shadow-lg">
+                        <span class="material-symbols-outlined text-white text-[12px] md:text-[14px] font-black">star</span>
                     </div>
                 </div>
                 <div class="flex flex-col items-start text-right">
-                    <span class="text-3xl md:text-5xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-1">חדשני</span>
-                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Intelligence Terminal (v3.2.12)</span>
+                    <span class="text-2xl md:text-5xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-0.5">חדשני</span>
+                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Intelligence Terminal (v3.2.13)</span>
                 </div>
             </div>
             
@@ -164,8 +164,8 @@
             </div>
 
 
-            <!-- User Actions / Status -->
-            <div class="flex items-center gap-4">
+            <!-- User Actions / Status (Only on Desktop to save mobile space) -->
+            <div class="hidden md:flex items-center gap-4">
                 <div id="battery-status" class="flex flex-col items-end text-[10px] font-black group">
                     <div class="flex items-center gap-1.5 text-emerald-500 uppercase tracking-widest mb-0.5">
                         <span class="material-symbols-outlined text-xs">sync_saved_locally</span>
@@ -268,13 +268,13 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                     </div>
                     
-                    <div id="macro-hero-content" class="absolute inset-0 z-10 flex flex-col justify-end p-8 md:p-16 text-right w-full">
-                        <div class="inline-flex items-center self-end gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-6 shadow-xl">
+                    <div id="macro-hero-content" class="absolute inset-0 z-10 flex flex-col justify-end p-6 md:p-16 text-right w-full">
+                        <div class="inline-flex items-center self-end gap-2 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-4 shadow-xl">
                             <span class="material-symbols-outlined text-xs">analytics</span>
                             <span>פרספקטיבה יומית / <span id="macro-date">--</span></span>
                         </div>
-                        <h1 id="macro-headline" class="text-3xl md:text-6xl font-black font-headline text-white mb-6 leading-[1.1] w-full drop-shadow-2xl">טוען נתונים...</h1>
-                        <p id="macro-analysis" class="text-base md:text-2xl text-slate-100 w-full mb-8 leading-relaxed font-black text-justify drop-shadow-2xl"></p>
+                        <h1 id="macro-headline" class="text-xl md:text-6xl font-black font-headline text-white mb-4 leading-[1.1] w-full drop-shadow-2xl">טוען נתונים...</h1>
+                        <p id="macro-analysis" class="text-sm md:text-2xl text-slate-100 w-full mb-6 leading-relaxed font-black text-justify drop-shadow-2xl"></p>
                         
                         <div class="flex flex-row-reverse gap-4 opacity-0 pointer-events-none">
                             <button class="px-8 py-3 bg-white text-blue-600 rounded-2xl font-black text-sm">קרא עוד</button>
@@ -765,15 +765,26 @@
             const aiLogoMap = {
                 'OpenAI': 'openai.com',
                 'Google': 'google.com',
+                'Alphabet': 'google.com',
                 'Anthropic': 'anthropic.com',
                 'Meta': 'meta.com',
+                'Facebook': 'meta.com',
                 'xAI': 'x.ai',
                 'Perplexity': 'perplexity.ai',
                 'Mistral': 'mistral.ai',
                 'Nvidia': 'nvidia.com',
+                'AMD': 'amd.com',
                 'Microsoft': 'microsoft.com',
                 'Amazon': 'amazon.com',
-                'Apple': 'apple.com'
+                'Apple': 'apple.com',
+                'Tesla': 'tesla.com',
+                'NIO': 'nio.com',
+                'Intel': 'intel.com',
+                'TSMC': 'tsmc.com',
+                'Arm': 'arm.com',
+                'Broadcom': 'broadcom.com',
+                'Palantir': 'palantir.com',
+                'Snowflake': 'snowflake.com'
             };
             const s7 = d.section_7_ai;
             if (s7) {
