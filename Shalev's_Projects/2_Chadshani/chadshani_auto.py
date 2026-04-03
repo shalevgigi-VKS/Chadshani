@@ -12,6 +12,12 @@ import urllib.request
 import shutil
 from datetime import datetime
 
+# Force UTF-8 stdout/stderr for Hebrew + emoji on Windows
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 NTFY_TOPIC = "CloudeCode"
 BUDGET_ILS = 25.0  # Increased to cover current bill (₪18.61) — future runs must be ₪0.00
 COST_LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cost_log.json")

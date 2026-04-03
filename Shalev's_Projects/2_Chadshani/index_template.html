@@ -28,7 +28,7 @@
     <!-- Text fonts (single request) -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <!-- Material Symbols — subsetted to icons in use -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&icon_names=account_tree,analytics,auto_stories,check_circle,chevron_left,chevron_right,currency_bitcoin,hive,insights,lightbulb,list_alt,local_fire_department,newspaper,psychology,public,query_stats,show_chart,sync_saved_locally,trending_up,warning&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&icon_names=account_tree,analytics,auto_stories,check_circle,chevron_left,chevron_right,currency_bitcoin,hive,insights,lightbulb,list_alt,local_fire_department,newspaper,psychology,public,query_stats,show_chart,sync_saved_locally,trending_down,trending_up,warning&display=swap" rel="stylesheet"/>
     
     <style>
         body {
@@ -189,10 +189,7 @@
         </div>
     </section>
 
-    <!-- Mobile Pill Ticker (hidden on desktop) -->
-    <section id="mobile-pill-ticker" class="md:hidden overflow-x-auto no-scrollbar px-4 py-2 flex gap-2 bg-white/60 backdrop-blur-sm border-b border-slate-100" dir="ltr" style="-ms-overflow-style:none;scrollbar-width:none">
-        <!-- Populated by JS -->
-    </section>
+    <!-- Mobile Pill Ticker removed — global-slider already serves mobile -->
 
     <div class="flex flex-row">
         <!-- Sidebar Navigation (Desktop) -->
@@ -653,8 +650,8 @@
             document.getElementById('nav-' + pageId)?.classList.add('active');
             document.getElementById('mob-' + pageId)?.classList.add('active');
 
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Scroll to top instantly (smooth causes mid-page jump when switching pages)
+            window.scrollTo(0, 0);
             
             // Hash update
             history.pushState(null, null, '#' + pageId);
@@ -768,16 +765,21 @@
                 grid.innerHTML = s3.map(s => {
                     const amountRaw = s.flow_amount || '$0B';
                     const amountVal = Math.abs(parseFloat(amountRaw.replace(/[+$BM]/g, '')) || 0);
-                    const isPos = amountRaw.startsWith('+');
-                    
-                    // v3.2.16: Aggressive Heatmap Coloring
+                    // Use flow_direction as primary signal, fall back to amountRaw sign
+                    const flowDir = s.flow_direction === 'in' ? 'in'
+                                  : s.flow_direction === 'out' ? 'out'
+                                  : (amountRaw.startsWith('+') ? 'in' : amountRaw.startsWith('-') ? 'out' : 'neutral');
+                    const isPos = flowDir === 'in';
+                    const isNeg = flowDir === 'out';
+
+                    // Heatmap Coloring based on real flow direction
                     let heatColor = 'bg-slate-50 border-slate-100';
                     let textColor = 'text-slate-500';
                     if (amountVal > 0) {
                         if (isPos) {
                             heatColor = amountVal > 100 ? 'bg-emerald-100 border-emerald-200' : 'bg-emerald-50 border-emerald-100';
                             textColor = 'text-emerald-600';
-                        } else {
+                        } else if (isNeg) {
                             heatColor = amountVal > 100 ? 'bg-rose-100 border-rose-200' : 'bg-rose-50 border-rose-100';
                             textColor = 'text-rose-600';
                         }
@@ -789,7 +791,7 @@
                         <div class="${heatColor} p-6 rounded-[2.5rem] border shadow-sm hover:shadow-md transition-all text-right group flex flex-col h-full">
                             <div class="flex justify-between items-start mb-3">
                                 <div class="text-blue-600 font-headline font-black text-[10px] uppercase tracking-widest">${s.etf}</div>
-                                <span class="material-symbols-outlined text-sm ${textColor}">${isPos ? 'south_east' : 'north_west'}</span>
+                                <span class="material-symbols-outlined text-sm ${textColor}">${isPos ? 'trending_up' : (isNeg ? 'trending_down' : '')}</span>
                             </div>
                             <div class="text-sm font-black text-slate-800 mb-2">${s.name}</div>
                             <div class="text-2xl font-headline font-black ${isPositivePrice ? 'text-emerald-500' : 'text-rose-500'} mb-1">${s.change || '0%'}</div>
@@ -857,20 +859,20 @@
             if (s4) {
                 const grid = document.getElementById('crypto-market-grid');
                 grid.innerHTML = s4.map(c => `
-                    <div class="glass-card p-4 rounded-[2rem] border border-amber-100/50 hover:border-amber-300 transition-all group flex flex-col gap-3">
+                    <div class="glass-card p-4 rounded-[2rem] border border-amber-200 hover:border-amber-400 transition-all group flex flex-col gap-3">
                         <div class="flex items-center gap-2">
                             <img src="https://static.coinpaprika.com/coin/${c.ticker?.toLowerCase()}-${c.ticker === 'BTC' ? 'bitcoin' : (c.ticker === 'ETH' ? 'ethereum' : (c.ticker === 'SOL' ? 'solana' : (c.ticker === 'XRP' ? 'xrp' : (c.ticker === 'LINK' ? 'chainlink' : (c.ticker === 'ADA' ? 'cardano' : (c.ticker === 'TAO' ? 'bittensor' : (c.ticker === 'KAS' ? 'kaspa' : 'crypto')))))))}/logo.png" class="w-8 h-8 rounded-full shadow-md group-hover:scale-110 transition-transform flex-shrink-0" onerror="this.onerror=null; this.src='https://coinicons-api.vercel.app/api/icon/${c.ticker?.toLowerCase()}'">
                             <div class="min-w-0">
-                                <div class="text-sm font-black text-slate-800 leading-none">${c.ticker}</div>
-                                <div class="text-[8px] text-amber-600 font-bold uppercase tracking-widest italic mt-0.5">מטבע קריפטו</div>
+                                <div class="text-sm font-black text-slate-900 leading-none">${c.ticker}</div>
+                                <div class="text-[9px] text-amber-700 font-bold uppercase tracking-widest italic mt-0.5">מטבע קריפטו</div>
                             </div>
                         </div>
                         <div class="flex items-baseline justify-between">
                             <div class="text-lg font-headline font-black text-slate-900 leading-none">${c.price || '---'}</div>
-                            <div class="text-[10px] font-black px-2 py-0.5 rounded-full ${c.change_24h?.startsWith('+') ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}">${c.change_24h || '--'}</div>
+                            <div class="text-[10px] font-black px-2.5 py-0.5 rounded-full ${c.change_24h?.startsWith('+') ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}">${c.change_24h || '--'}</div>
                         </div>
-                        <div class="bg-amber-50/50 p-2.5 rounded-xl border border-amber-100">
-                            <p class="text-[9px] text-slate-700 leading-relaxed font-medium text-justify">${c.note}</p>
+                        <div class="bg-amber-100/80 p-3 rounded-xl border border-amber-200">
+                            <p class="text-[10px] text-slate-800 leading-relaxed font-semibold text-justify">${c.note}</p>
                         </div>
                     </div>
                 `).join('');
