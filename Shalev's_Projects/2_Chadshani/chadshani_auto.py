@@ -161,7 +161,9 @@ def main():
         sys.exit(1)
 
     # Step 3: Restore real site + stage data + index together
-    shutil.copy2(INDEX_REAL, os.path.join(REPO_DIR, INDEX_REL))
+    dst_index = os.path.join(REPO_DIR, INDEX_REL)
+    if os.path.abspath(INDEX_REAL) != os.path.abspath(dst_index):
+        shutil.copy2(INDEX_REAL, dst_index)
     if not run(["git", "add", DATA_REL, INDEX_REL], cwd=REPO_DIR):
         sys.exit(1)
 

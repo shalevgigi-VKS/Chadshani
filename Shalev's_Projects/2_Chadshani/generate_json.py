@@ -540,6 +540,30 @@ def fetch_crypto_price(yf_sym):
     return None, 0.0
 
 
+
+
+# CoinGecko ID mapping for tokens not available on yfinance
+COINGECKO_MAP = {
+    "TAO": "bittensor",
+    "KAS": "kaspa",
+}
+
+def fetch_coingecko_price(coin_id):
+    """Fetch price + 24h change from CoinGecko free API (no key required)."""
+    try:
+        url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd&include_24hr_change=true"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        resp = urllib.request.urlopen(req, timeout=10)
+        data = json.loads(resp.read().decode())
+        if coin_id in data:
+            price = data[coin_id].get("usd")
+            change = data[coin_id].get("usd_24h_change", 0.0)
+            if price:
+                return float(price), float(change)
+    except Exception as e:
+        print(f"[COINGECKO WARN] {coin_id}: {e}")
+    return None, 0.0
+
 def patch_prices(data, market_prices=None, fear_greed=None):
     """Inject all numerical data from local sources into the Gemini text skeleton.
     market_prices: pre-fetched dict from build_news_context (avoids double fetch).
@@ -583,10 +607,14 @@ def patch_prices(data, market_prices=None, fear_greed=None):
 
     # ── section_4_crypto: price + change_24h ──────────────────────────────────
     for item in data.get("section_4_crypto", []):
-        yf_sym = CRYPTO_MAP.get(item.get("ticker", ""))
-        if not yf_sym:
-            continue
-        p, c = fetch_crypto_price(yf_sym)
+        ticker = item.get("ticker", "")
+        p, c = None, 0.0
+        # Try yfinance first, fall back to CoinGecko for tokens not on Yahoo
+        yf_sym = CRYPTO_MAP.get(ticker)
+        if yf_sym:
+            p, c = fetch_crypto_price(yf_sym)
+        if p is None and ticker in COINGECKO_MAP:
+            p, c = fetch_coingecko_price(COINGECKO_MAP[ticker])
         if p is not None:
             item["price"] = fmt_price(p, is_crypto=True)
             item["change_24h"] = fmt_change(c)
