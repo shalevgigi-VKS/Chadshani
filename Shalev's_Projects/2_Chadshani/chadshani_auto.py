@@ -40,11 +40,11 @@ def notify(title, message, tags="white_check_mark"):
             "message": message,
             "tags": [tags],
             "priority": 3
-        }).encode("utf-8")
+        }, ensure_ascii=False).encode("utf-8")
         req = urllib.request.Request(
             "https://ntfy.sh",
             data=payload,
-            headers={"Content-Type": "application/json"},
+            headers={"Content-Type": "application/json; charset=utf-8"},
             method="POST"
         )
         urllib.request.urlopen(req, timeout=10)
@@ -188,7 +188,7 @@ def main():
     # Cost summary: show last run + monthly total from local log
     # Note: local calc may undercount thinking tokens — actual Google bill is authoritative
     month_after = monthly_cost_ils()
-    notify("חדשני — עודכן ✅", f"₪{month_after:.2f} / ₪{BUDGET_ILS:.0f}")
+    notify("חדשני עודכן ✅", f"₪{month_after:.2f} מתוך ₪{BUDGET_ILS:.0f}")
 
 
 if __name__ == "__main__":
