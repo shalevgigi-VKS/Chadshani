@@ -27,32 +27,33 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 
 SYSTEM_PROMPT = """אתה "חדשני" — דסק חדשות מודיעיני פיננסי-טכנולוגי בכיר.
 שפה: עברית בלבד. חריגים: טיקרים, שמות חברות, שמות מוצרים רשמיים.
-סגנון: אנליטי, צפוף, מעמיק. אין להמציא מידע מספרי.
+סגנון: אנליטי, מקצועי, מעמיק. ספק ערך של אנליסט בכיר.
 
-כללי התייעלות ואמת מחמירים:
-- חיסכון בטוקנים: התנסח בצורה המדויקת, הקצרה והתמציתית ביותר, ללא מילות פתיחה או סיום.
-- אסור להמציא שמות מוצרים, שמות קוד, גרסאות, מודלים, או הכרזות שלא אומתו במקור ידועה.
-- במקרה שאין חדשות בתחום מסוים, חובה להציג את החדשות האחרונות הידועות במקום להשאיר אזור ריק.
-- section_7_ai: כתוב אך ורק מוצרים ומודלים שהוכרזו רשמית. אין שמות קוד בדויים.
-- ספק מידע עובדתי בלבד. ספקולציות יסומנו במפורש כ"לפי דיווחים" או "צפוי".
+כללי כתיבה ואמת (v3.2.11):
+- עושר במידע: התנסח בצורה מורחבת, עשירה ומעמיקה. ספק ניתוח "בשרני" לכל ידיעה.
+- מניעת כפילויות חמורה: **חל איסור מוחלט** על חזרה על אותו נושא או כותרת פעמיים ב-JSON. 
+- ייחודיות ההתרעה: הנושא שנבחר ל-section_1_situation.alert **אסור שיופיע** שוב באף אחת מידיעות ה-section_2_news. אלו חייבים להיות נושאים שונים לחלוטין.
+- אמינות: אסור להמציא שמות מוצרים, שמות קוד, גרסאות, מודלים, או הכרזות שלא אומתו במקור ידועה.
+- במקרה שאין חדשות בתחום מסוים, בצע ניתוח מגמת מחיר (Tech Analysis) או סקירת נרטיב כללית של התחום.
 """
 
 JSON_PROMPT = """
 על בסיס חדשות השוק והנתונים שסופקו למעלה, הפק תשובה JSON בלבד (ללא markdown, ללא ```).
 מחירים, שינויים אחוזיים, ו-flow_amount יוזרקו אוטומטית — אל תכלול אותם ב-JSON.
+הוראה קריטית: אל תהיה תמציתי. ספק ניתוח מורחב ואנליטי לכל שדה.
 
 הפורמט המדויק (שדות טקסט בלבד):
 {
   "generated_at": "[ISO timestamp]Z",
   "section_1_situation": {
-    "headline": "משפט אחד — תמונת מצב מרכזית של השוק היום",
-    "analysis": "פסקה קצרה — Risk-on/Risk-off, כוח מניע, סנטימנט",
+    "headline": "משפט אחד עוצמתי - תמונת מצב מרכזית של השוק היום (Daily Focus)",
+    "analysis": "פסקה עשירה ומפורטת — Risk-on/Risk-off, כוח מניע, סנטימנט והקשר גלובלי",
     "cards": [
       {"label": "מיקוד הוני", "value": "..."},
       {"label": "גורמי חיכוך", "value": "..."},
       {"label": "סביבת מסחר", "value": "..."}
     ],
-    "alert": {"title": "התרעת מעקב קריטית", "value": "[מילה/ביטוי קצר — שם אירוע, חברה, מוצר, או סכום. לעולם לא N/A — תמיד משהו ספציפי]", "description": "...", "impact": "HIGH / MEDIUM / LOW VOLATILITY"},
+    "alert": {"title": "התרעת מעקב קריטית", "value": "[רמת חומרה קצרה: 'קריטי' / 'גבוה' / 'בינוני' — חייב להיות שונה לחלוטין מהכותרת, לעולם לא אותו טקסט]", "description": "...", "impact": "HIGH / MEDIUM / LOW VOLATILITY"},
     "gauges": {
       "vix": {"zone": "low/medium/high/extreme", "label": "תיאור מצב VIX"},
       "fear_greed_stock": {"label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"},
@@ -106,7 +107,8 @@ JSON_PROMPT = """
     {"ticker": "QCOM", "note": "..."},
     {"ticker": "ARM",  "note": "..."},
     {"ticker": "MRVL", "note": "..."},
-    {"ticker": "LRCX", "note": "..."}
+    {"ticker": "LRCX", "note": "..."},
+    {"ticker": "AMAT", "note": "..."}
   ],
   "section_6_software": [
     {"ticker": "MSFT",  "note": "..."},
@@ -121,12 +123,12 @@ JSON_PROMPT = """
     {"ticker": "SNOW",  "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI",         "product": "[שם מוצר לפי חדשות בלבד]", "update": "[לפי חדשות שסופקו. אם אין — 'אין חדשות חדשות מהשבוע האחרון.' בלבד]", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Google/Gemini",  "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude","product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Meta/Llama",     "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "xAI/Grok",       "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Perplexity",     "product": "...", "update": "...", "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
+    {"company": "OpenAI",          "product": "[שם מוצר לפי חדשות בלבד]", "updates": ["[עדכון 1 — שחרור מודל / יכולת חדשה]", "[עדכון 2 — שינוי תמחור / API]", "[עדכון 3 — שיתוף פעולה / שותפות עסקית]", "[עדכון 4 — ביצועים / benchmark]"], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Google/Gemini",   "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude","product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Meta/Llama",      "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "xAI/Grok",        "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Perplexity",      "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -154,13 +156,17 @@ JSON_PROMPT = """
   }
 }
 
-כללים קריטיים:
-- **חל איסור מוחלט** על שימוש בביטוי "אין חדשות חדשות" או "נתונים לא זמינים". אם אין חדשות ספציפיות, בצע ניתוח מגמת מחיר (Tech Analysis) או סקירת נרטיב כללית של התחום. כל טיקר חייב לקבל הסבר אסטרטגי.
-- section_7_ai: חדשות שסופקו בלבד. אם אין חדשות — בצע עדכון לגבי המצב הקיים של החברה/המודל.
+כללים קריטיים — מדיניות "אפס תוכן דל" (v3.2.13):
+- **חל איסור מוחלט** על שימוש בביטוי "אין חדשות חדשות", "מידע לא זמין", "לא חלו שינויים" או "Placeholder".
+- **עושר במידע (MUST)**: כל פסקה (Analysis, Narrative, Conclusion) חייבת להיות מפורטת (לפחות 4-5 משפטים), מקצועית ומעמיקה. אם אין חדשות דחופות, בצע ניתוח טכני (Chart Context) או רעיוני (Investment Thesis) רלוונטי.
+- **section_7_ai**: שדה `updates` הוא **מערך** של 4 משפטים בעברית. כל משפט מכסה זווית שונה: שחרור מוצר, יכולת חדשה, עסקה/שותפות, ביצועים. אם אין חדשות לחברה — מערך עם פריט אחד: "אין חדשות רלוונטיות מהשבוע האחרון."
+- **alert.value**: חייב להיות שונה לחלוטין מ-alert.title. השתמש ב-'קריטי' / 'גבוה' / 'בינוני' — לא שם אירוע.
+- **איסור כפילויות**: נושא שהופיע ב-"התרעה קריטית" (Alert) או בפרספקטיבה היומית — **אסור** שיופיע שוב בחדשות המיקרו או ב-AI.
+- **עולם הקריפטו**: הרחב את הניתוח על זרימת כסף ל-ETFs, פעילות לוויתנים ב-On-chain, וקשר למקרו (סביבת ריבית). הפוך את הניתוח ל-"חי" ורלוונטי לרגע זה.
+- **לוגואים**: אם חברה לא מופיעה במידע — השתמש בלוגו של החברה האם או הסקטור.
 - gauges zones — F&G: extreme_fear(0-24)/fear(25-44)/neutral(45-54)/greed(55-74)/extreme_greed(75-100). VIX: low(<15)/medium(15-20)/high(20-30)/extreme(>30).
 - section_3_sectors: מיין לפי שינוי אחוזי מהגבוה לנמוך (gainers top).
-- alert.value: חייב להיות ביטוי ספציפי וחדשני.
-- החזר JSON בלבד.
+- החזר JSON בלבד ללא הערות.
 """
 
 # Models: flash (2 attempts) → pro (1 attempt, expensive last resort)
@@ -456,9 +462,7 @@ ETF_SECTORS = ["XLK", "XLV", "XLU", "XLF", "XLE", "XLY", "XLI", "XLB", "XLRE", "
 
 
 def fetch_etf_aum_flows(etf_list):
-    """Calculate flow proxy: daily_return × AUM for each ETF (yfinance totalAssets).
-    Returns dict: etf → formatted flow_amount string, e.g. "+$1.2B" or "-$0.8B".
-    This replaces Gemini-estimated values with real math on real data.
+    """v3.2.16: Calculate Notional Flow (Delta-AUM proxy).
     """
     result = {}
     for sym in etf_list:
@@ -470,12 +474,15 @@ def fetch_etf_aum_flows(etf_list):
             aum   = (t.info or {}).get("totalAssets", 0) or 0
             if price and prev and prev > 0 and aum > 0:
                 daily_return = (float(price) - float(prev)) / float(prev)
-                flow_b = (aum * daily_return) / 1_000_000_000
-                sign = "+" if flow_b >= 0 else "-"
-                result[sym] = f"{sign}${abs(flow_b):.1f}B"
+                flow_m = (aum * daily_return) / 1_000_000
+                sign = "+" if flow_m >= 0 else "-"
+                # Amplify the display for heat: millions instead of billions for smaller caps
+                if abs(flow_m) >= 1000:
+                    result[sym] = f"{sign}${abs(flow_m/1000):.1f}B"
+                else:
+                    result[sym] = f"{sign}${abs(flow_m):.0f}M"
         except Exception as e:
             print(f"[FLOW WARN] {sym}: {e}")
-    print(f"[FLOWS] calculated for {len(result)}/{len(etf_list)} ETFs")
     return result
 
 
@@ -705,6 +712,14 @@ def validate(data):
     # Markets block must exist
     if not data.get("markets"):
         issues.append("markets block missing")
+
+    # PERFECTIONIST AUDIT (v3.2.12): Block placeholder phrases
+    blacklist = ["אין חדשות", "אין עדכון", "לא זמין", "לא חלו שינויים", "ללא ידיעות", "אין מידע", "N/A"]
+    raw_str = json.dumps(data, ensure_ascii=False)
+    for phrase in blacklist:
+        if phrase in raw_str:
+            issues.append(f"Content contains blocked placeholder: {phrase}")
+
     return issues
 
 def clean_raw(raw):
@@ -819,9 +834,11 @@ _CONTENT_PLACEHOLDERS = {
 }
 
 
+# Blacklist for automated rejection of thin content
 _NO_NEWS_PHRASES = {
     "אין חדשות חדשות מהשבוע האחרון.", "אין חדשות חדשות מהשבוע האחרון",
-    "אין חדשות", "אין עדכון", "לא זמין", "לא זמין.", "N/A",
+    "אין חדשות", "אין עדכון", "לא זמין", "לא חלו שינויים", "ללא ידיעות", "אין מידע",
+    "N/A", "לא זמין.", "לא נמצאו ידיעות"
 }
 
 
@@ -835,6 +852,58 @@ def _load_previous():
         except Exception:
             pass
     return {}
+
+
+def deduplicate_sections(data):
+    """v3.2.16: Aggressive de-duplication.
+    Strip entries that share more than 2 significant keywords with higher priority sections.
+    """
+    seen_concepts = set()
+    
+    def extract_keywords(text):
+        if not text: return set()
+        # Filter for significant words (length > 4)
+        words = re.findall(r'\w{5,}', text.lower())
+        return set(words)
+
+    # 1. Alert & Hero (Highest Priority)
+    hero_text = (data.get("section_1_situation", {}).get("headline", "") + " " + 
+                 data.get("section_1_situation", {}).get("analysis", ""))
+    seen_concepts.update(extract_keywords(hero_text))
+    
+    alert_text = data.get("section_1_situation", {}).get("alert_title", "")
+    seen_concepts.update(extract_keywords(alert_text))
+
+    # 2. AI Intelligence (Section 7)
+    ai_items = data.get("section_7_ai", [])
+    for item in ai_items:
+        upd = item.get("update", "")
+        if upd: 
+            # If current AI update overlaps with Hero/Alert, we keep it (AI is high priority)
+            # but we will use it to strip General News.
+            seen_concepts.update(extract_keywords(upd))
+
+    # 3. Filter General News (Section 2)
+    news = data.get("section_2_news", [])
+    filtered_news = []
+    for item in news:
+        head = item.get("headline", "")
+        body = item.get("body", "")
+        news_concepts = extract_keywords(head + " " + body)
+        
+        # Check overlap
+        overlap = news_concepts.intersection(seen_concepts)
+        if len(overlap) >= 2:
+            print(f"[DEDUPE] Dropping duplicate news: {head[:40]}... (Overlap: {list(overlap)[:3]})")
+            continue
+        filtered_news.append(item)
+    data["section_2_news"] = filtered_news
+    
+    # 4. Filter Crypto Narrative from Global News
+    crypto_text = data.get("section_5_crypto", {}).get("narrative", "")
+    seen_concepts.update(extract_keywords(crypto_text))
+    
+    return data
 
 
 def merge_prev_no_news(data, prev):
@@ -871,8 +940,8 @@ def generate():
     # Fetch free news context + all market prices upfront (single fetch, reused below)
     news_context, fear_greed, market_prices = build_news_context()
 
-    # Max attempts: 2 per model to reduce wasted API spend
-    MODEL_ATTEMPTS = [("gemini-2.5-flash", 2), ("gemini-2.5-pro", 1)]
+    # Models: gemini-2.0-flash-lite-preview-02-05 (STRICT ZERO-COST LOCKDOWN v3.2.11)
+    MODEL_ATTEMPTS = [("models/gemini-2.0-flash-lite-preview-02-05", 3)]
 
     data = None
     for model, max_att in MODEL_ATTEMPTS:
@@ -883,6 +952,7 @@ def generate():
                 candidate = json.loads(raw)
                 candidate = patch_prices(candidate, market_prices=market_prices, fear_greed=fear_greed)
                 candidate = merge_prev_no_news(candidate, prev)
+                candidate = deduplicate_sections(candidate) # v3.2.14
                 issues = validate(candidate)
                 if issues:
                     print(f"[WARN] Validation failed attempt {attempt+1}: {issues[:3]}")
