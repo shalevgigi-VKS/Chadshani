@@ -32,7 +32,7 @@ def monthly_cost_ils():
                if r.get("ts", "").startswith(month))
 
 
-def notify(title, message, tags="white_check_mark"):
+def notify(title, message, tags="white_check_mark", priority=3):
     """שליחת התראה דרך ntfy.sh JSON API — תמיכה מלאה בעברית."""
     try:
         payload = json.dumps({
@@ -40,7 +40,7 @@ def notify(title, message, tags="white_check_mark"):
             "title": title,
             "message": message,
             "tags": [tags],
-            "priority": 3
+            "priority": priority
         }, ensure_ascii=False).encode("utf-8")
         req = urllib.request.Request(
             "https://ntfy.sh",
@@ -49,6 +49,7 @@ def notify(title, message, tags="white_check_mark"):
             method="POST"
         )
         urllib.request.urlopen(req, timeout=10)
+        print(f"[NTFY] שנשלחה התראה: {title}")
     except Exception as e:
         print(f"[NTFY] שגיאה בשליחת התראה: {e}")
 
@@ -73,23 +74,27 @@ def run(cmd, cwd=None, env=None):
 
 
 def verify_deployment(expected_ts, timeout=120):
-    """Wait for GitHub Pages to reflect the new update before notifying."""
-    url = "https://shalevgigi-vks.github.io/Chadshani/"
+    """Wait for GitHub Pages JSON to reflect the new generated_at timestamp."""
+    json_url = "https://shalevgigi-vks.github.io/Chadshani/data/latest.json"
     start = datetime.now()
-    print(f"[CHECK] Verifying deployment at {url}...")
+    print(f"[CHECK] Polling live JSON at {json_url}...")
     import time
     while (datetime.now() - start).seconds < timeout:
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Cache-Control": "no-cache"})
+            req = urllib.request.Request(
+                json_url,
+                headers={"User-Agent": "Mozilla/5.0", "Cache-Control": "no-cache, no-store"}
+            )
             with urllib.request.urlopen(req, timeout=10) as r:
-                html = r.read().decode("utf-8")
-                if expected_ts in html:
-                    print(f"[MATCH] Live site updated! ({expected_ts})")
+                live = json.loads(r.read().decode("utf-8"))
+                live_ts = live.get("generated_at", "")
+                if live_ts == expected_ts:
+                    print(f"[MATCH] Live JSON updated! generated_at={live_ts}")
                     return True
+                print(f"[WAIT] live={live_ts!r} expected={expected_ts!r} ({(datetime.now() - start).seconds}s)")
         except Exception as e:
             print(f"[RETRY] {e}")
         time.sleep(15)
-        print(f"[WAIT] Still waiting for GitHub Pages sync... ({(datetime.now() - start).seconds}s)")
     return False
 
 
@@ -154,8 +159,13 @@ def main():
         ai_section = data.get("section_7_ai", [])
         if len(ai_section) < 4:
             issues.append(f"section_7_ai has {len(ai_section)} items (need 4)")
-        placeholder_ai = sum(1 for item in ai_section
-                             if "אין חדשות חדשות" in (item.get("update", "") or ""))
+        # Support both new `updates` array and legacy `update` string
+        def _ai_no_news(item):
+            updates = item.get("updates")
+            if isinstance(updates, list):
+                return all("אין חדשות" in (u or "") for u in updates)
+            return "אין חדשות חדשות" in (item.get("update", "") or "")
+        placeholder_ai = sum(1 for item in ai_section if _ai_no_news(item))
         if placeholder_ai >= 3:
             issues.append(f"section_7_ai: {placeholder_ai}/6 companies have no news (threshold: max 2)")
         if issues:
@@ -198,9 +208,10 @@ def main():
     # v3.2.16: High-priority success notification with version info
     expected_ts = data.get("generated_at", now)
     if verify_deployment(expected_ts):
-         notify("חדשני — עודכן ✅", "", priority=5)
+        notify("חדשני — עודכן ✅", f"עדכון הושלם בהצלחה — {now}", priority=5)
     else:
-         print("[ERROR] Sync verification failed after timeout")
+        print("[WARN] Sync verification timed out — sending notification anyway")
+        notify("חדשני — עודכן (אימות נכשל) ⚠️", f"פוש הצליח אך לא אומת — {now}", priority=3)
 
 
 if __name__ == "__main__":

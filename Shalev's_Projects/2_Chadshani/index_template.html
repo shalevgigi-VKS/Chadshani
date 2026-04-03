@@ -16,7 +16,7 @@
     <meta name="twitter:image" content="https://shalevgigi-vks.github.io/Chadshani/chadshani_logo.jpg">
 
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>חדשני v3 | Market Intelligence Terminal</title>
+    <title>חדשני</title>
     <!-- Favicon -->
     <link rel="icon" href="chadshani_logo.jpg" type="image/jpeg">
     
@@ -128,6 +128,27 @@
         .gauge-ring {
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        /* ── Global heading system ── */
+        .page-h2 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 900;
+            font-family: 'Space Grotesk', sans-serif;
+            font-style: italic;
+            text-decoration: underline;
+            text-decoration-color: rgba(0,80,212,0.18);
+            text-underline-offset: 8px;
+            color: #2c2f31;
+        }
+        @media (min-width: 768px) {
+            .page-h2 { font-size: 1.5rem; } /* md:text-2xl */
+        }
+        .page-h2-icon { font-size: 1.75rem; color: inherit; }
+        .card-label {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
         /* Active state for navigation */
         .nav-item.active {
             background: white;
@@ -153,7 +174,7 @@
                 </div>
                 <div class="flex flex-col items-start text-right">
                     <span class="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-0.5">חדשני</span>
-                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Terminal (v3.3.1)</span>
+                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Terminal (v3.3.2)</span>
                 </div>
             </div>
             
@@ -288,7 +309,7 @@
                 <!-- Intelligence Gallery (Restore v2.0 - Below clocks/Hero) -->
                 <section class="space-y-4 entrance-anim" style="animation-delay: 0.2s">
                     <div class="flex justify-between items-center px-4">
-                        <h2 class="text-lg md:text-2xl font-black font-headline italic text-slate-900 underline underline-offset-8 decoration-blue-500/30">גלריית מודיעין</h2>
+                        <h2 class="page-h2">גלריית מודיעין</h2>
                     </div>
                     <div class="carousel-container relative h-[300px] md:h-[500px] overflow-hidden rounded-[2.5rem] shadow-2xl" dir="ltr">
                          <div id="carousel-track" class="flex transition-transform duration-700 ease-out h-full">
@@ -384,8 +405,8 @@
                 <!-- Strategy & Watchlist Macro -->
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-2 surface-container-low rounded-full p-8 border border-white/50">
-                        <h2 class="text-lg md:text-2xl font-black font-headline mb-6 flex flex-row items-center gap-3 text-right text-slate-900 italic">
-                            <span class="material-symbols-outlined text-blue-600 text-3xl">lightbulb</span>
+                        <h2 class="page-h2 mb-6 flex flex-row items-center gap-3">
+                            <span class="material-symbols-outlined text-blue-600 page-h2-icon">lightbulb</span>
                             תזת השקעה ואסטרטגיה
                         </h2>
                         <div class="space-y-6" dir="rtl">
@@ -406,7 +427,7 @@
                         </div>
                     </div>
                     <div class="glass-card rounded-[2.5rem] p-8 border-0 shadow-sm">
-                        <h2 class="text-xl font-black font-headline mb-6 text-slate-900 text-right italic underline underline-offset-8 decoration-blue-500/10">טיקרים למעקב ממוקד</h2>
+                        <h2 class="page-h2 mb-6">טיקרים למעקב ממוקד</h2>
                         <div id="macro-watchlist" class="space-y-4">
                             <!-- Populated by JS -->
                         </div>
@@ -446,12 +467,9 @@
             <div id="page-sectors" class="page-view hidden space-y-10">
                 <section class="glass-card rounded-[3rem] p-8 md:p-10">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                        <div class="text-right flex flex-row items-center gap-4">
-                            <span class="material-symbols-outlined text-blue-600 text-4xl">account_tree</span>
-                            <div>
-                                <h2 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">זרימת הון ומפת סקטורים</h2>
-                                <p class="text-slate-500 text-[10px] md:text-sm mt-2 font-bold uppercase tracking-widest">Sector Money Flow Analysis</p>
-                            </div>
+                        <div class="flex flex-row items-center gap-3">
+                            <span class="material-symbols-outlined text-blue-600 page-h2-icon">account_tree</span>
+                            <h2 class="page-h2">זרימת הון ומפת סקטורים</h2>
                         </div>
                         <div class="flex flex-col items-end gap-2">
                              <div class="text-right bg-blue-600 px-8 py-4 rounded-[2rem] border border-blue-400/20 shadow-xl shadow-blue-500/10">
@@ -470,9 +488,9 @@
                 </section>
 
                 <section class="space-y-6">
-                    <div class="flex flex-row items-center gap-4 mb-6">
-                        <span class="material-symbols-outlined text-emerald-600 text-3xl">insights</span>
-                        <h2 class="text-xl md:text-2xl font-black font-headline text-slate-900 text-right italic underline underline-offset-8 decoration-emerald-500/20">חדשות מיקרו ומודיעין סקטורים</h2>
+                    <div class="flex flex-row items-center gap-3 mb-6">
+                        <span class="material-symbols-outlined text-emerald-600 page-h2-icon">insights</span>
+                        <h2 class="page-h2 !decoration-emerald-500/20">חדשות מיקרו ומודיעין סקטורים</h2>
                     </div>
                     <div id="micro-news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Populated by JS -->
@@ -486,9 +504,9 @@
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-2 glass-card rounded-[3rem] p-8 md:p-12 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-2 h-full bg-purple-600 blur-[2px]"></div>
-                        <div class="flex items-center gap-4 mb-8">
-                            <span class="material-symbols-outlined text-purple-600 text-4xl">query_stats</span>
-                            <h2 class="text-3xl md:text-4xl font-black font-headline text-slate-900 italic">מרכז מודיעין קריפטו</h2>
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="material-symbols-outlined text-purple-600 page-h2-icon">query_stats</span>
+                            <h2 class="page-h2">מרכז מודיעין קריפטו</h2>
                         </div>
                         <div id="crypto-market-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                             <!-- Populated by JS -->
@@ -518,8 +536,8 @@
                 <!-- Crypto Strategic Deep-Dive -->
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="surface-container-low rounded-[3rem] p-10 border border-amber-200 bg-amber-50/20">
-                        <h2 class="text-xl font-black font-headline mb-6 flex items-center gap-3 text-amber-900">
-                            <span class="material-symbols-outlined text-amber-600 text-2xl">auto_stories</span>
+                        <h2 class="page-h2 mb-6 flex items-center gap-3 !text-amber-900 !decoration-amber-500/20">
+                            <span class="material-symbols-outlined text-amber-600 page-h2-icon">auto_stories</span>
                             ניתוח נרטיב ואסטרטגיית מטבעות
                         </h2>
                         <div class="space-y-6">
@@ -573,12 +591,9 @@
                     <!-- AI Frontier -->
                     <div class="glass-card rounded-[3rem] p-8 md:p-10 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-1 h-full bg-blue-600 blur-[4px]"></div>
-                        <div class="flex flex-row items-center gap-4 mb-10">
-                            <span class="material-symbols-outlined text-blue-600 text-4xl">psychology</span>
-                            <div>
-                                <h2 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">מעקב חזית ה-AI</h2>
-                                <p class="text-slate-500 text-[10px] md:text-sm mt-1 font-bold italic uppercase tracking-widest leading-none">Leading Large Language Models Intelligence</p>
-                            </div>
+                        <div class="flex flex-row items-center gap-3 mb-8">
+                            <span class="material-symbols-outlined text-blue-600 page-h2-icon">psychology</span>
+                            <h2 class="page-h2">מעקב חזית ה-AI</h2>
                         </div>
                         <div id="ai-models-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             <!-- Populated by JS -->
@@ -590,14 +605,9 @@
             <!-- PAGE: WATCHLIST -->
             <div id="page-watchlist" class="page-view hidden space-y-10">
                 <section class="glass-card rounded-[3rem] p-8 md:p-10">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                        <div class="flex flex-row items-center gap-4">
-                            <span class="material-symbols-outlined text-blue-600 text-4xl">list_alt</span>
-                            <div>
-                                <h2 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic underline underline-offset-8 decoration-blue-500/10">מעקב טיקרים ממוקד</h2>
-                                <p class="text-slate-500 text-[10px] md:text-sm mt-1 font-bold">מניות ואינדיקטורים מובילים במעקב דסק חדשני</p>
-                            </div>
-                        </div>
+                    <div class="flex flex-row items-center gap-3 mb-8">
+                        <span class="material-symbols-outlined text-blue-600 page-h2-icon">list_alt</span>
+                        <h2 class="page-h2">מעקב טיקרים ממוקד</h2>
                     </div>
                     <div id="ai-ledger-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Populated by JS -->

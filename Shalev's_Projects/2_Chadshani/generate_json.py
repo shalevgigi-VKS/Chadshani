@@ -123,12 +123,12 @@ JSON_PROMPT = """
     {"ticker": "SNOW",  "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI",          "product": "[שם מוצר לפי חדשות בלבד]", "updates": ["[עדכון 1 — שחרור מודל / יכולת חדשה]", "[עדכון 2 — שינוי תמחור / API]", "[עדכון 3 — שיתוף פעולה / שותפות עסקית]", "[עדכון 4 — ביצועים / benchmark]"], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Google/Gemini",   "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude","product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Meta/Llama",      "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "xAI/Grok",        "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Perplexity",      "product": "...", "updates": ["...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
+    {"company": "OpenAI",          "product": "[שם מוצר עיקרי]", "updates": ["[עדכון 1 — שחרור מודל / גרסה חדשה]", "[עדכון 2 — יכולת חדשה]", "[עדכון 3 — שינוי תמחור / API]", "[עדכון 4 — שיתוף פעולה / עסקה]", "[עדכון 5 — ביצועים / benchmark]", "[עדכון 6 — הגעה לשוק חדש / מוצר צדדי]", "[עדכון 7 — מדיניות / בטיחות / רגולציה]"], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Google/Gemini",   "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude","product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Meta/Llama",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "xAI/Grok",        "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Perplexity",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
