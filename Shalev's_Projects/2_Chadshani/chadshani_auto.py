@@ -121,18 +121,16 @@ def main():
     pct = month_ils / BUDGET_ILS * 100
     print(f"[BUDGET] this month: ₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} ({pct:.1f}%)")
     if month_ils >= BUDGET_ILS:
-        msg = f"תקציב חודשי מוצה: ₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} — עדכון הופסק"
-        print(f"[BUDGET] EXCEEDED — {msg}")
-        notify("חדשני — תקציב מוצה ⛔", "", tags="x")
+        print(f"[BUDGET] EXCEEDED — ₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f}")
+        notify("חדשני — תקציב מוצה ⛔", f"₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} — עדכון הופסק", tags="x", priority=5)
         sys.exit(1)
+    # Collect warnings to bundle into final notification (no early alerts)
+    warnings = []
     if month_ils >= BUDGET_ILS * 0.9:
-        print(f"[BUDGET] WARNING: {pct:.0f}% used")
-        notify("חדשני — תקציב 90% ⚠️", f"₪{month_ils:.2f} / ₪{BUDGET_ILS:.0f} השתמשו החודש", tags="x", priority=4)
-
-    # Daily cost spike check
+        warnings.append(f"⚠️ תקציב {pct:.0f}%")
     day_ils = daily_cost_ils()
     if day_ils > 1.5:
-        notify("חדשני — עלות יומית חריגה 💸", f"₪{day_ils:.2f} היום", tags="x", priority=4)
+        warnings.append(f"⚠️ עלות יומית ₪{day_ils:.2f}")
 
     # Step 1: (DISCONTINUED) Site remains live during update (v3.2.11 LOCKDOWN)
     print("[INFO] skipped maintenance mode switch — site stays live during data fetch")
@@ -248,12 +246,15 @@ def main():
     print(f"[DONE] Update pushed to GitHub — {now}")
     
     expected_ts = data.get("generated_at", now)
-    bill_str = f"₪{monthly_cost_ils():.2f} / ₪{BUDGET_ILS:.0f}"
+    bill = monthly_cost_ils()
+    bill_str = f"₪{bill:.2f} / ₪{BUDGET_ILS:.0f}"
+    if warnings:
+        bill_str += " | " + " | ".join(warnings)
     if verify_deployment(expected_ts):
-        notify(f"חדשני — עודכן ✅", bill_str, priority=5)
+        notify("חדשני — עודכן ✅", bill_str, priority=5)
     else:
         print("[WARN] Sync verification timed out — sending notification anyway")
-        notify(f"חדשני — עודכן (אימות נכשל) ⚠️", bill_str, priority=3)
+        notify("חדשני — עודכן (אימות נכשל) ⚠️", bill_str, priority=3)
 
 
 if __name__ == "__main__":
