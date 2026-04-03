@@ -11,16 +11,20 @@ Last updated: 2026-04-02
 - section_7_ai: fallback לנתונים קודמים אם אין חדשות
 - **סינון חדשות**: MAX_NEWS_AGE_DAYS=7 — RSS + yfinance מסננים פריטים ישנים מ-7 ימים+
 
-## סטטוס: Active v3.2.6 ✅ (עודכן 2026-04-03)
+## סטטוס: Active v3.2.16 ✅ (עודכן 2026-04-03)
 האתר חי, מתועד במלואו, Task Scheduler רץ אוטומטית.
 
-**v3.2.6 (2026-04-03):**
-- OG/Twitter tags נוספו → link previews עובד
-- notify() ensure_ascii=False → עברית עובדת באייפון
-- CoinGecko fallback ל-TAO + KAS (yfinance TAO1-USD delisted)
-- תיקון shutil.copy2 copy-to-self (PermissionError ב-Windows)
-- ערכי מדדים ממורכזים (text-center)
-- DATA_FETCHING_GUIDE.md + primer.md נוצרו
+**v3.2.16 — שדרוגים עיקריים (2026-04-03):**
+- לוגו גדול בHeader + hover effect
+- פרופיל עגול (rounded-full)
+- Dashboard bar: 4 עמודות כולל Market Status (NYSE פעיל/סגור)
+- Hero: רקע כהה עם gradient overlay
+- Sector cards: Heatmap צבע ירוק/אדום לפי flow
+- Entrance animations (fadeInUp)
+- glass-card משופר, noise-bg texture
+- AI logo map: 22 חברות
+- Ticker dir=ltr תוקן למובייל
+- OG tags + notify Hebrew fix + CoinGecko TAO/KAS + copy-to-self fix
 
 ## כלל קריטי — אסור לפרוס ללא נתונים
 **חדשני לא עולה לאוויר ללא עדכון מלא של כלל הנתונים באתר.**
