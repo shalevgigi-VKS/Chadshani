@@ -19,7 +19,7 @@ if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 NTFY_TOPIC = "CloudeCode"
-BUDGET_ILS = 25.0  # Increased to cover current bill (₪18.61) — future runs must be ₪0.00
+BUDGET_ILS = 20.0  # Matches Google AI Studio spending cap (updated 2026-04-03)
 COST_LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "cost_log.json")
 
 
@@ -145,7 +145,7 @@ def main():
     )
     if result.returncode == 2:
         print("[SKIP] Gemini unavailable — deploy aborted, site stays unchanged")
-        notify("חדשני — דולג ⏭", "Gemini לא זמין, נסיון הבא ב-18:45", tags="warning", priority=3)
+        notify("חדשני — דולג ⏭", f"Gemini לא זמין | ₪{monthly_cost_ils():.2f} / ₪{BUDGET_ILS:.0f}", tags="warning", priority=3)
         sys.exit(0)
     if result.returncode != 0:
         print("[ERROR] generate_json.py failed — aborting")
@@ -247,13 +247,13 @@ def main():
 
     print(f"[DONE] Update pushed to GitHub — {now}")
     
-    # v3.2.16: High-priority success notification with version info
     expected_ts = data.get("generated_at", now)
+    bill_str = f"₪{monthly_cost_ils():.2f} / ₪{BUDGET_ILS:.0f}"
     if verify_deployment(expected_ts):
-        notify("חדשני — עודכן ✅", "", priority=5)
+        notify(f"חדשני — עודכן ✅", bill_str, priority=5)
     else:
         print("[WARN] Sync verification timed out — sending notification anyway")
-        notify("חדשני — עודכן (אימות נכשל) ⚠️", "", priority=3)
+        notify(f"חדשני — עודכן (אימות נכשל) ⚠️", bill_str, priority=3)
 
 
 if __name__ == "__main__":

@@ -1154,8 +1154,333 @@
       "think_tokens": 7665,
       "cost_usd": 0.02979,
       "cost_ils": 0.1102
+    },
+    {
+      "ts": "2026-04-03T06:17:50Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8553,
+      "out_tokens": 4551,
+      "think_tokens": 11829,
+      "cost_usd": 0.04341,
+      "cost_ils": 0.1606
+    },
+    {
+      "ts": "2026-04-03T06:19:12Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8553,
+      "out_tokens": 10328,
+      "think_tokens": 6052,
+      "cost_usd": 0.02492,
+      "cost_ils": 0.0922
+    },
+    {
+      "ts": "2026-04-03T06:20:39Z",
+      "model": "gemini-2.5-flash",
+      "in_tokens": 8553,
+      "out_tokens": 10633,
+      "think_tokens": 5747,
+      "cost_usd": 0.02395,
+      "cost_ils": 0.0886
+    },
+    {
+      "ts": "2026-04-03T13:15:33Z",
+      "model": "models/gemini-flash-lite-latest",
+      "in_tokens": 9176,
+      "out_tokens": 5591,
+      "think_tokens": 0,
+      "cost_usd": 0.00237,
+      "cost_ils": 0.0088
+    },
+    {
+      "ts": "2026-04-03T13:16:37Z",
+      "model": "models/gemini-flash-lite-latest",
+      "in_tokens": 9176,
+      "out_tokens": 5514,
+      "think_tokens": 0,
+      "cost_usd": 0.00234,
+      "cost_ils": 0.0087
+    },
+    {
+      "ts": "2026-04-03T13:17:31Z",
+      "model": "models/gemini-flash-lite-latest",
+      "in_tokens": 9176,
+      "out_tokens": 5313,
+      "think_tokens": 0,
+      "cost_usd": 0.00228,
+      "cost_ils": 0.0084
+    },
+    {
+      "ts": "2026-04-03T13:20:10Z",
+      "model": "models/gemini-flash-lite-latest",
+      "in_tokens": 9259,
+      "out_tokens": 5020,
+      "think_tokens": 0,
+      "cost_usd": 0.0022,
+      "cost_ils": 0.0081
+    },
+    {
+      "ts": "2026-04-03T13:21:13Z",
+      "model": "models/gemini-flash-lite-latest",
+      "in_tokens": 9259,
+      "out_tokens": 6154,
+      "think_tokens": 0,
+      "cost_usd": 0.00254,
+      "cost_ils": 0.0094
+    },
+    {
+      "ts": "2026-04-03T13:32:52Z",
+      "model": "models/gemini-flash-lite-latest",
+      "in_tokens": 9411,
+      "out_tokens": 5914,
+      "think_tokens": 0,
+      "cost_usd": 0.00248,
+      "cost_ils": 0.0092
+    },
+    {
+      "ts": "2026-04-03T14:17:37Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9476,
+      "out_tokens": 10148,
+      "think_tokens": 0,
+      "cost_usd": 0.00376,
+      "cost_ils": 0.0139
+    },
+    {
+      "ts": "2026-04-03T14:18:11Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9476,
+      "out_tokens": 9720,
+      "think_tokens": 0,
+      "cost_usd": 0.00363,
+      "cost_ils": 0.0134
+    },
+    {
+      "ts": "2026-04-03T14:18:56Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9476,
+      "out_tokens": 9247,
+      "think_tokens": 0,
+      "cost_usd": 0.00348,
+      "cost_ils": 0.0129
+    },
+    {
+      "ts": "2026-04-03T14:23:08Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9483,
+      "out_tokens": 9497,
+      "think_tokens": 0,
+      "cost_usd": 0.00356,
+      "cost_ils": 0.0132
+    },
+    {
+      "ts": "2026-04-03T14:23:41Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9483,
+      "out_tokens": 9642,
+      "think_tokens": 0,
+      "cost_usd": 0.0036,
+      "cost_ils": 0.0133
+    },
+    {
+      "ts": "2026-04-03T14:24:14Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9483,
+      "out_tokens": 9210,
+      "think_tokens": 0,
+      "cost_usd": 0.00347,
+      "cost_ils": 0.0129
+    },
+    {
+      "ts": "2026-04-03T14:28:15Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9526,
+      "out_tokens": 9422,
+      "think_tokens": 0,
+      "cost_usd": 0.00354,
+      "cost_ils": 0.0131
+    },
+    {
+      "ts": "2026-04-03T14:30:35Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9498,
+      "out_tokens": 9372,
+      "think_tokens": 0,
+      "cost_usd": 0.00352,
+      "cost_ils": 0.013
+    },
+    {
+      "ts": "2026-04-03T14:31:18Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9498,
+      "out_tokens": 11633,
+      "think_tokens": 0,
+      "cost_usd": 0.0042,
+      "cost_ils": 0.0155
+    },
+    {
+      "ts": "2026-04-03T14:39:46Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9068,
+      "out_tokens": 9400,
+      "think_tokens": 0,
+      "cost_usd": 0.0035,
+      "cost_ils": 0.013
+    },
+    {
+      "ts": "2026-04-03T14:40:27Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9068,
+      "out_tokens": 9210,
+      "think_tokens": 0,
+      "cost_usd": 0.00344,
+      "cost_ils": 0.0127
+    },
+    {
+      "ts": "2026-04-03T14:41:07Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9068,
+      "out_tokens": 10359,
+      "think_tokens": 0,
+      "cost_usd": 0.00379,
+      "cost_ils": 0.014
+    },
+    {
+      "ts": "2026-04-03T15:03:26Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9022,
+      "out_tokens": 9550,
+      "think_tokens": 0,
+      "cost_usd": 0.00354,
+      "cost_ils": 0.0131
+    },
+    {
+      "ts": "2026-04-03T15:04:12Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9022,
+      "out_tokens": 9085,
+      "think_tokens": 0,
+      "cost_usd": 0.0034,
+      "cost_ils": 0.0126
+    },
+    {
+      "ts": "2026-04-03T15:04:43Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9022,
+      "out_tokens": 7960,
+      "think_tokens": 0,
+      "cost_usd": 0.00306,
+      "cost_ils": 0.0113
+    },
+    {
+      "ts": "2026-04-03T15:29:05Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9064,
+      "out_tokens": 10140,
+      "think_tokens": 0,
+      "cost_usd": 0.00372,
+      "cost_ils": 0.0138
+    },
+    {
+      "ts": "2026-04-03T15:30:06Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9064,
+      "out_tokens": 8541,
+      "think_tokens": 0,
+      "cost_usd": 0.00324,
+      "cost_ils": 0.012
+    },
+    {
+      "ts": "2026-04-03T15:31:24Z",
+      "model": "models/gemini-2.5-flash",
+      "in_tokens": 9064,
+      "out_tokens": 2364,
+      "think_tokens": 14006,
+      "cost_usd": 0.05041,
+      "cost_ils": 0.1865
+    },
+    {
+      "ts": "2026-04-03T15:34:09Z",
+      "model": "models/gemini-2.5-pro",
+      "in_tokens": 9064,
+      "out_tokens": 12542,
+      "think_tokens": 3827,
+      "cost_usd": 0.01784,
+      "cost_ils": 0.066
+    },
+    {
+      "ts": "2026-04-03T15:36:48Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9028,
+      "out_tokens": 8685,
+      "think_tokens": 0,
+      "cost_usd": 0.00328,
+      "cost_ils": 0.0121
+    },
+    {
+      "ts": "2026-04-03T15:39:45Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9028,
+      "out_tokens": 9018,
+      "think_tokens": 0,
+      "cost_usd": 0.00338,
+      "cost_ils": 0.0125
+    },
+    {
+      "ts": "2026-04-03T15:40:47Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9028,
+      "out_tokens": 9547,
+      "think_tokens": 0,
+      "cost_usd": 0.00354,
+      "cost_ils": 0.0131
+    },
+    {
+      "ts": "2026-04-03T15:46:38Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9026,
+      "out_tokens": 10936,
+      "think_tokens": 0,
+      "cost_usd": 0.00396,
+      "cost_ils": 0.0146
+    },
+    {
+      "ts": "2026-04-03T16:02:40Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9133,
+      "out_tokens": 9606,
+      "think_tokens": 0,
+      "cost_usd": 0.00357,
+      "cost_ils": 0.0132
+    },
+    {
+      "ts": "2026-04-03T16:03:42Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9133,
+      "out_tokens": 9202,
+      "think_tokens": 0,
+      "cost_usd": 0.00345,
+      "cost_ils": 0.0127
+    },
+    {
+      "ts": "2026-04-03T16:12:53Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9125,
+      "out_tokens": 9012,
+      "think_tokens": 0,
+      "cost_usd": 0.00339,
+      "cost_ils": 0.0125
+    },
+    {
+      "ts": "2026-04-01T00:00:00Z",
+      "model": "correction_google_billing",
+      "in_tokens": 0,
+      "out_tokens": 0,
+      "think_tokens": 0,
+      "cost_usd": 0.0,
+      "cost_ils": 2.2971,
+      "note": "Manual sync: Google AI Studio shows ₪6.10 total April, local was ₪3.80"
     }
   ],
-  "total_usd": 4.99858,
-  "total_ils": 18.2772
+  "total_usd": 5.25834,
+  "total_ils": 21.5352
 }
