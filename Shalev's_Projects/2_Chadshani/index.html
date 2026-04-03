@@ -152,29 +152,23 @@
             </div>
             
             <!-- Center: LIVE Indicator -->
-            <div class="flex flex-row md:flex-col items-center md:items-end gap-2.5 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm">
-                <div class="flex items-center gap-2">
-                    <div class="relative flex items-center justify-center">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 relative z-10"></span>
-                        <span class="absolute w-4 h-4 rounded-full bg-emerald-400/40 market-pulse"></span>
-                    </div>
-                    <span class="text-[10px] md:text-xs font-black text-emerald-700 uppercase tracking-widest">שידור חי</span>
+            <div class="flex items-center gap-2.5 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm">
+                <div class="relative flex items-center justify-center">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 relative z-10"></span>
+                    <span class="absolute w-4 h-4 rounded-full bg-emerald-400/40 market-pulse"></span>
                 </div>
-                <!-- Mobile Bio Widget (v3.2.14) -->
-                <div class="md:hidden border-r border-emerald-100 pr-2.5 mr-2.5">
-                    <span class="text-[10px] font-black text-slate-900 leading-none">שלו גיגי</span>
-                </div>
+                <span class="text-[10px] md:text-xs font-black text-emerald-700 uppercase tracking-widest">שידור חי</span>
             </div>
 
 
-            <!-- User Actions / Status (Only on Desktop to save mobile space) -->
-            <div class="hidden md:flex items-center gap-4">
+            <!-- User Actions / Status (Mobile Optimized v3.2.16) -->
+            <div class="flex items-center gap-4">
                 <div id="battery-status" class="flex flex-col items-end text-[10px] font-black group">
                     <div class="flex items-center gap-1.5 text-emerald-500 uppercase tracking-widest mb-0.5">
                         <span class="material-symbols-outlined text-xs">sync_saved_locally</span>
-                        <span>עדכון אחרון:</span>
+                        <span class="hidden md:inline">עדכון אחרון:</span>
                     </div>
-                    <span id="update-ts" class="text-slate-900 text-lg md:text-xl font-headline tabular-nums leading-none">POLLING...</span>
+                    <span id="update-ts" class="text-slate-900 text-sm md:text-xl font-headline tabular-nums leading-none">POLLING...</span>
                 </div>
             </div>
         </div>
@@ -184,7 +178,9 @@
     <section id="global-slider" class="sticky top-[80px] md:top-[96px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm">
         <div class="ticker-wrap w-full">
               <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline font-bold">
-                <!-- Ticker contents populated by JS -->
+                <span class="text-blue-600">INITIALIZING MARKET INTELLIGENCE...</span>
+                <span class="text-slate-400 font-black italic uppercase tracking-widest">Collecting Signals</span>
+                <span class="text-blue-600">PRODUCING ALPHA...</span>
              </div>
         </div>
     </section>
@@ -210,7 +206,7 @@
                     <span class="material-symbols-outlined">psychology</span>
                 </a>
                 <a href="#watchlist" id="nav-watchlist" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('watchlist')">
-                    <span class="font-bold text-right flex-1">מעקב נכסים</span>
+                    <span class="font-bold text-right flex-1">מעקב טיקרים</span>
                     <span class="material-symbols-outlined">list_alt</span>
                 </a>
             </nav>
@@ -406,12 +402,14 @@
                                 <div class="bg-emerald-50 border border-emerald-100 px-4 py-2 rounded-xl text-[10px] font-black text-emerald-600 uppercase tracking-widest">AI & Technology</div>
                             </div>
                         </div>
-                        <!-- Right: Photo + Name -->
+                        <!-- Right: Photo (Portrait) + Name -->
                         <div class="flex flex-col items-center md:items-end flex-shrink-0 order-1 md:order-2">
-                             <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-56 md:w-80 h-full max-h-[500px] rounded-[2.5rem] md:rounded-[3.5rem] object-cover shadow-2xl border-8 border-white group-hover:scale-[1.02] transition-transform duration-500 shadow-blue-500/10">
-                             <div class="text-center md:text-right mt-6">
-                                 <h3 class="text-3xl md:text-5xl font-black font-headline text-slate-900 italic">שלו גיגי</h3>
-                                 <p class="text-xs md:text-sm font-black text-blue-600 uppercase tracking-[0.2em] mt-2 font-bold italic">״אנליסט״ פיננסי-טכנולוגי</p>
+                             <div class="relative group">
+                                <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-64 md:w-80 aspect-[3/4] rounded-[2.5rem] md:rounded-[4rem] object-cover shadow-2xl border-8 border-white group-hover:scale-[1.02] transition-transform duration-500 shadow-blue-500/10">
+                             </div>
+                             <div class="text-center md:text-right mt-8">
+                                 <h3 class="text-4xl md:text-6xl font-black font-headline text-slate-900 italic">שלו גיגי</h3>
+                                 <p class="text-sm md:text-lg font-black text-blue-600 uppercase tracking-[0.2em] mt-3 font-headline">אנליסט פיננסי ראשי</p>
                              </div>
                         </div>
                     </div>
@@ -422,9 +420,12 @@
             <div id="page-sectors" class="page-view hidden space-y-10">
                 <section class="glass-card rounded-[3rem] p-8 md:p-10">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                        <div class="text-right">
-                            <h2 class="text-3xl font-black font-headline text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">זרימת הון ומפת סקטורים</h2>
-                            <p class="text-slate-500 text-sm mt-3 font-bold uppercase tracking-widest">Sector Money Flow Analysis</p>
+                        <div class="text-right flex flex-row items-center gap-4">
+                            <span class="material-symbols-outlined text-blue-600 text-4xl">account_tree</span>
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">זרימת הון ומפת סקטורים</h2>
+                                <p class="text-slate-500 text-[10px] md:text-sm mt-2 font-bold uppercase tracking-widest">Sector Money Flow Analysis</p>
+                            </div>
                         </div>
                         <div class="flex flex-col items-end gap-2">
                              <div class="text-right bg-blue-600 px-8 py-4 rounded-[2rem] border border-blue-400/20 shadow-xl shadow-blue-500/10">
@@ -443,7 +444,10 @@
                 </section>
 
                 <section class="space-y-6">
-                    <h2 class="text-2xl font-black font-headline text-slate-900 text-right italic underline underline-offset-8 decoration-emerald-500/20">חדשות מיקרו ומודיעין סקטורים</h2>
+                    <div class="flex flex-row items-center gap-4 mb-6">
+                        <span class="material-symbols-outlined text-emerald-600 text-3xl">insights</span>
+                        <h2 class="text-xl md:text-2xl font-black font-headline text-slate-900 text-right italic underline underline-offset-8 decoration-emerald-500/20">חדשות מיקרו ומודיעין סקטורים</h2>
+                    </div>
                     <div id="micro-news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Populated by JS -->
                     </div>
@@ -451,51 +455,71 @@
             </div>
 
             <!-- PAGE: CRYPTO -->
-            <div id="page-crypto" class="page-view hidden space-y-10">
-                <!-- Crypto Market Snapshot & Sentiment -->
-                <section class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="crypto-market-grid">
-                        <!-- Populated by JS: Includes BTC, ETH, SOL, LINK, XRP, TAO, KAS -->
-                    </div>
-                    <!-- Small Crypto F&G for context -->
-                    <div class="surface-container-low rounded-[2rem] p-6 border border-slate-100 flex flex-col justify-center items-center text-center">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">מומנטום שוק (F&G)</div>
-                        <div id="crypto-fng-val" class="text-3xl font-headline font-black text-purple-600">--</div>
-                        <div class="h-1.5 w-full bg-slate-100 rounded-full mt-3 overflow-hidden">
-                            <div id="crypto-fng-bar" class="h-full bg-purple-600 w-0 transition-all duration-1000"></div>
+            <div id="page-crypto" class="page-view hidden space-y-10" dir="rtl">
+                <!-- Crypto Advanced Market Intelligence (v3.2.16) -->
+                <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 glass-card rounded-[3rem] p-8 md:p-12 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-2 h-full bg-purple-600 blur-[2px]"></div>
+                        <div class="flex items-center gap-4 mb-8">
+                            <span class="material-symbols-outlined text-purple-600 text-4xl">query_stats</span>
+                            <h2 class="text-3xl md:text-4xl font-black font-headline text-slate-900 italic">מרכז מודיעין קריפטו</h2>
                         </div>
-                        <p id="crypto-fng-label" class="text-[10px] font-black text-slate-600 mt-2 uppercase"></p>
+                        <div id="crypto-market-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    
+                    <div class="surface-container-low rounded-[3rem] p-10 flex flex-col justify-between border border-purple-100">
+                        <div class="text-center">
+                            <h3 class="text-xs font-black text-purple-400 uppercase tracking-widest mb-2 font-headline">סנטימנט שוק רב-מימדי</h3>
+                            <div id="crypto-fng-val" class="text-6xl font-headline font-black text-purple-600 mb-2">--</div>
+                            <div class="h-3 w-full bg-slate-100 rounded-full mt-4 overflow-hidden shadow-inner">
+                                <div id="crypto-fng-bar" class="h-full bg-gradient-to-l from-purple-600 to-indigo-400 w-0 transition-all duration-1000"></div>
+                            </div>
+                            <p id="crypto-fng-label" class="text-sm font-black text-slate-700 mt-4 uppercase tracking-tighter italic"></p>
+                        </div>
+                        <div class="mt-8 pt-8 border-t border-purple-50">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-[10px] font-black text-slate-400 uppercase">זרימת כסף (24h)</span>
+                                <span class="text-[10px] font-black text-emerald-500 uppercase">INFLOW</span>
+                            </div>
+                            <p class="text-xs text-slate-500 leading-tight font-bold italic">ניתוח פעילות On-chain ו-Spot Volume מראה על איסוף מסיבי בטווחי המחיר הנוכחיים.</p>
+                        </div>
                     </div>
                 </section>
 
-                <!-- Crypto Brief -->
+                <!-- Crypto Strategic Deep-Dive -->
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="surface-container-low rounded-[2.5rem] p-8 md:p-10 border border-amber-200 bg-amber-50/20 text-right" dir="rtl">
-                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center justify-end gap-3 text-amber-900 font-headline underline underline-offset-8 decoration-amber-500/20 text-right w-full">
-                            סיפור היום בקריפטו
-                            <span class="material-symbols-outlined text-amber-600">history_edu</span>
+                    <div class="surface-container-low rounded-[3rem] p-10 border border-amber-200 bg-amber-50/20">
+                        <h2 class="text-2xl font-black font-headline mb-8 flex items-center gap-3 text-amber-900">
+                            <span class="material-symbols-outlined text-amber-600 text-3xl">Auto_Stories</span>
+                            ניתוח נרטיב ואסטרטגיית מטבעות
                         </h2>
-                        <div class="space-y-6">
-                            <div>
-                                <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">נרטיב יומי</span>
-                                <p id="crypto-narrative" class="text-sm md:text-base mt-2 text-slate-800 leading-relaxed font-medium"></p>
+                        <div class="space-y-8">
+                            <div class="bg-white/60 p-6 rounded-[2rem] border border-amber-100">
+                                <span class="text-xs font-black text-amber-600 uppercase tracking-widest underline mb-3 block">Perspective Yomit</span>
+                                <p id="crypto-narrative" class="text-base md:text-lg text-slate-800 leading-relaxed font-bold text-justify"></p>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">זרימת כסף חכם</span>
-                                    <p id="crypto-smart" class="text-xs md:text-sm mt-2 text-slate-700 leading-relaxed font-bold"></p>
+                                <div class="bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100">
+                                    <span class="text-xs font-black text-blue-600 uppercase tracking-widest block mb-2 underline">כסף חכם (Institutional)</span>
+                                    <p id="crypto-smart" class="text-sm text-slate-700 leading-relaxed font-bold text-justify"></p>
                                 </div>
-                                <div>
-                                    <span class="text-xs font-bold text-amber-600 uppercase tracking-widest underline mb-2 block font-black">פעילות לוויתנים</span>
-                                    <p id="crypto-whale" class="text-xs md:text-sm mt-2 text-slate-700 leading-relaxed font-bold"></p>
+                                <div class="bg-purple-50/50 p-6 rounded-[2rem] border border-purple-100">
+                                    <span class="text-xs font-black text-purple-600 uppercase tracking-widest block mb-2 underline">לוויתנים (Whales)</span>
+                                    <p id="crypto-whale" class="text-sm text-slate-700 leading-relaxed font-bold text-justify"></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card rounded-[2.5rem] p-10 flex flex-col text-right">
-                         <h2 class="text-2xl font-black font-headline mb-6 text-slate-900 italic underline underline-offset-8 decoration-blue-500/20">מסקנה ופעולה טקטית</h2>
-                         <div class="flex-1 flex flex-col justify-center bg-blue-600 p-10 rounded-[2.5rem] border-4 border-blue-400 shadow-2xl shadow-blue-600/30">
-                            <p id="crypto-conclusion" class="text-lg md:text-2xl font-black text-white text-center leading-relaxed italic drop-shadow-md"></p>
+                    <div class="glass-card rounded-[3rem] p-12 flex flex-col justify-center items-center text-center bg-slate-900 shadow-purple-500/20">
+                         <h2 class="text-xl font-black font-headline mb-8 text-purple-400 uppercase tracking-widest italic tracking-tighter">TACTICAL CONCLUSION</h2>
+                         <div class="p-10 rounded-[3rem] border-2 border-purple-500/30 bg-purple-500/10 backdrop-blur-md">
+                            <p id="crypto-conclusion" class="text-2xl md:text-4xl font-black text-white leading-tight italic drop-shadow-lg font-headline"></p>
+                         </div>
+                         <div class="mt-8 flex gap-4">
+                            <span class="px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/30">Bullish Sentiment</span>
+                            <span class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-purple-500/30">Strong Alpha</span>
                          </div>
                     </div>
                 </section>
@@ -507,7 +531,13 @@
                     <!-- AI Frontier -->
                     <div class="glass-card rounded-[3rem] p-8 md:p-10 relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-blue-600 blur-[4px]"></div>
-                        <h2 class="text-3xl font-black font-headline mb-8 text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">מעקב חזית ה-AI</h2>
+                        <div class="flex flex-row items-center gap-4 mb-10">
+                            <span class="material-symbols-outlined text-blue-600 text-4xl">psychology</span>
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic underline decoration-blue-500/20 underline-offset-8">מעקב חזית ה-AI</h2>
+                                <p class="text-slate-500 text-[10px] md:text-sm mt-1 font-bold italic uppercase tracking-widest leading-none">Leading Large Language Models Intelligence</p>
+                            </div>
+                        </div>
                         <div id="ai-models-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             <!-- Populated by JS -->
                         </div>
@@ -519,9 +549,12 @@
             <div id="page-watchlist" class="page-view hidden space-y-10">
                 <section class="glass-card rounded-[3rem] p-8 md:p-10">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                        <div>
-                            <h2 class="text-3xl font-black font-headline text-slate-900 italic underline">טיקרים למעקב</h2>
-                            <p class="text-slate-500 text-sm mt-1">מניות ואינדיקטורים מובילים במעקב דסק חדשני</p>
+                        <div class="flex flex-row items-center gap-4">
+                            <span class="material-symbols-outlined text-blue-600 text-4xl">list_alt</span>
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-black font-headline text-slate-900 italic underline underline-offset-8 decoration-blue-500/10">מעקב טיקרים ממוקד</h2>
+                                <p class="text-slate-500 text-[10px] md:text-sm mt-1 font-bold">מניות ואינדיקטורים מובילים במעקב דסק חדשני</p>
+                            </div>
                         </div>
                     </div>
                     <div id="ai-ledger-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -554,7 +587,7 @@
         </a>
         <a href="#watchlist" id="mob-watchlist" class="mobile-nav-item flex flex-col items-center justify-center p-3" onclick="showPage('watchlist')">
             <span class="material-symbols-outlined mb-1">list_alt</span>
-            <span class="text-[9px] font-bold">מעקב</span>
+            <span class="text-[9px] font-bold">טיקרים</span>
         </a>
     </nav>
 
@@ -665,42 +698,60 @@
                 
                 const grid = document.getElementById('sectors-grid');
                 grid.innerHTML = s3.map(s => {
-                    const color = s.flow_direction === 'in' ? 'text-emerald-500' : (s.flow_direction === 'out' ? 'text-rose-500' : 'text-slate-500');
-                    const isPositive = parseFloat(s.change?.replace('%','').replace('+','') || '0') >= 0;
+                    const amountRaw = s.flow_amount || '$0B';
+                    const amountVal = Math.abs(parseFloat(amountRaw.replace(/[+$BM]/g, '')) || 0);
+                    const isPos = amountRaw.startsWith('+');
+                    
+                    // v3.2.16: Aggressive Heatmap Coloring
+                    let heatColor = 'bg-slate-50 border-slate-100';
+                    let textColor = 'text-slate-500';
+                    if (amountVal > 0) {
+                        if (isPos) {
+                            heatColor = amountVal > 100 ? 'bg-emerald-100 border-emerald-200' : 'bg-emerald-50 border-emerald-100';
+                            textColor = 'text-emerald-600';
+                        } else {
+                            heatColor = amountVal > 100 ? 'bg-rose-100 border-rose-200' : 'bg-rose-50 border-rose-100';
+                            textColor = 'text-rose-600';
+                        }
+                    }
+
+                    const isPositivePrice = parseFloat(s.change?.replace('%','').replace('+','') || '0') >= 0;
+                    
                     return `
-                        <div class="glass-card p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all text-right group hover:bg-slate-900 flex flex-col h-full">
+                        <div class="${heatColor} p-6 rounded-[2.5rem] border shadow-sm hover:shadow-md transition-all text-right group flex flex-col h-full">
                             <div class="flex justify-between items-start mb-3">
-                                <div class="text-blue-600 font-headline font-black text-[10px] uppercase tracking-widest group-hover:text-blue-400">${s.etf}</div>
-                                <span class="material-symbols-outlined text-sm ${s.flow_direction === 'in' ? 'text-emerald-500' : 'text-rose-500'}">${s.flow_direction === 'in' ? 'south_east' : 'north_west'}</span>
+                                <div class="text-blue-600 font-headline font-black text-[10px] uppercase tracking-widest">${s.etf}</div>
+                                <span class="material-symbols-outlined text-sm ${textColor}">${isPos ? 'south_east' : 'north_west'}</span>
                             </div>
-                            <div class="text-sm font-black text-slate-800 mb-2 group-hover:text-white">${s.name}</div>
-                            <div class="text-2xl font-headline font-black ${isPositive ? 'text-emerald-500' : 'text-rose-500'} mb-1">${s.change || '0%'}</div>
+                            <div class="text-sm font-black text-slate-800 mb-2">${s.name}</div>
+                            <div class="text-2xl font-headline font-black ${isPositivePrice ? 'text-emerald-500' : 'text-rose-500'} mb-1">${s.change || '0%'}</div>
                             
-                            <!-- Flow Bar (Visual) -->
                             <div class="mt-auto pt-4">
-                                <div class="flex justify-between items-center text-[9px] font-bold mb-1 uppercase tracking-tighter group-hover:text-slate-400">
-                                    <span>זרימה יומית</span>
-                                    <span class="${color}">${s.flow_amount || '--'}</span>
+                                <div class="flex justify-between items-center text-[9px] font-bold mb-1 uppercase tracking-tighter">
+                                    <span>זרם הון</span>
+                                    <span class="${textColor} font-black">${amountRaw}</span>
                                 </div>
-                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden group-hover:bg-slate-800">
-                                    <div class="h-full ${s.flow_direction === 'in' ? 'bg-emerald-500' : 'bg-rose-500'}" style="width: ${Math.min(Math.abs(parseFloat(s.flow_amount?.replace('$','').replace('B','') || '0')) * 25, 100)}%"></div>
+                                <div class="h-1.5 w-full bg-white/50 rounded-full overflow-hidden border border-black/5">
+                                    <div class="h-full ${isPos ? 'bg-emerald-500' : 'bg-rose-500'}" style="width: ${Math.min(amountVal * (amountRaw.includes('B') ? 20 : 0.5), 100)}%"></div>
                                 </div>
                             </div>
                             
-                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 mt-4 group-hover:bg-slate-800 group-hover:border-slate-700">
-                                <p class="text-[10px] text-slate-600 leading-tight font-medium overflow-hidden group-hover:text-slate-400" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">${s.note}</p>
+                            <div class="bg-white/40 p-3 rounded-xl border border-black/5 mt-4">
+                                <p class="text-[10px] text-slate-600 leading-tight font-medium overflow-hidden line-clamp-3">${s.note}</p>
                             </div>
                         </div>
                     `;
                 }).join('');
                 
-                // Real mathematical flow summation
+                // Net Flow Summary
                 const totalFlowValue = s3.reduce((acc, s) => {
-                    const amount = parseFloat(s.flow_amount?.replace('$','').replace('B','') || '0');
-                    return acc + (s.flow_direction === 'in' ? Math.abs(amount) : -Math.abs(amount));
+                    const raw = s.flow_amount || '0';
+                    const amount = parseFloat(raw.replace(/[+$BM]/g, '')) || 0;
+                    const mult = raw.includes('B') ? 1 : 0.001;
+                    return acc + (raw.startsWith('+') ? amount * mult : -amount * mult);
                 }, 0);
                 const flowSign = totalFlowValue >= 0 ? '+' : '';
-                document.getElementById('total-net-flow').textContent = `${flowSign}$${totalFlowValue.toFixed(1)}B`; 
+                document.getElementById('total-net-flow').textContent = `${flowSign}$${Math.abs(totalFlowValue).toFixed(1)}B`; 
             }
 
             const s2 = d.section_2_news;
@@ -792,20 +843,19 @@
                 grid.innerHTML = s7.map(a => {
                     const companyName = a.company || '';
                     const domain = Object.keys(aiLogoMap).find(k => companyName.includes(k)) ? aiLogoMap[Object.keys(aiLogoMap).find(k => companyName.includes(k))] : null;
-                    const logoUrl = domain ? `https://logo.clearbit.com/${domain}` : '';
+                    const logoUrl = domain ? `https://logo.clearbit.com/${domain}` : `https://ui-avatars.com/api/?name=${companyName}&background=random`;
                     return `
-                        <div class="flex flex-col md:flex-row-reverse items-start gap-4 p-5 hover:bg-slate-50 rounded-[2rem] transition-all group border border-transparent hover:border-slate-100 bg-white/50 shadow-sm w-full">
-                             <div class="w-14 h-14 rounded-2xl bg-white shadow-xl flex items-center justify-center group-hover:scale-110 transition-all flex-shrink-0 self-end md:self-start overflow-hidden border border-slate-100">
-                                 ${logoUrl ? `<img src="${logoUrl}" class="w-[70%] h-[70%] object-contain">` : `<span class="text-slate-400 font-black">${companyName[0] || '?'}</span>`}
-                             </div>
-                            <div class="flex-1 text-right w-full overflow-hidden">
-                                <div class="flex justify-between items-center mb-1 flex-row-reverse gap-2">
-                                    <span class="font-black text-slate-900 text-base md:text-lg break-words line-clamp-1">${a.company}</span>
-                                    <span class="px-2 py-0.5 rounded-full text-[8px] font-black font-mono ${a.status === 'GA' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'} flex-shrink-0">${a.status}</span>
+                        <div class="glass-card p-6 rounded-[2.5rem] border border-blue-50/50 hover:shadow-xl transition-all group flex flex-col gap-4 min-h-[160px] text-right" dir="rtl">
+                            <div class="flex items-center gap-4">
+                                <img src="${logoUrl}" class="w-12 h-12 rounded-2xl object-contain bg-slate-50 p-1 shadow-sm" onerror="this.src='https://ui-avatars.com/api/?name=AI&background=random'">
+                                <div class="flex-1 overflow-hidden">
+                                    <div class="text-[9px] md:text-[10px] uppercase text-blue-600 font-black tracking-widest truncate leading-tight">${companyName} Intelligence</div>
+                                    <div class="text-[8px] font-bold text-slate-400 font-headline uppercase italic">Market Evolution</div>
                                 </div>
-                                <div class="text-sm md:text-base font-black text-blue-600 mb-2 leading-none underline decoration-2 underline-offset-4 break-words">${a.product}</div>
-                                <div class="text-xs md:text-sm text-slate-700 leading-relaxed font-bold break-words text-justify">${a.update}</div>
-                                ${a.last_known_update ? `<div class="text-[9px] text-slate-400 mt-3 font-mono uppercase tracking-[0.2em] font-black border-t border-slate-100 pt-2">Last: ${a.last_known_update}</div>` : ''}
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-base font-black text-slate-800 leading-tight mb-1 italic underline decoration-blue-500/10 underline-offset-4">${a.product || 'Strategic Update'}</div>
+                                <p class="text-xs text-slate-500 leading-relaxed font-bold">${a.update || 'Analyzing latest parameters...'}</p>
                             </div>
                         </div>
                     `;
