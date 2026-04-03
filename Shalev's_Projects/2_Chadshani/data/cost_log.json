@@ -1479,8 +1479,26 @@
       "cost_usd": 0.0,
       "cost_ils": 2.2971,
       "note": "Manual sync: Google AI Studio shows ₪6.10 total April, local was ₪3.80"
+    },
+    {
+      "ts": "2026-04-03T16:53:14Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9073,
+      "out_tokens": 9829,
+      "think_tokens": 0,
+      "cost_usd": 0.00363,
+      "cost_ils": 0.0134
+    },
+    {
+      "ts": "2026-04-03T16:54:12Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9073,
+      "out_tokens": 9473,
+      "think_tokens": 0,
+      "cost_usd": 0.00352,
+      "cost_ils": 0.013
     }
   ],
-  "total_usd": 5.25834,
-  "total_ils": 21.5352
+  "total_usd": 5.26549,
+  "total_ils": 21.5616
 }

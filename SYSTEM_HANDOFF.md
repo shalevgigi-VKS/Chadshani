@@ -1,5 +1,5 @@
 # SYSTEM HANDOFF — תמונת מצב כוללת
-Last updated: 2026-04-02
+Last updated: 2026-04-03
 
 ---
 
@@ -17,8 +17,8 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 
 | פרויקט | מצב | הצעד הבא |
 |---|---|---|
-| **2_Chadshani** | פעיל — cron בוטל 2026-04-02 | הרץ `setup_tasks.ps1` כ-Admin לרשום Task Scheduler |
-| **8_EvolutionSchematic** | לא יציב — דורש refactor | Vercel migration + תיקון iPhone 404 |
+| **2_Chadshani** | **פעיל v3.3.11 ✅** | https://shalevgigi-vks.github.io/Chadshani/ — Task Scheduler ב-06:45 + 18:45 |
+| **8_EvolutionSchematic** | **פעיל — Vercel** ✅ https://evolution-schematic.vercel.app | בדוק ב-iPhone |
 | **1_EmotionWheel** | לא פעיל | ממתין להנחיה |
 | **3_Notifications** | פועל — ntfy.sh | תשתית בסדר, אין עבודה |
 | **5_StickerBot** | לא ידוע | בדוק npm start לפני גישה |
@@ -35,11 +35,11 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 4. ✅ ~~Task Scheduler נרשם: Chadshani-0645, Chadshani-1845~~
 5. ✅ ~~Budget guard + cost בכל notification~~
 6. ✅ ~~האתר חזר לאוויר (200 OK)~~
-7. **⬅ כאן עצרנו** — הגדר GEMINI_API_KEY (ראה מטה) → ריצה ב-18:45 היום תאמת הכל
-8. שדרוג חדשני v3
-9. תיקון + deploy אבולוציה (Vercel migration)
-6. תיקון + deploy אבולוציה (Vercel migration)
-7. חדשני v3
+7. ✅ ~~GEMINI_API_KEY הוגדר + ריצה אוטומטית ב-Task Scheduler אומתה~~
+8. ✅ ~~Refactor: thinking tokens, no-news fallback, flow_amount אמיתי, פרומפט יעיל~~
+9. ✅ ~~תיקון + deploy אבולוציה (Vercel migration)~~
+10. ✅ ~~סינון חדשות לפי תאריך — MAX_NEWS_AGE_DAYS=7, 1118 פריטים ישנים סוננו~~
+11. **⬅ כאן עצרנו** — שדרוג חדשני v3 (עיצוב + ארכיטקטורה)
 
 ---
 
@@ -77,8 +77,9 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 
 לאחר מכן Tasks יריצו `chadshani_auto.py` אוטומטית ב-06:45 וב-18:45 כל יום.
 
-⚠️ **מצב תקציב:** כבר נוצלו **15.44₪ מתוך 20₪** (77%) — נשארו ~38 ריצות.
-כשיגיע ל-18₪ (90%) תקבל התראה. כשיגיע ל-20₪ הריצות נעצרות אוטומטית.
+⚠️ **מצב תקציב אפריל:** ₪1.09 / ₪20 (5.5%) — Google AI Studio (מתאפס ב-1 לחודש).
+עלות ריצה ממשית: ~₪0.05 (כולל thinking tokens). ~380 ריצות נותרו בתקציב חודשי.
+**חשוב:** הלוג המקומי (cost_log.json) מראה פחות מ-Google — thinking tokens נספרו רק מ-2026-04-02.
 
 ---
 
