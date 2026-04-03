@@ -141,21 +141,26 @@
     <header class="bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl sticky top-0 z-50 shadow-[0_16px_64px_-12px_rgba(0,0,0,0.04)]">
         <div class="flex flex-row justify-between items-center w-full px-4 md:px-6 py-3">
             <!-- Brand Section -->
-            <div class="flex items-center gap-4">
-                <img src="chadshani_logo.jpg" alt="חדשני" class="w-12 h-12 md:w-16 md:h-16 rounded-2xl object-cover border-2 border-white shadow-xl ring-1 ring-black/5 hover:scale-105 transition-transform duration-500">
+            <div class="flex items-center gap-6">
+                <div class="relative group">
+                    <img src="chadshani_logo.jpg" alt="חדשני" class="w-20 h-20 md:w-24 md:h-24 rounded-3xl object-cover border-4 border-white shadow-2xl ring-1 ring-black/5 hover:scale-105 transition-all duration-500">
+                    <div class="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-600 rounded-full border-4 border-white flex items-center justify-center z-20 shadow-lg">
+                        <span class="material-symbols-outlined text-white text-[14px] font-black">star</span>
+                    </div>
+                </div>
                 <div class="flex flex-col items-start text-right">
-                    <span class="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none">חדשני</span>
-                    <span class="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Market Intelligence Terminal</span>
+                    <span class="text-3xl md:text-5xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-1">חדשני</span>
+                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Intelligence Terminal (v3.2.12)</span>
                 </div>
             </div>
             
-            <!-- Center: LIVE Indicator -->
+            <!-- Center: LIVE Indicator (Chadshani site status only) -->
             <div class="flex items-center gap-2.5 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm">
                 <div class="relative flex items-center justify-center">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 relative z-10"></span>
                     <span class="absolute w-4 h-4 rounded-full bg-emerald-400/40 market-pulse"></span>
                 </div>
-                <span class="text-[10px] md:text-xs font-black text-emerald-700 uppercase tracking-widest">שידור חי</span>
+                <span class="text-[10px] md:text-xs font-black text-emerald-700 uppercase tracking-widest">חדשני: שידור חי</span>
             </div>
 
 
@@ -175,7 +180,7 @@
     <!-- Global Sticky Market Ticker -->
     <section id="global-slider" class="sticky top-[68px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm">
         <div class="ticker-wrap w-full">
-             <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline">
+              <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline font-bold">
                 <!-- Ticker contents populated by JS -->
              </div>
         </div>
@@ -186,7 +191,7 @@
         <aside class="hidden md:flex bg-slate-50/50 fixed right-0 h-full w-64 lg:w-72 border-l border-slate-200 flex-col py-8 px-4 gap-8 z-40">
             <nav class="flex flex-col gap-2">
                 <a href="#macro" id="nav-macro" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all active" onclick="showPage('macro')">
-                    <span class="font-bold text-right flex-1">שוק ההון (מאקרו)</span>
+                    <span class="font-bold text-right flex-1">שוק ההון</span>
                     <span class="material-symbols-outlined">public</span>
                 </a>
                 <a href="#sectors" id="nav-sectors" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('sectors')">
@@ -198,11 +203,11 @@
                     <span class="material-symbols-outlined">currency_bitcoin</span>
                 </a>
                 <a href="#ai" id="nav-ai" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('ai')">
-                    <span class="font-bold text-right flex-1">חזית ה-AI</span>
+                    <span class="font-bold text-right flex-1">מודיעין AI</span>
                     <span class="material-symbols-outlined">psychology</span>
                 </a>
                 <a href="#watchlist" id="nav-watchlist" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('watchlist')">
-                    <span class="font-bold text-right flex-1">טיקרים למעקב</span>
+                    <span class="font-bold text-right flex-1">מעקב נכסים</span>
                     <span class="material-symbols-outlined">list_alt</span>
                 </a>
             </nav>
@@ -218,8 +223,8 @@
                         </div>
                     </div>
                     <div>
-                        <div class="font-black text-slate-900 text-xl font-headline italic tracking-tighter">שלו גיגי</div>
-                        <div class="text-[10px] text-blue-600 font-black uppercase tracking-[0.2em] mt-1 italic">אנליסט פיננסי ראשי</div>
+                        <div class="font-black text-slate-900 text-2xl font-headline tracking-tighter">שלו גיגי</div>
+                        <div class="text-xs text-blue-600 font-bold uppercase tracking-[0.1em] mt-1 italic">אנליסט פיננסי ראשי</div>
                         <p class="text-[11px] leading-relaxed text-slate-500 font-bold mt-4 px-2 italic">
                             מומחה לניתוח נרטיבים, זיהוי סיגנלים ומודיעין שווקים גלובלי.
                         </p>
@@ -246,7 +251,7 @@
                     <div id="clock-next" class="font-black text-blue-600 text-base md:text-xl tabular-nums">--:--:--</div>
                 </div>
                 <div class="glass-card p-4 rounded-3xl border-0 shadow-sm text-center entrance-anim" style="animation-delay: 0.3s">
-                    <div class="text-slate-400 font-bold text-[10px] uppercase tracking-wider mb-1">בורסת ארה״ב</div>
+                    <div class="text-slate-400 font-bold text-[10px] uppercase tracking-wider mb-1">בורסת ארה״ב (Wall St)</div>
                     <div id="market-status" class="font-black text-base md:text-xl flex items-center justify-center gap-2">
                         <span id="market-label">טוען...</span>
                         <span id="market-dot" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
@@ -263,13 +268,13 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                     </div>
                     
-                    <div id="macro-hero-content" class="absolute inset-0 z-10 flex flex-col justify-end p-8 md:p-20 text-right">
-                        <div class="inline-flex items-center self-end gap-2 px-3 py-1 bg-blue-600 text-white rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-6 shadow-lg">
+                    <div id="macro-hero-content" class="absolute inset-0 z-10 flex flex-col justify-end p-8 md:p-16 text-right w-full">
+                        <div class="inline-flex items-center self-end gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-6 shadow-xl">
                             <span class="material-symbols-outlined text-xs">analytics</span>
                             <span>פרספקטיבה יומית / <span id="macro-date">--</span></span>
                         </div>
-                        <h1 id="macro-headline" class="text-3xl md:text-6xl font-black font-headline text-white mb-6 leading-[1.1] max-w-4xl drop-shadow-2xl">טוען נתונים...</h1>
-                        <p id="macro-analysis" class="text-base md:text-xl text-slate-200 w-full mb-8 leading-relaxed font-bold text-justify drop-shadow-md"></p>
+                        <h1 id="macro-headline" class="text-3xl md:text-6xl font-black font-headline text-white mb-6 leading-[1.1] w-full drop-shadow-2xl">טוען נתונים...</h1>
+                        <p id="macro-analysis" class="text-base md:text-2xl text-slate-100 w-full mb-8 leading-relaxed font-black text-justify drop-shadow-2xl"></p>
                         
                         <div class="flex flex-row-reverse gap-4 opacity-0 pointer-events-none">
                             <button class="px-8 py-3 bg-white text-blue-600 rounded-2xl font-black text-sm">קרא עוד</button>
@@ -357,8 +362,8 @@
                 <!-- Strategy & Watchlist Macro -->
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-2 surface-container-low rounded-full p-8 border border-white/50">
-                        <h2 class="text-2xl font-black font-headline mb-6 flex items-center justify-end gap-2 text-right">
-                            <span class="material-symbols-outlined text-blue-600">lightbulb</span>
+                        <h2 class="text-2xl font-black font-headline mb-6 flex flex-row-reverse items-center justify-start gap-3 text-right text-slate-900 italic">
+                            <span class="material-symbols-outlined text-blue-600 text-3xl">lightbulb</span>
                             תזת השקעה ואסטרטגיה
                         </h2>
                         <div class="space-y-6" dir="rtl">
@@ -447,9 +452,20 @@
 
             <!-- PAGE: CRYPTO -->
             <div id="page-crypto" class="page-view hidden space-y-10">
-                <!-- Crypto Market Snapshot -->
-                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="crypto-market-grid">
-                    <!-- Populated by JS: Includes BTC, ETH, SOL, LINK, XRP, TAO, KAS -->
+                <!-- Crypto Market Snapshot & Sentiment -->
+                <section class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="crypto-market-grid">
+                        <!-- Populated by JS: Includes BTC, ETH, SOL, LINK, XRP, TAO, KAS -->
+                    </div>
+                    <!-- Small Crypto F&G for context -->
+                    <div class="surface-container-low rounded-[2rem] p-6 border border-slate-100 flex flex-col justify-center items-center text-center">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">מומנטום שוק (F&G)</div>
+                        <div id="crypto-fng-val" class="text-3xl font-headline font-black text-purple-600">--</div>
+                        <div class="h-1.5 w-full bg-slate-100 rounded-full mt-3 overflow-hidden">
+                            <div id="crypto-fng-bar" class="h-full bg-purple-600 w-0 transition-all duration-1000"></div>
+                        </div>
+                        <p id="crypto-fng-label" class="text-[10px] font-black text-slate-600 mt-2 uppercase"></p>
+                    </div>
                 </section>
 
                 <!-- Crypto Brief -->
@@ -478,8 +494,8 @@
                     </div>
                     <div class="glass-card rounded-[2.5rem] p-10 flex flex-col text-right">
                          <h2 class="text-2xl font-black font-headline mb-6 text-slate-900 italic underline underline-offset-8 decoration-blue-500/20">מסקנה ופעולה טקטית</h2>
-                         <div class="flex-1 flex flex-col justify-center bg-blue-600 p-8 rounded-[2rem] border border-blue-400/20 shadow-2xl shadow-blue-600/20">
-                            <p id="crypto-conclusion" class="text-base md:text-lg font-black text-white text-center leading-relaxed italic"></p>
+                         <div class="flex-1 flex flex-col justify-center bg-blue-600 p-10 rounded-[2.5rem] border-4 border-blue-400 shadow-2xl shadow-blue-600/30">
+                            <p id="crypto-conclusion" class="text-lg md:text-2xl font-black text-white text-center leading-relaxed italic drop-shadow-md"></p>
                          </div>
                     </div>
                 </section>
@@ -735,6 +751,14 @@
                 document.getElementById('crypto-smart').textContent = cb.smart_money;
                 document.getElementById('crypto-whale').textContent = cb.whale_activity;
                 document.getElementById('crypto-conclusion').textContent = cb.conclusion;
+                
+                // Update local F&G on crypto page
+                if (d.section_1_situation?.gauges?.fear_greed_crypto) {
+                    const g = d.section_1_situation.gauges.fear_greed_crypto;
+                    document.getElementById('crypto-fng-val').textContent = g.value;
+                    document.getElementById('crypto-fng-label').textContent = g.label;
+                    document.getElementById('crypto-fng-bar').style.width = g.value + '%';
+                }
             }
 
             // Page 4: AI
@@ -745,7 +769,11 @@
                 'Meta': 'meta.com',
                 'xAI': 'x.ai',
                 'Perplexity': 'perplexity.ai',
-                'Mistral': 'mistral.ai'
+                'Mistral': 'mistral.ai',
+                'Nvidia': 'nvidia.com',
+                'Microsoft': 'microsoft.com',
+                'Amazon': 'amazon.com',
+                'Apple': 'apple.com'
             };
             const s7 = d.section_7_ai;
             if (s7) {
