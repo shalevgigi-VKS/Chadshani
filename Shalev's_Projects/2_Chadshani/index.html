@@ -147,7 +147,7 @@
                 </div>
                 <div class="flex flex-col items-start text-right">
                     <span class="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-0.5">חדשני</span>
-                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Terminal (v3.2.15)</span>
+                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Terminal (v3.2.16)</span>
                 </div>
             </div>
             
@@ -174,8 +174,8 @@
         </div>
     </header>
 
-    <!-- Global Sticky Market Ticker -->
-    <section id="global-slider" class="sticky top-[80px] md:top-[96px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm">
+    <!-- Global Sticky Market Ticker (v3.2.16 Fixed Mobile Visibility) -->
+    <section id="global-slider" class="sticky top-[72px] md:top-[112px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm" dir="ltr">
         <div class="ticker-wrap w-full">
               <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline font-bold">
                 <span class="text-blue-600">INITIALIZING MARKET INTELLIGENCE...</span>
@@ -187,27 +187,27 @@
 
     <div class="flex flex-row">
         <!-- Sidebar Navigation (Desktop) -->
-        <aside class="hidden md:flex bg-slate-50/50 fixed right-0 h-full w-64 lg:w-72 border-l border-slate-200 flex-col py-8 px-4 gap-8 z-40">
+        <aside class="hidden md:flex bg-slate-50/50 fixed right-0 h-full w-64 lg:w-72 border-l border-slate-200 flex-col py-8 px-4 gap-8 z-40" dir="rtl">
             <nav class="flex flex-col gap-2">
-                <a href="#macro" id="nav-macro" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all active" onclick="showPage('macro')">
-                    <span class="font-bold text-right flex-1">שוק ההון</span>
+                <a href="#macro" id="nav-macro" class="nav-item flex items-center gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all active" onclick="showPage('macro')">
                     <span class="material-symbols-outlined">public</span>
+                    <span class="font-bold text-right flex-1">שוק ההון</span>
                 </a>
-                <a href="#sectors" id="nav-sectors" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('sectors')">
-                    <span class="font-bold text-right flex-1">סקטורים וזרימת כסף</span>
+                <a href="#sectors" id="nav-sectors" class="nav-item flex items-center gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('sectors')">
                     <span class="material-symbols-outlined">account_tree</span>
+                    <span class="font-bold text-right flex-1">סל סקטורים</span>
                 </a>
-                <a href="#crypto" id="nav-crypto" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('crypto')">
-                    <span class="font-bold text-right flex-1">עולם הקריפטו</span>
+                <a href="#crypto" id="nav-crypto" class="nav-item flex items-center gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('crypto')">
                     <span class="material-symbols-outlined">currency_bitcoin</span>
+                    <span class="font-bold text-right flex-1">עולם הקריפטו</span>
                 </a>
-                <a href="#ai" id="nav-ai" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('ai')">
-                    <span class="font-bold text-right flex-1">מודיעין AI</span>
+                <a href="#ai" id="nav-ai" class="nav-item flex items-center gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('ai')">
                     <span class="material-symbols-outlined">psychology</span>
+                    <span class="font-bold text-right flex-1">מודיעין AI</span>
                 </a>
-                <a href="#watchlist" id="nav-watchlist" class="nav-item flex items-center justify-end gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('watchlist')">
-                    <span class="font-bold text-right flex-1">מעקב טיקרים</span>
+                <a href="#watchlist" id="nav-watchlist" class="nav-item flex items-center gap-3 p-4 text-slate-600 hover:bg-white/80 rounded-xl transition-all" onclick="showPage('watchlist')">
                     <span class="material-symbols-outlined">list_alt</span>
+                    <span class="font-bold text-right flex-1">מעקב טיקרים</span>
                 </a>
             </nav>
 
