@@ -765,10 +765,11 @@
                 grid.innerHTML = s3.map(s => {
                     const amountRaw = s.flow_amount || '$0B';
                     const amountVal = Math.abs(parseFloat(amountRaw.replace(/[+$BM]/g, '')) || 0);
-                    // Use flow_direction as primary signal, fall back to amountRaw sign
-                    const flowDir = s.flow_direction === 'in' ? 'in'
-                                  : s.flow_direction === 'out' ? 'out'
-                                  : (amountRaw.startsWith('+') ? 'in' : amountRaw.startsWith('-') ? 'out' : 'neutral');
+                    // flow_amount sign = primary (real yfinance data); flow_direction = fallback (Gemini)
+                    const amtDir = amountRaw.startsWith('+') ? 'in' : amountRaw.startsWith('-') ? 'out' : 'neutral';
+                    const flowDir = amtDir !== 'neutral' ? amtDir
+                                  : (s.flow_direction === 'in' || s.flow_direction === 'out') ? s.flow_direction
+                                  : 'neutral';
                     const isPos = flowDir === 'in';
                     const isNeg = flowDir === 'out';
 
