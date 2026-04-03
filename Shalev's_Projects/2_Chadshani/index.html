@@ -144,23 +144,26 @@
             <div class="flex items-center gap-4">
                 <div class="relative group">
                     <img src="chadshani_logo.jpg" alt="חדשני" class="w-14 h-14 md:w-24 md:h-24 rounded-2xl md:rounded-3xl object-cover border-2 md:border-4 border-white shadow-xl md:shadow-2xl ring-1 ring-black/5 hover:scale-105 transition-all duration-500">
-                    <div class="absolute -bottom-0.5 -right-0.5 w-6 h-6 md:w-8 md:h-8 bg-blue-600 rounded-full border-2 md:border-4 border-white flex items-center justify-center z-20 shadow-lg">
-                        <span class="material-symbols-outlined text-white text-[12px] md:text-[14px] font-black">star</span>
-                    </div>
                 </div>
                 <div class="flex flex-col items-start text-right">
-                    <span class="text-2xl md:text-5xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-0.5">חדשני</span>
-                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Intelligence Terminal (v3.2.13)</span>
+                    <span class="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400 italic font-headline tracking-tighter leading-none mb-0.5">חדשני</span>
+                    <span class="text-[10px] md:text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:block">Terminal (v3.2.15)</span>
                 </div>
             </div>
             
-            <!-- Center: LIVE Indicator (Chadshani site status only) -->
-            <div class="flex items-center gap-2.5 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm">
-                <div class="relative flex items-center justify-center">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 relative z-10"></span>
-                    <span class="absolute w-4 h-4 rounded-full bg-emerald-400/40 market-pulse"></span>
+            <!-- Center: LIVE Indicator -->
+            <div class="flex flex-row md:flex-col items-center md:items-end gap-2.5 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm">
+                <div class="flex items-center gap-2">
+                    <div class="relative flex items-center justify-center">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 relative z-10"></span>
+                        <span class="absolute w-4 h-4 rounded-full bg-emerald-400/40 market-pulse"></span>
+                    </div>
+                    <span class="text-[10px] md:text-xs font-black text-emerald-700 uppercase tracking-widest">שידור חי</span>
                 </div>
-                <span class="text-[10px] md:text-xs font-black text-emerald-700 uppercase tracking-widest">חדשני: שידור חי</span>
+                <!-- Mobile Bio Widget (v3.2.14) -->
+                <div class="md:hidden border-r border-emerald-100 pr-2.5 mr-2.5">
+                    <span class="text-[10px] font-black text-slate-900 leading-none">שלו גיגי</span>
+                </div>
             </div>
 
 
@@ -169,7 +172,7 @@
                 <div id="battery-status" class="flex flex-col items-end text-[10px] font-black group">
                     <div class="flex items-center gap-1.5 text-emerald-500 uppercase tracking-widest mb-0.5">
                         <span class="material-symbols-outlined text-xs">sync_saved_locally</span>
-                        <span>עדכון מודיעין אחרון:</span>
+                        <span>עדכון אחרון:</span>
                     </div>
                     <span id="update-ts" class="text-slate-900 text-lg md:text-xl font-headline tabular-nums leading-none">POLLING...</span>
                 </div>
@@ -178,7 +181,7 @@
     </header>
 
     <!-- Global Sticky Market Ticker -->
-    <section id="global-slider" class="sticky top-[68px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm">
+    <section id="global-slider" class="sticky top-[80px] md:top-[96px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm">
         <div class="ticker-wrap w-full">
               <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline font-bold">
                 <!-- Ticker contents populated by JS -->
@@ -218,9 +221,6 @@
                     <div class="relative group">
                         <div class="absolute inset-0 bg-blue-600 rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
                         <img src="assets/SHALEV.PNG" alt="שלו גיגי" class="w-24 h-24 rounded-full object-cover shadow-2xl border-4 border-white ring-1 ring-slate-100 relative z-10 transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center z-20 shadow-md">
-                            <span class="material-symbols-outlined text-white text-[12px] font-black">verified</span>
-                        </div>
                     </div>
                     <div>
                         <div class="font-black text-slate-900 text-2xl font-headline tracking-tighter">שלו גיגי</div>
@@ -273,8 +273,8 @@
                             <span class="material-symbols-outlined text-xs">analytics</span>
                             <span>פרספקטיבה יומית / <span id="macro-date">--</span></span>
                         </div>
-                        <h1 id="macro-headline" class="text-xl md:text-6xl font-black font-headline text-white mb-4 leading-[1.1] w-full drop-shadow-2xl">טוען נתונים...</h1>
-                        <p id="macro-analysis" class="text-sm md:text-2xl text-slate-100 w-full mb-6 leading-relaxed font-black text-justify drop-shadow-2xl"></p>
+                        <h1 id="macro-headline" class="text-xl md:text-4xl font-black font-headline text-white mb-4 leading-[1.1] w-full drop-shadow-2xl">טוען נתונים...</h1>
+                        <p id="macro-analysis" class="text-xs md:text-lg text-slate-100 w-full mb-6 leading-relaxed font-black text-justify drop-shadow-2xl"></p>
                         
                         <div class="flex flex-row-reverse gap-4 opacity-0 pointer-events-none">
                             <button class="px-8 py-3 bg-white text-blue-600 rounded-2xl font-black text-sm">קרא עוד</button>
@@ -362,14 +362,14 @@
                 <!-- Strategy & Watchlist Macro -->
                 <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-2 surface-container-low rounded-full p-8 border border-white/50">
-                        <h2 class="text-2xl font-black font-headline mb-6 flex flex-row-reverse items-center justify-start gap-3 text-right text-slate-900 italic">
+                        <h2 class="text-lg md:text-2xl font-black font-headline mb-6 flex flex-row items-center gap-3 text-right text-slate-900 italic">
                             <span class="material-symbols-outlined text-blue-600 text-3xl">lightbulb</span>
                             תזת השקעה ואסטרטגיה
                         </h2>
                         <div class="space-y-6" dir="rtl">
                             <div class="text-right">
                                 <span class="text-xs font-black text-blue-600 uppercase tracking-widest underline mb-2 block">תזה מרכזית</span>
-                                <p id="macro-thesis" class="font-bold text-lg md:text-xl mt-1 text-slate-800 leading-relaxed text-justify"></p>
+                                <p id="macro-thesis" class="font-bold text-base md:text-xl mt-1 text-slate-800 leading-relaxed text-justify"></p>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="bg-red-50/50 p-6 rounded-3xl border-r-4 border-red-500 text-right">
