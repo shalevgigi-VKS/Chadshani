@@ -1,5 +1,5 @@
 # Chadshani — HANDOFF
-Last updated: 2026-04-03
+Last updated: 2026-04-04
 
 ## מצב נוכחי
 - האתר פועל ✅ — https://shalevgigi-vks.github.io/Chadshani/
@@ -7,14 +7,15 @@ Last updated: 2026-04-03
 - GEMINI_API_KEY מוגדר כ-User env var
 - **תקציב אפריל: ₪6.10 / ₪20 (Google AI Studio — המספר הסמכותי)**
 - עלות ריצה: ~₪0.013 לריצה (flash-lite, בלי thinking)
-- סטטוס: **Active v3.3.11**
+- סטטוס: **Active v3.3.12**
 
-## v3.3.x — שדרוגים (2026-04-03)
+## v3.3.x — שדרוגים (2026-04-04)
 - **v3.3.7** static Tailwind CSS, font preconnect, icon subset
 - **v3.3.8** תיקוני עיצוב: south_east→trending_up/down, flow_direction heatmap, scroll instant, ללא pill-ticker כפול, crypto contrast, json_repair, Gemini fallback chain, UTF-8 stdout
 - **v3.3.9** תיקון sidebar (custom .hidden override הוסר), CSS rebuild, bg-amber-100 נוסף
 - **v3.3.10** כרטיס F&G קריפטו: רקע בהיר + כיתוב שחור (הוסר bg-slate-900)
 - **v3.3.11** notification אחת בלבד אחרי אימות מלא, עם סכום חיוב | אסור לפרוס עם נתונים ישנים
+- **v3.3.12** nav scroll fix (href→javascript:void), title=חדשני+גרסא, MAX_NEWS_AGE_DAYS=2, +8 finance RSS feeds (Reuters/CNBC/MarketWatch/Yahoo)
 
 ## כללי ברזל — אסור לשנות
 1. **אסור לפרוס ללא נתונים חדשים** — generator exit 2 = deploy מבוטל, ntfy "דולג ⏭"
