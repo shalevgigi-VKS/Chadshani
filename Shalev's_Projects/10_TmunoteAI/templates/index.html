@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מחולל תמונות AI</title>
+<style>
+:root {
+  --bg: #090914;
+  --surface: #11111e;
+  --surface2: #18182a;
+  --accent: #7c6fff;
+  --accent2: #38c8f0;
+  --text: #dcdcff;
+  --dim: #6060a0;
+  --border: #22224a;
+  --green: #3dba6f;
+  --orange: #f0a030;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+
+/* ── Header ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-size: 1.25rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.status-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 5px 14px; font-size: 0.82rem; color: var(--dim);
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange);
+  animation: blink 1.4s ease-in-out infinite; }
+.dot.ready { background: var(--green); animation: none; }
+@keyframes blink { 50% { opacity: 0.2; } }
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  min-height: calc(100vh - 56px);
+  align-items: start;
+}
+.sidebar {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 20px;
+  position: sticky; top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.content { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+/* ── Typography ── */
+label, .lbl {
+  display: block; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .6px; color: var(--dim); margin-bottom: 6px;
+}
+.section-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--dim); }
+
+/* ── Inputs ── */
+textarea, input[type=text] {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); padding: 10px 12px;
+  font-size: 0.88rem; font-family: inherit; resize: vertical; transition: border-color .2s;
+}
+textarea:focus, input:focus { outline: none; border-color: var(--accent); }
+
+/* ── Tabs ── */
+.tabs { display: flex; border-bottom: 1px solid var(--border); }
+.tab {
+  flex: 1; padding: 10px 8px; text-align: center; cursor: pointer;
+  font-size: 0.85rem; color: var(--dim); background: none;
+  border: none; border-bottom: 2px solid transparent;
+  font-family: inherit; transition: .2s;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── Buttons ── */
+.btn {
+  border: none; border-radius: 8px; padding: 10px 18px;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer;
+  font-family: inherit; display: inline-flex; align-items: center;
+  gap: 6px; transition: all .2s; white-space: nowrap;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #9a8fff);
+  color: #fff; width: 100%; justify-content: center; padding: 13px; font-size: 0.95rem;
+}
+.btn-primary:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+.btn-success { background: linear-gradient(135deg, #2a6e40, var(--green)); color: #fff; }
+.btn-success:hover { filter: brightness(1.1); }
+.btn-outline {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--dim); font-size: 0.78rem; padding: 5px 12px;
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-ghost { background: rgba(124,111,255,.12); color: var(--accent); font-size: 0.78rem; padding: 5px 12px; }
+
+/* ── Slider ── */
+.slider-row { display: flex; align-items: center; gap: 10px; }
+input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+.slider-val { min-width: 28px; text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--accent2); }
+
+/* ── Aspect buttons ── */
+.aspect-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.asp-btn {
+  background: var(--bg); border: 2px solid var(--border); border-radius: 8px;
+  color: var(--dim); padding: 8px 4px; cursor: pointer; text-align: center;
+  font-size: 0.75rem; font-family: inherit; transition: .2s; line-height: 1.4;
+}
+.asp-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(124,111,255,.1); }
+.asp-icon { font-size: 1.3rem; display: block; margin-bottom: 3px; }
+
+/* ── Toggle ── */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; }
+.tgl { position: relative; width: 44px; height: 24px; }
+.tgl input { display: none; }
+.tgl-sl { position: absolute; inset: 0; background: var(--border); border-radius: 12px; cursor: pointer; transition: .3s; }
+.tgl-sl::before { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; right: 3px; transition: .3s; }
+.tgl input:checked + .tgl-sl { background: var(--accent); }
+.tgl input:checked + .tgl-sl::before { right: 23px; }
+
+/* ── Upload area ── */
+.upload-area {
+  border: 2px dashed var(--border); border-radius: 8px; padding: 16px;
+  text-align: center; color: var(--dim); cursor: pointer;
+  transition: border-color .2s; font-size: 0.85rem; min-height: 80px;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px;
+}
+.upload-area:hover { border-color: var(--accent); }
+.upload-area img { max-width: 100%; max-height: 110px; border-radius: 6px; margin-top: 6px; }
+
+/* ── Image area ── */
+.image-area {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  min-height: 420px; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+}
+.image-area img { max-width: 100%; border-radius: 12px; display: none; }
+.img-placeholder { text-align: center; color: var(--dim); }
+.img-placeholder .big-icon { font-size: 3rem; display: block; margin-bottom: 10px; }
+.gen-overlay {
+  display: none; flex-direction: column; align-items: center; gap: 14px;
+  color: var(--dim); padding: 40px;
+}
+.spinner {
+  width: 50px; height: 50px; border: 4px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Download row ── */
+.dl-row { display: none; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+/* ── History ── */
+.history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+.hist-item {
+  cursor: pointer; border-radius: 8px; overflow: hidden;
+  border: 2px solid var(--border); transition: border-color .2s;
+}
+.hist-item:hover { border-color: var(--accent); }
+.hist-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+
+/* ── Prompt cards ── */
+.cards-section {
+  background: var(--surface); border-top: 1px solid var(--border); padding: 24px;
+}
+.cards-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+
+.p-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; transition: border-color .2s;
+}
+.p-card:hover { border-color: rgba(124,111,255,.4); }
+
+.card-head {
+  padding: 14px 16px; display: flex; align-items: center;
+  justify-content: space-between; cursor: pointer; user-select: none;
+}
+.card-info { flex: 1; }
+.card-name { font-size: 0.92rem; font-weight: 600; margin-bottom: 5px; }
+.badge {
+  display: inline-block; font-size: 0.68rem; padding: 2px 9px;
+  border-radius: 10px; font-weight: 700; letter-spacing: .3px;
+}
+.b-finance { background: rgba(240,160,48,.15); color: var(--orange); }
+.b-personal { background: rgba(61,186,111,.15); color: var(--green); }
+.b-photo { background: rgba(56,200,240,.15); color: var(--accent2); }
+.card-arr { color: var(--dim); font-size: 1.1rem; transition: transform .25s; }
+.card-arr.open { transform: rotate(180deg); }
+
+.card-body { display: none; border-top: 1px solid var(--border); padding: 14px 16px; }
+.card-body.open { display: block; }
+.card-desc { font-size: 0.82rem; color: var(--dim); line-height: 1.55; margin-bottom: 12px; }
+.card-prompt-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .5px; color: var(--dim); margin-bottom: 5px; font-weight: 700; }
+.card-ta {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); padding: 8px 10px;
+  font-size: 0.8rem; font-family: monospace; resize: vertical; min-height: 64px;
+  direction: ltr; text-align: left;
+}
+.card-ta:focus { outline: none; border-color: var(--accent); }
+.card-actions { display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end; }
+
+/* ── Divider ── */
+hr { border: none; border-top: 1px solid var(--border); }
+
+/* ── Utils ── */
+.dim { color: var(--dim); }
+.small { font-size: 0.78rem; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="logo">🎨 מחולל תמונות AI</div>
+  <div class="status-pill">
+    <div class="dot" id="dot"></div>
+    <span id="statusText">טוען מודל...</span>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+
+    <!-- Mode tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('t2i')">טקסט לתמונה</button>
+      <button class="tab" onclick="switchTab('i2i')">תמונה לתמונה</button>
+    </div>
+
+    <!-- Text-to-Image -->
+    <div id="pane-t2i" style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <label>תיאור התמונה (באנגלית)</label>
+        <textarea id="prompt" rows="4" placeholder="A futuristic city at sunset, highly detailed..."></textarea>
+      </div>
+      <div>
+        <label>מה לא לכלול — Negative Prompt</label>
+        <textarea id="negPrompt" rows="2" placeholder="ugly, blurry, watermark, text..."></textarea>
+      </div>
+    </div>
+
+    <!-- Image-to-Image -->
+    <div id="pane-i2i" style="display:none;flex-direction:column;gap:14px">
+      <div>
+        <label>תמונת קלט (סקיצה / בסיס)</label>
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('imgFile').click()">
+          <input type="file" id="imgFile" accept="image/*" style="display:none" onchange="onUpload(this)">
+          <span id="uploadTxt">📁 לחץ לבחירת תמונה</span>
+          <img id="uploadPrev" style="display:none">
+        </div>
+      </div>
+      <div>
+        <label>תיאור הרצוי (באנגלית)</label>
+        <textarea id="i2iPrompt" rows="3" placeholder="Turn this sketch into a professional illustration..."></textarea>
+      </div>
+      <div>
+        <label>מה לא לכלול</label>
+        <textarea id="i2iNeg" rows="2" placeholder="ugly, blurry..."></textarea>
+      </div>
+      <div>
+        <label>עוצמת שינוי — <span id="strengthVal">0.75</span></label>
+        <div class="slider-row">
+          <span class="small dim">עדין</span>
+          <input type="range" min="0.1" max="1.0" step="0.05" value="0.75" id="strSlider"
+            oninput="document.getElementById('strengthVal').textContent=parseFloat(this.value).toFixed(2)">
+          <span class="small dim">חזק</span>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Aspect ratio -->
+    <div>
+      <label>יחס תמונה</label>
+      <div class="aspect-grid">
+        <button class="asp-btn" onclick="setAspect(512,768,this)">
+          <span class="asp-icon">📱</span>לאורך<br><span class="small">9:16</span>
+        </button>
+        <button class="asp-btn active" onclick="setAspect(512,512,this)">
+          <span class="asp-icon">⬜</span>מרובע<br><span class="small">1:1</span>
+        </button>
+        <button class="asp-btn" onclick="setAspect(768,512,this)">
+          <span class="asp-icon">🖥️</span>לרוחב<br><span class="small">16:9</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div>
+      <label>צעדי איכות</label>
+      <div class="slider-row">
+        <input type="range" min="10" max="50" step="1" value="25" id="stepsSlider"
+          oninput="document.getElementById('stepsVal').textContent=this.value">
+        <span class="slider-val" id="stepsVal">25</span>
+      </div>
+    </div>
+
+    <!-- Auto-save -->
+    <div class="toggle-row">
+      <div>
+        <div style="font-size:.88rem">שמירה אוטומטית</div>
+        <div class="small dim">שומר תמונה + יומן פרומפט</div>
+      </div>
+      <label class="tgl">
+        <input type="checkbox" id="autoSave" checked>
+        <span class="tgl-sl"></span>
+      </label>
+    </div>
+
+    <hr>
+
+    <button class="btn btn-primary" id="genBtn" onclick="doGenerate()" disabled>
+      ✨ צור תמונה
+    </button>
+
+  </aside>
+
+  <!-- ── Content ── -->
+  <main class="content">
+
+    <!-- Image display -->
+    <div class="image-area" id="imgArea">
+      <div class="img-placeholder" id="imgPlaceholder">
+        <span class="big-icon">🖼️</span>
+        <div>התמונה תופיע כאן</div>
+        <div class="small dim" style="margin-top:5px">הזן פרומפט ולחץ "צור תמונה"</div>
+      </div>
+      <div class="gen-overlay" id="genOverlay">
+        <div class="spinner"></div>
+        <div>מייצר תמונה...</div>
+        <div class="small dim">CPU: 2–5 דק׳ &nbsp;|&nbsp; GPU: 15–30 שנ׳</div>
+      </div>
+      <img id="resultImg" alt="תמונה שנוצרה">
+    </div>
+
+    <!-- Download row -->
+    <div class="dl-row" id="dlRow">
+      <button class="btn btn-success" onclick="download()">⬇️ הורד תמונה</button>
+      <span class="small dim" id="savedNote"></span>
+    </div>
+
+    <!-- History -->
+    <div>
+      <div class="cards-header">
+        <span class="section-title">📂 היסטוריה</span>
+        <button class="btn btn-outline" onclick="loadHistory()">רענן</button>
+      </div>
+      <div class="history-grid" id="histGrid">
+        <div class="small dim" style="grid-column:1/-1">אין תמונות שמורות עדיין</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── Prompt Cards Section ── -->
+<section class="cards-section">
+  <div class="cards-header">
+    <div>
+      <div style="font-size:1.05rem;font-weight:700;margin-bottom:4px">💡 דוגמאות לפרומפטים</div>
+      <div class="small dim">לחץ על כרטיס לפרטים ועריכה • "השתמש" שולח ישירות לתיבת הפרומפט</div>
+    </div>
+  </div>
+  <div class="cards-grid" id="cardsGrid"></div>
+</section>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────
+const CARDS = [
+  {
+    name: "מרכז פיקוד עתידני",
+    badge: "פיננסים", bc: "b-finance",
+    desc: "תמונה קונספטואלית של חדר בורסה / שרתים עתידני עם מסכים הולוגרפיים. מעולה למצגות בתחום המסחר.",
+    prompt: "A futuristic command center with glowing holographic screens displaying complex stock market charts, dark cinematic lighting, 8k resolution, highly detailed, sci-fi atmosphere",
+  },
+  {
+    name: "שור ודוב — עימות אגדי",
+    badge: "פיננסים", bc: "b-finance",
+    desc: "סמלי הבורסה (Bull & Bear) בגרסת פנטזיה דרמטית. אפקטיבי לפוסטים ומצגות שוק ההון.",
+    prompt: "An epic fantasy illustration of a glowing golden bull and a dark shadow bear in a fierce standoff on a battlefield, dramatic lighting, digital art, cinematic, highly detailed",
+  },
+  {
+    name: "גלגל הרגשות",
+    badge: "עיצוב אישי", bc: "b-personal",
+    desc: "גלגל צבעוני עם פרצופים מצוירים לכל רגש. מתאים לאפליקציות ביתיות ועבודה עם ילדים.",
+    prompt: "A colorful wheel divided into 8 sections, each showing a different cute cartoon face with a distinct emotion: happy, sad, angry, surprised, fearful, disgusted, calm, excited. Flat vector design, white background, clean lines",
+  },
+  {
+    name: "דף צביעה לילדים",
+    badge: "עיצוב אישי", bc: "b-personal",
+    desc: "קווי מתאר שחור-לבן של ילדים עם דמות קסומה. מעולה להדפסה וצביעה ידנית.",
+    prompt: "Black and white line art of three children playing with a friendly dragon in a magical forest, simple clean outlines only, no shading, coloring book style, white background",
+  },
+  {
+    name: "משאית בנגב",
+    badge: "פוטו-ריאליסטי", bc: "b-photo",
+    desc: "תמונה פוטוגרפית ריאליסטית של משאית חלוקה בנוף מדבר ישראלי. לקטלוגים ואתרים עסקיים.",
+    prompt: "A large modern delivery truck driving on a straight desert highway at sunrise, beautiful Negev desert landscape in the background, photorealistic, 35mm lens, golden hour lighting, high detail",
+  },
+  {
+    name: "עיר עתידנית בשקיעה",
+    badge: "פוטו-ריאליסטי", bc: "b-photo",
+    desc: "נוף עירוני עתידני בצבעי שקיעה, ניאון ורחובות רטובים. מושלם לרקעים ומצגות.",
+    prompt: "A futuristic cyberpunk city at sunset, neon lights reflecting on wet streets, towering skyscrapers with glowing windows, cinematic atmosphere, ultra detailed, 8k resolution",
+  },
+];
+
+// ── State ───────────────────────────────────────────────────────────
+let curW = 512, curH = 512;
+let curTab = 't2i';
+let curB64 = null;
+
+// ── Build prompt cards ───────────────────────────────────────────────
+function buildCards() {
+  document.getElementById('cardsGrid').innerHTML = CARDS.map((c, i) => `
+    <div class="p-card">
+      <div class="card-head" onclick="toggleCard(${i})">
+        <div class="card-info">
+          <div class="card-name">${c.name}</div>
+          <span class="badge ${c.bc}">${c.badge}</span>
+        </div>
+        <span class="card-arr" id="arr-${i}">▼</span>
+      </div>
+      <div class="card-body" id="body-${i}">
+        <p class="card-desc">${c.desc}</p>
+        <div class="card-prompt-lbl">פרומפט — ניתן לעריכה:</div>
+        <textarea class="card-ta" id="cta-${i}">${c.prompt}</textarea>
+        <div class="card-actions">
+          <button class="btn btn-outline" onclick="resetCard(${i})">↺ איפוס</button>
+          <button class="btn btn-ghost" onclick="useCard(${i})">השתמש בפרומפט →</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCard(i) {
+  document.getElementById(`body-${i}`).classList.toggle('open');
+  document.getElementById(`arr-${i}`).classList.toggle('open');
+}
+function resetCard(i) { document.getElementById(`cta-${i}`).value = CARDS[i].prompt; }
+function useCard(i) {
+  const p = document.getElementById(`cta-${i}`).value;
+  document.getElementById('prompt').value = p;
+  if (curTab !== 't2i') switchTab('t2i');
+  document.querySelector('.sidebar').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────
+function switchTab(t) {
+  curTab = t;
+  document.getElementById('pane-t2i').style.display = t === 't2i' ? 'flex' : 'none';
+  document.getElementById('pane-i2i').style.display = t === 'i2i' ? 'flex' : 'none';
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', (i===0&&t==='t2i')||(i===1&&t==='i2i')));
+}
+
+// ── Aspect ───────────────────────────────────────────────────────────
+function setAspect(w, h, btn) {
+  curW = w; curH = h;
+  document.querySelectorAll('.asp-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Upload ───────────────────────────────────────────────────────────
+function onUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('uploadPrev');
+    prev.src = e.target.result;
+    prev.style.display = 'block';
+    document.getElementById('uploadTxt').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Generate ─────────────────────────────────────────────────────────
+async function doGenerate() {
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('imgPlaceholder').style.display = 'none';
+  document.getElementById('genOverlay').style.display = 'flex';
+  document.getElementById('resultImg').style.display = 'none';
+  document.getElementById('dlRow').style.display = 'none';
+
+  try {
+    let json;
+    if (curTab === 't2i') {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: document.getElementById('prompt').value.trim(),
+          negative_prompt: document.getElementById('negPrompt').value.trim(),
+          steps: +document.getElementById('stepsSlider').value,
+          width: curW, height: curH,
+          auto_save: document.getElementById('autoSave').checked,
+        }),
+      });
+      json = await res.json();
+    } else {
+      const file = document.getElementById('imgFile').files[0];
+      if (!file) { alert('יש לבחור תמונת קלט'); return; }
+      const fd = new FormData();
+      fd.append('image', file);
+      fd.append('prompt', document.getElementById('i2iPrompt').value.trim());
+      fd.append('negative_prompt', document.getElementById('i2iNeg').value.trim());
+      fd.append('steps', document.getElementById('stepsSlider').value);
+      fd.append('strength', document.getElementById('strSlider').value);
+      const res = await fetch('/api/img2img', { method: 'POST', body: fd });
+      json = await res.json();
+    }
+
+    if (json.error) throw new Error(json.error);
+
+    curB64 = json.image;
+    const img = document.getElementById('resultImg');
+    img.src = 'data:image/png;base64,' + json.image;
+    img.style.display = 'block';
+    document.getElementById('dlRow').style.display = 'flex';
+    document.getElementById('savedNote').textContent = json.filename ? `נשמר: output/${json.filename}` : '';
+    loadHistory();
+
+  } catch (err) {
+    alert('שגיאה: ' + err.message);
+    document.getElementById('imgPlaceholder').style.display = 'block';
+  } finally {
+    document.getElementById('genOverlay').style.display = 'none';
+    btn.disabled = false;
+  }
+}
+
+// ── Download ─────────────────────────────────────────────────────────
+function download() {
+  if (!curB64) return;
+  const a = document.createElement('a');
+  a.href = 'data:image/png;base64,' + curB64;
+  a.download = 'AI-Image-' + Date.now() + '.png';
+  a.click();
+}
+
+// ── History ──────────────────────────────────────────────────────────
+async function loadHistory() {
+  try {
+    const items = await (await fetch('/api/history')).json();
+    const grid = document.getElementById('histGrid');
+    if (!items.length) {
+      grid.innerHTML = '<div class="small dim" style="grid-column:1/-1">אין תמונות שמורות עדיין</div>';
+      return;
+    }
+    grid.innerHTML = items.map(it => `
+      <div class="hist-item" onclick="loadHist('${it.filename}')" title="${it.prompt_preview}">
+        <img src="/output/${it.filename}" alt="${it.filename}" loading="lazy">
+      </div>`).join('');
+  } catch {}
+}
+
+function loadHist(filename) {
+  fetch(`/output/${filename}`)
+    .then(r => r.blob())
+    .then(blob => new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(blob);
+    }))
+    .then(dataUrl => {
+      curB64 = dataUrl.split(',')[1];
+      const img = document.getElementById('resultImg');
+      img.src = dataUrl;
+      img.style.display = 'block';
+      document.getElementById('imgPlaceholder').style.display = 'none';
+      document.getElementById('dlRow').style.display = 'flex';
+      document.getElementById('savedNote').textContent = filename;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// ── Status polling ────────────────────────────────────────────────────
+async function pollStatus() {
+  try {
+    const json = await (await fetch('/api/status')).json();
+    document.getElementById('statusText').textContent = json.status;
+    if (json.ready) {
+      document.getElementById('dot').classList.add('ready');
+      document.getElementById('genBtn').disabled = false;
+    } else {
+      setTimeout(pollStatus, 2000);
+    }
+  } catch { setTimeout(pollStatus, 3000); }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+buildCards();
+switchTab('t2i');
+pollStatus();
+loadHistory();
+</script>
+</body>
+</html>

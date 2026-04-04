@@ -1,5 +1,5 @@
 # SYSTEM HANDOFF — תמונת מצב כוללת
-Last updated: 2026-04-04 (session 3 — automation sweep)
+Last updated: 2026-04-04 (session 4 — TmunoteAI project 10 built)
 
 ---
 
@@ -27,6 +27,7 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | **7_LCL** | ⏸ הושהה | TCS app בנוי במלואו, deployed ל-https://lcl-4b863.web.app — ממתין להפעלת Firebase Auth ידנית |
 | **8_EvolutionSchematic** | ✅ פעיל — Vercel | https://evolution-schematic.vercel.app |
 | **9_Kesem** | 🔨 בפיתוח | קסם הידיעה — single-file HTML, Claude Haiku API → תסריט AABB → Canvas cartoon + WebM 1280×720. קובץ: `Shalev's_Projects/9_Kesem/extracted/project-package/web-interface/index.html` |
+| **10_TmunoteAI** | 🔨 בפיתוח | אפליקציית תמונות AI מקומית — Stable Diffusion v1.5, Flask web + CustomTkinter desktop, ללא API key. קובץ: `Shalev's_Projects/10_TmunoteAI/` |
 
 ---
 
