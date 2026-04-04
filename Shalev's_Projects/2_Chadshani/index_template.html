@@ -33,7 +33,7 @@
     <style>
         body {
             font-family: 'Heebo', sans-serif;
-            background: radial-gradient(circle at top left, #f5f7f9, #e5e9eb 100%);
+            background: radial-gradient(circle at top left, #eef2ff, #dde6ff 100%);
         }
         h1, h2, h3, h4, .font-headline {
             font-weight: 800 !important;
@@ -93,10 +93,10 @@
             animation: ticker-right var(--ticker-speed) linear infinite;
         }
         .mesh-bg {
-            background-color: #f5f7f9;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(123, 156, 255, 0.08) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(254, 156, 244, 0.05) 0px, transparent 50%);
+            background-color: #eef2ff;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
         }
         /* .hidden is defined in tailwind.min.css — do NOT redefine here (overrides md:flex) */
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -107,19 +107,26 @@
         }
         /* ── Global heading system ── */
         .page-h2 {
-            font-size: 1.25rem; /* text-xl */
+            font-size: 1.5rem; /* text-2xl */
             font-weight: 900;
             font-family: 'Space Grotesk', sans-serif;
             font-style: italic;
             text-decoration: underline;
-            text-decoration-color: rgba(0,80,212,0.18);
+            text-decoration-color: rgba(0,80,212,0.22);
             text-underline-offset: 8px;
-            color: #2c2f31;
+            letter-spacing: -0.02em;
+            color: #1e293b;
         }
         @media (min-width: 768px) {
-            .page-h2 { font-size: 1.5rem; } /* md:text-2xl */
+            .page-h2 { font-size: 1.875rem; } /* md:text-3xl */
         }
-        .page-h2-icon { font-size: 1.75rem; color: inherit; }
+        .page-h2-icon { font-size: 2rem; color: inherit; }
+        /* ── Per-page heading accent colors ── */
+        #page-macro .page-h2    { color: #0050d4; text-decoration-color: rgba(0,80,212,0.28); }
+        #page-sectors .page-h2  { color: #059669; text-decoration-color: rgba(5,150,105,0.28); }
+        #page-crypto .page-h2   { color: #7c3aed; text-decoration-color: rgba(124,58,237,0.28); }
+        #page-ai .page-h2       { color: #0891b2; text-decoration-color: rgba(8,145,178,0.28); }
+        #page-watchlist .page-h2 { color: #0050d4; text-decoration-color: rgba(0,80,212,0.28); }
         .card-label {
             font-size: 10px;
             font-weight: 900;
@@ -182,6 +189,15 @@
     <section id="global-slider" class="sticky top-[80px] md:top-[122px] z-40 bg-white/70 backdrop-blur-md border-b border-slate-100 overflow-hidden h-10 md:h-12 flex items-center shadow-sm" dir="ltr">
         <div class="ticker-wrap w-full">
               <div id="sticky-ticker" class="ticker-move flex gap-8 items-center text-[10px] md:text-xs font-headline font-bold">
+                <span class="text-blue-600">INITIALIZING MARKET INTELLIGENCE...</span>
+                <span class="text-slate-400 font-black italic uppercase tracking-widest">Collecting Signals</span>
+                <span class="text-blue-600">PRODUCING ALPHA...</span>
+                <span class="text-blue-600">INITIALIZING MARKET INTELLIGENCE...</span>
+                <span class="text-slate-400 font-black italic uppercase tracking-widest">Collecting Signals</span>
+                <span class="text-blue-600">PRODUCING ALPHA...</span>
+                <span class="text-blue-600">INITIALIZING MARKET INTELLIGENCE...</span>
+                <span class="text-slate-400 font-black italic uppercase tracking-widest">Collecting Signals</span>
+                <span class="text-blue-600">PRODUCING ALPHA...</span>
                 <span class="text-blue-600">INITIALIZING MARKET INTELLIGENCE...</span>
                 <span class="text-slate-400 font-black italic uppercase tracking-widest">Collecting Signals</span>
                 <span class="text-blue-600">PRODUCING ALPHA...</span>
