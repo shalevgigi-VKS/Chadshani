@@ -30,7 +30,7 @@ jobs:
         run: |
           echo '{"design_updated":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}' > "Shalev's_Projects/2_Chadshani/version.json"
 
-      - name: Inject dynamic meta into index.html
+      - name: Inject data + meta into index.html
         run: |
           python3 - <<'EOF'
           import json, re, os
@@ -39,22 +39,34 @@ jobs:
               print("[META] no latest.json, skipping")
               exit(0)
           with open(latest, encoding="utf-8") as f:
-              data = json.load(f)
+              raw = f.read()
+              data = json.loads(raw)
           headline = data.get("section_1_situation", {}).get("headline", "")
           if not headline:
               print("[META] no headline, skipping")
               exit(0)
+          # OG/Twitter meta (social sharing) — use headline
           desc = headline[:200]
-          title = f"חדשני | {headline[:80]}"
+          og_title = f"חדשני v4.0 | {headline[:80]}"
           with open("Shalev's_Projects/2_Chadshani/index.html", encoding="utf-8") as f:
               html = f.read()
+          # Inject OG/Twitter meta only — do NOT touch <title> (keep "חדשני v4.0")
           html = re.sub(r'(<meta property="og:description" content=")[^"]*(")', f'\\g<1>{desc}\\2', html)
-          html = re.sub(r'(<meta property="og:title" content=")[^"]*(")', f'\\g<1>{title}\\2', html)
-          html = re.sub(r'(<meta name="twitter:title" content=")[^"]*(")', f'\\g<1>{title}\\2', html)
-          html = re.sub(r'(<title>)[^<]*(</title>)', f'\\g<1>{title}\\2', html)
+          html = re.sub(r'(<meta property="og:title" content=")[^"]*(")', f'\\g<1>{og_title}\\2', html)
+          html = re.sub(r'(<meta name="twitter:title" content=")[^"]*(")', f'\\g<1>{og_title}\\2', html)
+          html = re.sub(r'(<meta name="twitter:description" content=")[^"]*(")', f'\\g<1>{desc}\\2', html)
+          # Inject fresh window.__INLINE_DATA__ so page shows current data immediately
+          json_compact = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
+          html = re.sub(
+              r'window\.__INLINE_DATA__\s*=\s*(?:\{.*?\}|null)\s*;',
+              f'window.__INLINE_DATA__={json_compact};',
+              html,
+              flags=re.DOTALL
+          )
           with open("Shalev's_Projects/2_Chadshani/index.html", "w", encoding="utf-8") as f:
               f.write(html)
-          print(f"[META] injected: {title[:60]}")
+          print(f"[META] injected: {og_title[:60]}")
+          print(f"[DATA] window.__INLINE_DATA__ updated: {data.get('generated_at')}")
           EOF
 
       - name: Upload Pages artifact
