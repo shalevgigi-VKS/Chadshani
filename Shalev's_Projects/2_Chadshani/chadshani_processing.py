@@ -171,7 +171,11 @@ def clean_raw(raw):
 
 
 def deduplicate_sections(data):
-    """Aggressive de-duplication — strip news entries that repeat hero/alert concepts."""
+    """De-duplicate: drop news items whose title is near-identical to the critical alert.
+    Only seeds from alert.title/alert.description — NOT from the full hero analysis
+    (which would contain all common financial words and over-drop everything).
+    Threshold: 4+ overlapping words of length 5+ before considering it a duplicate.
+    """
     seen_concepts = set()
 
     def extract_keywords(text):
@@ -179,28 +183,28 @@ def deduplicate_sections(data):
             return set()
         return set(re.findall(r'\w{5,}', text.lower()))
 
-    hero_text = (data.get("section_1_situation", {}).get("headline", "") + " " +
-                 data.get("section_1_situation", {}).get("analysis", ""))
-    seen_concepts.update(extract_keywords(hero_text))
-
-    alert_text = data.get("section_1_situation", {}).get("alert_title", "")
+    # Only use the alert (the section we want unique) — not the full analysis paragraph
+    alert = data.get("section_1_situation", {}).get("alert", {})
+    alert_text = alert.get("title", "") + " " + alert.get("description", "")
     seen_concepts.update(extract_keywords(alert_text))
 
-    ai_items = data.get("section_7_ai", [])
-    for item in ai_items:
-        upd = item.get("update", "")
-        if upd:
-            seen_concepts.update(extract_keywords(upd))
-
     news = data.get("section_2_news", [])
+    seen_titles = set()
     filtered_news = []
     for item in news:
-        head = item.get("headline", "")
+        head = item.get("title", item.get("headline", ""))
         body = item.get("body", "")
+        # Exact-title dedup (catches literal repeats from Gemini)
+        head_key = re.sub(r'\s+', ' ', head.strip().lower())
+        if head_key and head_key in seen_titles:
+            print(f"[DEDUPE] Dropping exact-duplicate title: {head[:60]}")
+            continue
+        seen_titles.add(head_key)
+        # Alert-overlap dedup: needs 4+ specific words to count as covering the same topic
         news_concepts = extract_keywords(head + " " + body)
         overlap = news_concepts.intersection(seen_concepts)
-        if len(overlap) >= 2:
-            print(f"[DEDUPE] Dropping duplicate news: {head[:40]}... (Overlap: {list(overlap)[:3]})")
+        if len(overlap) >= 4:
+            print(f"[DEDUPE] Dropping alert-duplicate news: {head[:40]}... (Overlap: {list(overlap)[:4]})")
             continue
         filtered_news.append(item)
     data["section_2_news"] = filtered_news

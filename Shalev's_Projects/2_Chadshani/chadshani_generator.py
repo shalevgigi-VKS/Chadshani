@@ -71,16 +71,20 @@ def call_gemini(model, attempt, news_context):
         "אם אין מידע על חברה ב-section_7_ai — כתוב 'אין חדשות חדשות מהשבוע האחרון.' בלבד.\n\n"
         + JSON_PROMPT
     )
+    # Pro requires thinking mode (budget > 0); flash/lite work with budget=0
+    is_pro = "pro" in model
+    cfg_kwargs = dict(
+        system_instruction=SYSTEM_PROMPT,
+        temperature=0.3,
+        max_output_tokens=32768,
+        response_mime_type="application/json",
+    )
+    if not is_pro:
+        cfg_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=0)
     response = client.models.generate_content(
         model=model,
         contents=full_prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            temperature=0.3,
-            max_output_tokens=32768,
-            response_mime_type="application/json",
-            thinking_config=types.ThinkingConfig(thinking_budget=0),
-        ),
+        config=types.GenerateContentConfig(**cfg_kwargs),
     )
     if hasattr(response, "usage_metadata"):
         log_cost(model, response.usage_metadata)

@@ -117,12 +117,13 @@ JSON_PROMPT = """
     {"ticker": "SNOW",  "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "OpenAI",          "product": "[שם מוצר עיקרי]", "updates": ["[עדכון 1]", "[עדכון 2]", "[עדכון 3]", "[עדכון 4]", "[עדכון 5]", "[עדכון 6]", "[עדכון 7]", "[עדכון 8]", "[עדכון 9]", "[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Google/Gemini",   "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Anthropic/Claude","product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Meta/Llama",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "xAI/Grok",        "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
-    {"company": "Perplexity",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
+    {"company": "OpenAI",             "product": "[שם מוצר עיקרי]", "updates": ["[עדכון 1]", "[עדכון 2]", "[עדכון 3]", "[עדכון 4]", "[עדכון 5]", "[עדכון 6]", "[עדכון 7]", "[עדכון 8]", "[עדכון 9]", "[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Google/Gemini",      "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Anthropic/Claude",   "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Microsoft/Copilot",  "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Meta/Llama",         "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "xAI/Grok",           "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"},
+    {"company": "Perplexity",         "product": "...", "updates": ["...", "...", "...", "...", "...", "...", "...", "...", "...", "..."], "last_known_update": "DD/MM/YYYY", "status": "GA/Beta"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -203,6 +204,7 @@ _AI_RSS_FEEDS = [
     ("GNews Llama",     "https://news.google.com/rss/search?q=meta+llama+AI&hl=en-US&gl=US&ceid=US:en",    "item", "title", "description"),
     ("GNews Grok",      "https://news.google.com/rss/search?q=xai+grok&hl=en-US&gl=US&ceid=US:en",         "item", "title", "description"),
     ("GNews Perplexity","https://news.google.com/rss/search?q=perplexity+AI&hl=en-US&gl=US&ceid=US:en",    "item", "title", "description"),
+    ("GNews Copilot",  "https://news.google.com/rss/search?q=microsoft+copilot+AI&hl=en-US&gl=US&ceid=US:en", "item", "title", "description"),
 ]
 
 _MARKET_RSS_FEEDS = [
@@ -235,6 +237,7 @@ _NO_NEWS_PHRASES = {
 
 # ── Gemini pricing ─────────────────────────────────────────────────────────────
 _PRICING = {
+    "gemini-2.5-flash-lite": {"in": 0.075, "out": 0.30,  "think": 3.50},
     "gemini-2.5-flash":      {"in": 0.075, "out": 0.30,  "think": 3.50},
     "gemini-2.5-pro":        {"in": 1.25,  "out": 10.00, "think": 3.50},
     "gemini-flash-lite-latest": {"in": 0.075, "out": 0.30, "think": 3.50},
