@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && getUserRole() == 'admin';
+    }
+
+    function isManager() {
+      return isSignedIn() && (getUserRole() == 'manager' || getUserRole() == 'admin');
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isManager() || request.auth.uid == userId;
+      allow create: if isAdmin();
+      allow update: if isAdmin()
+        || (request.auth.uid == userId
+            && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['isActiveShift', 'lastActive']));
+    }
+
+    // Templates (read-only for manager/user)
+    match /templates/{templateId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+
+      match /steps/{stepId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+      }
+    }
+
+    // Instances
+    match /instances/{instanceId} {
+      allow read: if isManager() || resource.data.initiatedBy == request.auth.uid;
+      allow create: if isSignedIn();
+      allow update: if resource.data.initiatedBy == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys()
+           .hasOnly(['status', 'completedAt']);
+    }
+
+    // Audit logs — append-only for the executing user
+    match /auditLogs/{logId} {
+      allow read: if isManager();
+      allow create: if isSignedIn()
+        && request.resource.data.executedBy == request.auth.uid;
+      allow update, delete: if false; // immutable
+    }
+  }
+}

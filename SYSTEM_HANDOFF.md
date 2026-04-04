@@ -1,5 +1,5 @@
 # SYSTEM HANDOFF — תמונת מצב כוללת
-Last updated: 2026-04-03
+Last updated: 2026-04-04
 
 ---
 
@@ -23,7 +23,7 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | **4_RemoteAccess** | ✅ מושלם | AnyDesk מוגדר, HKCU\\Run לUI |
 | **5_StickerBot** | ✅ מושלם | פרויקט הושלם |
 | **6_Gigiz** | ❌ מבוטל | לא יפותח — הוחלט לנטוש |
-| **7_WhaleWatcher** | ⏸ לא רלוונטי כעת | ריק, ייפתח בעתיד אם יהיה צורך |
+| **7_LCL** | ⏸ הושהה | TCS app בנוי במלואו, deployed ל-https://lcl-4b863.web.app — ממתין להפעלת Firebase Auth ידנית |
 | **8_EvolutionSchematic** | ✅ פעיל — Vercel | https://evolution-schematic.vercel.app |
 
 ---

@@ -1,18 +1,19 @@
-מטרת הפרויקט: ניהול וטיפול בפרויקטים מרובים — StickerBot, Chadshani, ועוד
-השלב הנוכחי: סיום תיקוני StickerBot + עדכון Chadshani watchdog + סקירת מצב כלל הפרויקטים
+מטרת הפרויקט: ניהול וטיפול בפרויקטים מרובים — StickerBot, Chadshani, Evolution, ועוד.
+השלב הנוכחי: סיום סקירת סטטוס גלובלית + נעילת "חדשני" (Maintenance Mode) + ביטול גישה לנתונים שגויים.
 החלטות מחייבות:
-- StickerBot: שימוש ב-chatId (message.id.remote) לתמיכה ב-@lid ו-@c.us
-- StickerBot: תור סינכרוני — worker אחד, job אחד בכל פעם
-- Chadshani: ריצה 6 דקות לפני השעה + watchdog עם auto-retry ו-ntfy
+- Chadshani: האתר במצב תחזוקה. דורש API Key וסנכרון נתונים איכותי (יש להשתמש ב-fast_info).
+- Chadshani: Deployment עכשיו מופעל גם ב-push (על התיקייה הייעודית). לעדכון HTML משתמשים ב-deploy-only.
+- Gigiz: הפרויקט מוקפא לחלוטין (FROZEN). אין לנסות לבנות או לשנות.
+- Project-Status: Ground Truth נמצא ב-PROJECT_STATUS.md וב-snapshot.json.
 רכיבים רלוונטיים:
-- Shalev's_Projects/5_StickerBot/bot/index.js
-- Shalev's_Projects/5_StickerBot/bot/sender.js
-- .github/workflows/chadshani-2.yml
-- .github/workflows/chadshani-watchdog.yml
+- Shalev's_Projects/2_Chadshani/index.html (Maintenance Page)
+- .github/workflows/chadshani-deploy-only.yml (on: push added)
+- Shalev's_Projects/8_EvolutionSchematic/data/snapshot.json
 מה הושלם:
-- StickerBot: תור, הודעות אישור, תמיכה ב-@lid, תיקון צבעים (cv2 BGR)
-- Chadshani: workflow_dispatch, cron 6min early, watchdog עם auto-retry
+- יצירת PROJECT_STATUS.md ועדכון סוכן project-status הגלובלי.
+- הטמעת מנגנון Lockdown לאתר "חדשני" ואימות הופעת עמוד תחזוקה.
+- ביצוע סריקה מקיפה של 8 פרויקטים וסיווג הסטטוס שלהם.
 מה הצעד הבא:
-- סקירת מצב כלל הפרויקטים ויצירת סוכן project-status
+- החזרת "חדשני" לאוויר רק לאחר וידוא 100% דיוק נתונים והזנת API Key.
 סיכונים:
-- StickerBot: בוט רץ ב-background — צריך לוודא שהוא עדיין פעיל אחרי כל שינוי
+- Chadshani: אין להפעיל מחדש את chadshani_auto.py ללא הזרקת מפתח API (אחרת הפריסה תיכשל על validation).

@@ -1,0 +1,145 @@
+System Architecture & PRD: Tactical Check-In System (TCS)
+Target Tool: Claude Code (AI Coding Assistant)
+Language Target: Hebrew (RTL strictly enforced)
+Objective: Build a mission-critical, real-time, mobile-first web application for law enforcement protocol management (specifically, detainee intake procedures).
+
+1. Tech Stack Definition
+Frontend Framework: Next.js (App Router, React 18+).
+
+Styling: Tailwind CSS (configured for strict RTL/Hebrew).
+
+Backend / Database / Auth: Supabase (PostgreSQL, Realtime Subscriptions, Row Level Security, Storage for evidence photos).
+
+Icons: Lucide React.
+
+State Management: Zustand (for client-side shift status and UI state).
+
+Notifications: Web Push API / Supabase Realtime (for in-app live toasts).
+
+2. Core System Modules & Capabilities
+A. Role-Based Access Control (RBAC)
+The system must support a strict, three-tier hierarchy:
+
+Admin: Absolute control. Can create/edit/delete protocol templates, manage user accounts, and assign Manager roles.
+
+Manager (Shift Commander): Dynamic role. Can view live executions of protocols, receive real-time alerts, and monitor users currently signed into a shift. Cannot edit the base templates.
+
+User (Field Officer): Execution only. Can only "Start Shift", select an active protocol template, execute the checklist, and "End Shift". Cannot edit templates or see other officers' forms unless explicitly shared.
+
+B. Shift & Presence Management (The "Live" State)
+Users must explicitly toggle a Shift Active status.
+
+Real-time notifications and system syncs are routed only to users whose status is Shift Active.
+
+Managers dashboard displays a live list of "Active Officers in Shift".
+
+C. Protocol Template Builder (Top-Down Editing)
+An admin interface to build dynamic checklists.
+
+Field types: Checkbox (Boolean), Text input (Alpha-numeric), and Photo capture (opening device camera).
+
+Validation: Ability to mark fields as Required (hard-block preventing progression to the next step).
+
+D. The Execution Engine & Audit Trail (The Field App)
+When a User initiates a protocol, the system generates a new Instance.
+
+Immutable Audit Trail: Every interaction (checking a box, uploading a photo) immediately triggers a database write with: User ID, Action Name, Exact Timestamp (Server-side), and GPS Location (if browser permissions allow).
+
+The UI must be locked: Users scroll vertically, filling out the form. No deleting previous entries.
+
+3. Database Schema (Supabase PostgreSQL)
+Instructing Claude Code: Implement the following tables using Supabase SQL definitions and enforce Row Level Security (RLS).
+
+Table: profiles
+
+id (uuid, references auth.users)
+
+full_name (text)
+
+role (enum: 'admin', 'manager', 'user')
+
+is_active_shift (boolean, default false)
+
+last_active (timestamp)
+
+Table: templates
+
+id (uuid, pk)
+
+title (text)
+
+description (text)
+
+created_by (uuid)
+
+is_published (boolean)
+
+Table: template_steps
+
+id (uuid, pk)
+
+template_id (uuid, fk)
+
+step_order (integer)
+
+content (text)
+
+step_type (enum: 'checkbox', 'text_input', 'photo')
+
+is_required (boolean)
+
+Table: instances (The active/completed arrests)
+
+id (uuid, pk)
+
+template_id (uuid, fk)
+
+initiated_by (uuid, fk)
+
+status (enum: 'in_progress', 'completed')
+
+started_at (timestamp)
+
+completed_at (timestamp)
+
+Table: audit_logs (The immutable record)
+
+id (uuid, pk)
+
+instance_id (uuid, fk)
+
+step_id (uuid, fk)
+
+executed_by (uuid, fk)
+
+value (text/json - stores text input, boolean true, or photo URL)
+
+timestamp (timestamp, server default now())
+
+location_lat (float)
+
+location_lng (float)
+
+4. UI/UX & Design Language
+Mobile-First: 90% of the usage will be on smartphones in the field. Touch targets must be large (minimum 44x44px).
+
+RTL Enforcement: The entire UI must be built right-to-left. Sidebar on the right, text aligned right. Update tailwind.config.js and HTML dir="rtl".
+
+Dark Mode by Default: To reduce glare during night shifts and in patrol cars. High contrast text (white/light gray) on dark backgrounds (slate-900/black).
+
+Status Indicators: Use clear visual cues (Green = Active/Done, Red = Missing/Alert, Amber = In Progress).
+
+5. Execution Plan for Claude Code
+Instructing Claude Code: Please execute this project in the following strict phases. Do not move to the next phase without my explicit confirmation.
+
+Phase 1: Environment & Database: Initialize Next.js project, install Tailwind/Lucide/Zustand. Create the Supabase project, generate the SQL schema, and set up Auth.
+
+Phase 2: Authentication & Profiles: Build the login screen, implement RBAC logic, and create the "Start/End Shift" toggle mechanism on the dashboard.
+
+Phase 3: Admin Template Builder: Build the dashboard for Admins to construct templates and template_steps (CRUD operations).
+
+Phase 4: Field Execution Engine: Build the mobile view for Users. Fetch the active template, render the steps, and implement real-time writes to the audit_logs table upon every interaction.
+
+Phase 5: Manager Live View & Realtime: Utilize Supabase Realtime subscriptions to build a dashboard for Managers to watch instances updating live as field officers check off items.
+
+Claude, please confirm you have ingested this PRD. We will begin with Phase 1. Let me know what terminal commands you are about to run.

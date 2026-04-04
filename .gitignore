@@ -16,3 +16,6 @@ Shalev's_Projects/4_RemoteAccess/
 Shalev's_Projects/5_StickerBot/
 Shalev's_Projects/6_Gigiz/
 Shalev's_Projects/7_WhaleWatcher/
+
+# Playwright MCP temporary artifacts
+.playwright-mcp/

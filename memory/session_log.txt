@@ -1,0 +1,5 @@
+7f7e72d Lockdown: Set maintenance mode and enable push-trigger deployment
+
+יום שני 30 מרץ 2026 14:30:53
+
+Chadshani lockdown verified. Project status audit complete.
