@@ -25,6 +25,7 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | **6_Gigiz** | ❌ מבוטל | לא יפותח — הוחלט לנטוש |
 | **7_LCL** | ⏸ הושהה | TCS app בנוי במלואו, deployed ל-https://lcl-4b863.web.app — ממתין להפעלת Firebase Auth ידנית |
 | **8_EvolutionSchematic** | ✅ פעיל — Vercel | https://evolution-schematic.vercel.app |
+| **9_Kesem** | 🔨 בפיתוח | קסם הידיעה — single-file HTML, Claude Haiku API → תסריט AABB → Canvas cartoon + WebM 1280×720. קובץ: `Shalev's_Projects/9_Kesem/extracted/project-package/web-interface/index.html` |
 
 ---
 
