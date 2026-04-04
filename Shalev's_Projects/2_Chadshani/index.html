@@ -802,8 +802,10 @@
             document.getElementById('nav-' + pageId)?.classList.add('active');
             document.getElementById('mob-' + pageId)?.classList.add('active');
 
-            // Scroll to top instantly (smooth causes mid-page jump when switching pages)
-            window.scrollTo(0, 0);
+            // Scroll to top — covers window, iOS Safari, and scrollable containers
+            window.scrollTo({top: 0, behavior: 'instant'});
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
             
             // Hash update
             history.pushState(null, null, '#' + pageId);
