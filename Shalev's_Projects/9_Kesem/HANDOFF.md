@@ -1,5 +1,5 @@
 # HANDOFF — קסם הידיעה (Project 9)
-Last updated: 2026-04-04
+Last updated: 2026-04-04 (session 2)
 Status: 🔨 בפיתוח — v3 בנוי, טרם נבדק בדפדפן
 
 ---
@@ -87,6 +87,13 @@ Screen 4: preview + הורדת WebM
 | TTS לא נקלט | speechSynthesis עוקף Web Audio pipeline — מגבלת דפדפן |
 | קובץ יחיד (לא build) | פשטות — פותח ישירות, אפס תלויות |
 | MediaRecorder + Web Audio | היחיד שעובד offline לכידת canvas+audio |
+
+---
+
+## קבצי זיכרון פרויקט
+
+- `project-dream.md` — dream state + current state + gaps (נוצר 2026-04-04)
+- `HANDOFF.md` — מסמך זה
 
 ---
 

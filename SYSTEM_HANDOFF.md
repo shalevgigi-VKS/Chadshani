@@ -1,5 +1,5 @@
 # SYSTEM HANDOFF — תמונת מצב כוללת
-Last updated: 2026-04-04
+Last updated: 2026-04-04 (session 2)
 
 ---
 
@@ -22,10 +22,23 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | **3_Notifications** | ✅ מושלם | תשתית ntfy.sh פועלת, לא דורש עבודה |
 | **4_RemoteAccess** | ✅ מושלם | AnyDesk מוגדר, HKCU\\Run לUI |
 | **5_StickerBot** | ✅ מושלם | פרויקט הושלם |
+| **6_LinkToText** | ✅ מושלם | linktotext.vercel.app + linktotext-backend.onrender.com — URL→text extractor |
 | **6_Gigiz** | ❌ מבוטל | לא יפותח — הוחלט לנטוש |
 | **7_LCL** | ⏸ הושהה | TCS app בנוי במלואו, deployed ל-https://lcl-4b863.web.app — ממתין להפעלת Firebase Auth ידנית |
 | **8_EvolutionSchematic** | ✅ פעיל — Vercel | https://evolution-schematic.vercel.app |
 | **9_Kesem** | 🔨 בפיתוח | קסם הידיעה — single-file HTML, Claude Haiku API → תסריט AABB → Canvas cartoon + WebM 1280×720. קובץ: `Shalev's_Projects/9_Kesem/extracted/project-package/web-interface/index.html` |
+
+---
+
+## סוכני מערכת — Self-Evolving Layer
+
+| סוכן | תפקיד | תדירות |
+|------|--------|--------|
+| **project-documenter** | שמירת מצב פרויקט ב-8 מקומות אחרי כל סשן | ידני / Stop hook (בפיתוח) |
+| **gap-analyzer** | מדידת פער מ-dream-state + cross-project intelligence | ראשון 10:00 (system-optimizer) |
+| **innovation-scout** | סריקת כלים חדשים ב-Context7/web | ידני בלבד |
+| **stale-docs-cleaner** | ניקוי קבצי מקור ישנים בפרויקטים ✅ | שעתי (Task Scheduler) |
+| **system-optimizer** | שיפור מערכתי שבועי (8 שלבים) | ראשון 10:00 |
 
 ---
 
