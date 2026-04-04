@@ -1105,7 +1105,7 @@
                     {name:'Anthropic',color:'#7c3aed',border:'border-purple-200',bg:'rgba(124,58,237,0.04)',keys:['Anthropic']},
                     {name:'OpenAI',color:'#059669',border:'border-emerald-200',bg:'rgba(5,150,105,0.04)',keys:['OpenAI']},
                     {name:'Google',color:'#0891b2',border:'border-cyan-200',bg:'rgba(8,145,178,0.04)',keys:['Google','Gemini']},
-                    {name:'אחרים',color:'#64748b',border:'border-slate-200',bg:'rgba(100,116,139,0.04)',keys:['Meta','xAI','Grok','Llama','Perplexity'],equal:true}
+                    {name:'אחרים',color:'#64748b',border:'border-slate-200',bg:'rgba(100,116,139,0.04)',keys:['Meta','xAI','Grok','Llama','Perplexity','Microsoft'],equal:true}
                 ];
                 function mkUpdHtml(a){return Array.isArray(a.updates)?'<ul class="list-disc list-inside space-y-1">'+a.updates.map(function(u){return '<li class="text-xs text-slate-500 leading-relaxed font-bold">'+u+'</li>';}).join('')+'</ul>':'<p class="text-xs text-slate-500 font-bold">'+(a.update||'')+'</p>';}
                 function mkLogo(cn,grp){var domKey=Object.keys(aiLogoMap).find(function(k){return cn.includes(k);});return domKey?'https://www.google.com/s2/favicons?domain='+aiLogoMap[domKey]+'&sz=64':'https://ui-avatars.com/api/?name='+encodeURIComponent(cn.slice(0,2))+'&background='+grp.color.replace('#','')+'&color=fff&bold=true&size=64';}
@@ -1118,7 +1118,7 @@
                     out+='<div class="ai-grp-hdr"><span style="color:'+grp.color+'">'+grp.name+'</span><div class="ai-grp-line" style="background:'+grp.color+'33"></div></div>';
                     if(grp.equal){
                         // Equal-sized grid — all members same card, no hierarchy
-                        out+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.75rem">';
+                        out+='<div class="grid grid-cols-2 lg:grid-cols-3 gap-3">';
                         members.forEach(function(a){
                             var cn=a.company||'';var parts=cn.split('/');
                             var baseName=parts[0].trim();
