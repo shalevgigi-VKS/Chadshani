@@ -162,7 +162,7 @@ JSON_PROMPT = """
 """
 
 # ── Ticker maps & constants ────────────────────────────────────────────────────
-MAX_NEWS_AGE_DAYS = 7
+MAX_NEWS_AGE_DAYS = 2
 
 CRYPTO_MAP = {
     "BTC": "BTC-USD", "ETH": "ETH-USD", "SOL": "SOL-USD",
@@ -203,6 +203,17 @@ _AI_RSS_FEEDS = [
     ("GNews Llama",     "https://news.google.com/rss/search?q=meta+llama+AI&hl=en-US&gl=US&ceid=US:en",    "item", "title", "description"),
     ("GNews Grok",      "https://news.google.com/rss/search?q=xai+grok&hl=en-US&gl=US&ceid=US:en",         "item", "title", "description"),
     ("GNews Perplexity","https://news.google.com/rss/search?q=perplexity+AI&hl=en-US&gl=US&ceid=US:en",    "item", "title", "description"),
+]
+
+_MARKET_RSS_FEEDS = [
+    ("Reuters Markets",  "https://feeds.reuters.com/reuters/businessNews",                   "item",  "title", "description"),
+    ("CNBC Finance",     "https://www.cnbc.com/id/15839069/device/rss/rss.html",             "item",  "title", "description"),
+    ("MarketWatch",      "https://feeds.marketwatch.com/marketwatch/topstories/",            "item",  "title", "description"),
+    ("Yahoo Finance",    "https://finance.yahoo.com/news/rssindex",                          "item",  "title", "description"),
+    ("GNews SP500",      "https://news.google.com/rss/search?q=S%26P+500+market&hl=en-US&gl=US&ceid=US:en",  "item", "title", "description"),
+    ("GNews Bitcoin",    "https://news.google.com/rss/search?q=bitcoin+crypto+market&hl=en-US&gl=US&ceid=US:en", "item", "title", "description"),
+    ("GNews Fed",        "https://news.google.com/rss/search?q=federal+reserve+interest+rates&hl=en-US&gl=US&ceid=US:en", "item", "title", "description"),
+    ("GNews NVDA",       "https://news.google.com/rss/search?q=nvidia+earnings+stock&hl=en-US&gl=US&ceid=US:en", "item", "title", "description"),
 ]
 
 _AI_KEYWORDS = {

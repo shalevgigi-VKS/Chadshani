@@ -11,7 +11,7 @@ from email.utils import parsedate_to_datetime
 import yfinance as yf
 
 from chadshani_constants import (
-    MAX_NEWS_AGE_DAYS, NEWS_TICKERS, _AI_RSS_FEEDS, _AI_KEYWORDS,
+    MAX_NEWS_AGE_DAYS, NEWS_TICKERS, _AI_RSS_FEEDS, _MARKET_RSS_FEEDS, _AI_KEYWORDS,
     MARKET_SYMBOLS, ETF_SECTORS, CRYPTO_MAP, COINGECKO_MAP,
 )
 
@@ -101,6 +101,42 @@ def _clean_rss_xml(raw: bytes) -> bytes:
     raw = re.sub(rb'\s[\w][\w]*:[\w][^=>\s]+=(?:"[^"]*"|\'[^\']*\')', b'', raw)
     raw = re.sub(rb'\s+xmlns(?::[^=]+)?="[^"]*"', b'', raw)
     return raw
+
+
+def fetch_market_rss(max_per_feed=4):
+    """Fetch recent finance/market headlines from RSS feeds — no API key required."""
+    items = []
+    seen = set()
+    cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_NEWS_AGE_DAYS)
+    for label, url, item_tag, title_tag, desc_tag in _MARKET_RSS_FEEDS:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; Chadshani/2.0)"})
+            with urllib.request.urlopen(req, timeout=10) as r:
+                raw = r.read()
+            root = ET.fromstring(_clean_rss_xml(raw))
+            count = 0
+            for el in root.iter(item_tag):
+                title_el = el.find(title_tag)
+                desc_el = el.find(desc_tag)
+                title = (title_el.text or "").strip() if title_el is not None else ""
+                desc = (desc_el.text or "").strip() if desc_el is not None else ""
+                desc = re.sub(r"<[^>]+>", "", desc)[:200]
+                if not title or title in seen or count >= max_per_feed:
+                    continue
+                pub_dt = _parse_pub_date(el)
+                if pub_dt and pub_dt < cutoff:
+                    continue
+                seen.add(title)
+                line = f"[{label}] {title}"
+                if desc:
+                    line += f": {desc}"
+                items.append(line)
+                count += 1
+            print(f"[RSS] {label}: {count} items")
+        except Exception as e:
+            print(f"[WARN] RSS {label}: {e}")
+    print(f"[RSS-MARKET] total: {len(items)} items from {len(_MARKET_RSS_FEEDS)} feeds")
+    return items
 
 
 def fetch_ai_rss(max_per_feed=4):
@@ -332,6 +368,12 @@ def build_news_context():
             lines.append(f"{label}: {p:,.2f}  ({sign}{c:.2f}%)")
     lines.append("")
 
+    market_rss = fetch_market_rss(max_per_feed=4)
+    if market_rss:
+        lines.append("=== חדשות שוק הון ופיננסים — RSS ===")
+        lines.extend(market_rss)
+        lines.append("")
+
     ai_rss = fetch_ai_rss(max_per_feed=5)
     if ai_rss:
         lines.append("=== חדשות AI — RSS ===")
@@ -351,5 +393,5 @@ def build_news_context():
         lines.append("")
 
     context = "\n".join(lines)
-    print(f"[CONTEXT] {len(context)} chars | {len(ai_rss)} RSS | {len(stock_news)} stock | {len(hn_news)} HN | F&G={fg}")
+    print(f"[CONTEXT] {len(context)} chars | {len(market_rss)} mkt_rss | {len(ai_rss)} ai_rss | {len(stock_news)} stock | {len(hn_news)} HN | F&G={fg}")
     return context, fg, market_prices
