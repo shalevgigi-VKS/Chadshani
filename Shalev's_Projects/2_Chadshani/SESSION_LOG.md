@@ -1,53 +1,30 @@
-# דוח סיכום סשן פיתוח: חדשני v3.2 (מרץ-אפריל 2026)
+# Chadshani Session Log — v3.2.10 "The Perfectionist"
+**Date:** 2026-04-03
+**Status:** ✅ DEPLOYED
 
-דוח זה מתעד את כל השינויים, השדרוגים והתיקונים שבוצעו במערכת "חדשני" לאורך סבבי הפיתוח האחרונים, במטרה להפוך את המערכת לטרמינל מודיעין שוק מוביל, מקצועי ומדויק.
+## 🚀 Key Improvements
+- **UI/UX Perfection:**
+    - **Header & Dash**: Increased brand logo size (responsive `w-14` to `w-18`). Added a new Dash Bar with NYC Market Status (Live countdown/pulse).
+    - **Hero Section**: Fixed the width/alignment and replaced the white-space gradient with a full-width Glassmorphic card + backdrop blur.
+    - **Animations**: Added `entrance-anim` to all main sections for a premium, sliding entrance.
+    - **Branding**: Cleaned up section titles by removing `(Frontier)` and `(Watchlist)`.
+    - **AI Logos**: Switched to hand-picked high-res domains for OpenAI, Anthropic, Google, Meta, xAI, and Perplexity.
+- **Data & Content Engine:**
+    - **Rich Content Policy**: Updated Gemini Prompt to provide deep, analytical, and expanded content. No more "concise" constraints.
+    - **Zero-Cost Enforcement**: Locked the system to Gemini 1.5 Flash exclusively ($0.00).
+    - **De-duplication**: Added logic to prevent repetitive news topics in the same run.
+- **Stability & Operations:**
+    - **Validation**: Added a minimum length check (120+ chars) for news bodies to ensure value.
+    - **Continuity**: Created `TECH_HANDOFF.md` to help future developers/agents maintain the site.
+    - **Budget Adjusted**: Monthly budget set to 5.0 ILS to allow for historical costs while keeping new runs free.
 
----
+## 🛠️ Files Modified
+- `index_template.html`: Complete UI/UX overhaul.
+- `generate_json.py`: Prompt upgrade and Zero-Cost lockdown.
+- `chadshani_auto.py`: Enhanced validation and budget logic.
+- `TECH_HANDOFF.md`: New architecture guide.
 
-## 🚀 שדרוגים מרכזיים (Core Upgrades)
-
-### 1. ארכיטקטורת המערכת (SPA Engine)
-- מעבר מלא למבנה **Single Page Application (SPA)** מבוסס Hash Routing.
-- הטמעת מנגנון טעינה דינמי (`loadData`) המושך נתונים מקובץ `data/latest.json`.
-- אופטימיזציה של ה-Header וה-Navigation לטובת חוויית משתמש רציפה ללא רענון עמוד.
-
-### 2. זרימת הון וסקטורים (Sector Intelligence)
-- **מנגנון מיון מתקדם:** תיקון הלוגיקה כך שהסקטורים מסודרים לפי אחוזי שינוי (מהמרוויח הגדול ביותר למעלה).
-- **חישוב זרימה מתמטי:** מעבר משיטת "ספירת קרנות" לשיטת "סיכום דולרי" (Mathematical Flow Summation) המציגה את המאזן המדויק במיליארדי דולרים.
-- **ויזואליזציה:** הוספת סרגלי התקדמות (Progress Bars) הממחישים את עוצמת כניסת/יציאת הכסף בכל סקטור.
-
-### 3. חזית ה-AI (Frontier Monitoring)
-- **מיתוג תאגידי:** הטמעת לוגואים רשמיים של OpenAI, Google, Anthropic, Meta וכו', באמצעות אינטגרציה עם Clearbit API.
-- **מעקב דגמים:** יצירת מבנה כרטיסיות חדש המפריד בין החברה, המוצר וסטטוס העדכון האחרון.
-
-### 4. עולם הקריפטו (Crypto Desk)
-- **הרחבת נכסים:** הוספת מעקב אחרי 8 מטבעות ליבה (BTC, ETH, SOL, LINK, XRP, ADA, TAO, KAS).
-- **ניתוח נרטיבי:** הוספת חלק "סיפור היום בקריפטו" הכולל זרימת כסף חכם ופעילות לוויתנים.
-
----
-
-## 🎨 שיפורי ממשק (UI/UX Refinements)
-
-### 1. סליידר מדדים גלובלי (Market Ticker)
-- **שיפור תנועה:** הפיכת כיוון הסליידר לימין (RTL) ויצירת לולאה רציפה (Seamless Loop) ללא רווחים.
-- **מהירות משתנה:** האטה משמעותית בווב לטובת קריאות, ושמירה על מהירות גבוהה במובייל לטובת דינמיות.
-
-### 2. מדדי פחד ותנודתיות (Gauges)
-- **סקאלה מלאה:** עדכון התצוגה לפורמט `X / 100`.
-- **שורות הסבר:** הוספת "תרגום" של הנתונים היבשים לשורת הסבר מילולית (למשל: "פחד קיצוני - כסף בורח לבטיחות").
-
-### 3. אודותיי (Profile Widget)
-- עיצוב מחדש של ה-Sidebar: תמונה גדולה ואיכותית בצד ימין, טקסט וביוגרפיה בצד שמאל.
-
----
-
-## 🛠️ תיקונים טכניים (Fixes & Stability)
-
-- **תיקוני מובייל:** תיקון חיתוך טקסט בכותרות, התאמת השעונים לצד שמאל (ירוק קריא), וביטול כפילויות של הסליידר.
-- **קריאות:** הסרת הגבלות `overflow` ו-`ellipsis` ברשימות המעקב כדי לאפשר למשתכל לראות את כל המלל.
-- **ניווט:** פונקציית `showPage` כופה כעת גלילה לראש העמוד בכל מעבר בין קטגוריות.
-
----
-
-**סטטוס נוכחי:** המערכת יציבה בגרסה **3.2.5**, מעודכנת ומסונכרנת מול ה-Repo.
-**תאריך סיכום:** 02 באפריל, 2026.
+## 🎯 Verification Results
+- Desktop Layout: Checked.
+- Mobile Layout: Checked.
+- Zero Cost: Verified (Gemini Flash usage).

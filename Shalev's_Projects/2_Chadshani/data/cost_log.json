@@ -1497,8 +1497,17 @@
       "think_tokens": 0,
       "cost_usd": 0.00352,
       "cost_ils": 0.013
+    },
+    {
+      "ts": "2026-04-04T03:46:45Z",
+      "model": "models/gemini-2.5-flash-lite",
+      "in_tokens": 9251,
+      "out_tokens": 8493,
+      "think_tokens": 0,
+      "cost_usd": 0.00324,
+      "cost_ils": 0.012
     }
   ],
-  "total_usd": 5.26549,
-  "total_ils": 21.5616
+  "total_usd": 5.26873,
+  "total_ils": 21.5736
 }
