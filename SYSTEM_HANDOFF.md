@@ -22,7 +22,7 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | **3_Notifications** | ✅ מושלם | תשתית ntfy.sh פועלת, לא דורש עבודה |
 | **4_RemoteAccess** | ✅ מושלם | AnyDesk מוגדר, HKCU\\Run לUI |
 | **5_StickerBot** | ✅ מושלם | פרויקט הושלם |
-| **6_LinkToText** | 🔨 בפיתוח | linktotext.vercel.app — YouTube IP bypass בעבודה. Webshare נחסם, CF Worker deployed (נכשל). Strategy D לא עובד עדיין. |
+| **6_LinkToText** | 🔨 בפיתוח | linktotext.vercel.app — כל 4 strategies חסומות. CF Worker נחסם (429). Title fix בקוד, צריך build+deploy. Next: Webshare residential ($2.99) או bgutil po_token |
 | **6_Gigiz** | ❌ מבוטל | לא יפותח — הוחלט לנטוש |
 | **7_LCL** | ⏸ הושהה | TCS app בנוי במלואו, deployed ל-https://lcl-4b863.web.app — ממתין להפעלת Firebase Auth ידנית |
 | **8_EvolutionSchematic** | ✅ פעיל — Vercel | https://evolution-schematic.vercel.app |
