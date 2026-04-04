@@ -1,5 +1,5 @@
 # SYSTEM HANDOFF — תמונת מצב כוללת
-Last updated: 2026-04-04 (session 2)
+Last updated: 2026-04-04 (session 3 — automation sweep)
 
 ---
 
@@ -34,11 +34,28 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 
 | סוכן | תפקיד | תדירות |
 |------|--------|--------|
-| **project-documenter** | שמירת מצב פרויקט ב-8 מקומות אחרי כל סשן | ידני / Stop hook (בפיתוח) |
+| **project-documenter** | שמירת מצב פרויקט ב-8 מקומות אחרי כל סשן | ידני + Stop hook (marker→shadow) |
 | **gap-analyzer** | מדידת פער מ-dream-state + cross-project intelligence | ראשון 10:00 (system-optimizer) |
-| **innovation-scout** | סריקת כלים חדשים ב-Context7/web | ידני בלבד |
+| **innovation-scout** | סריקת כלים חדשים ב-Context7/web | ידני + system-optimizer Phase 9 (חודשי) |
 | **stale-docs-cleaner** | ניקוי קבצי מקור ישנים בפרויקטים ✅ | שעתי (Task Scheduler) |
-| **system-optimizer** | שיפור מערכתי שבועי (8 שלבים) | ראשון 10:00 |
+| **system-optimizer** | שיפור מערכתי שבועי (9 שלבים) | ראשון 10:00 |
+| **skills-auditor** | ביקורת שבועית על skills registries | ראשון 03:47 (ClaudeSkillsAudit) |
+
+---
+
+## Automation Hooks — מה אוטומטי (2026-04-04)
+
+| Hook | Trigger | מה עושה |
+|------|---------|---------|
+| memory-heartbeat.sh | PostToolUse Write/Edit | logs entity_name=basename (תוקן: לא עוד "unknown") |
+| git-prescan.sh | PreToolUse Bash(git commit) | סורק staged files לסודות לפני commit |
+| file-size-check.sh | PostToolUse Write/Edit | מזהה קבצים גדולים → pending-review.md |
+| context-save.sh | PreCompact | שומר compressed-context.md לסשן הבא |
+| project-documenter-stop.sh | Stop | כותב pending-documentation marker אם פרויקטים השתנו |
+| doc-updater-stop.sh | Stop | כותב pending-doc-update marker אם system files השתנו |
+| shalev-patterns-capture.py | Stop | לוכד בקשות + 3x closed-loop → Draft skill |
+| ClaudeSkillsAudit | ראשון 03:47 | ביקורת skills registries |
+| ClaudeMonthlyBackup | 1 לחודש | ✅ קיים ומאומת |
 
 ---
 

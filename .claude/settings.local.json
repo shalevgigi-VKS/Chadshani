@@ -27,7 +27,8 @@
       "Bash(python -c \":*)",
       "Bash(sed -i 's/- \\\\[ \\\\] שלב 4: Apify MCP בסיסי/- [~] שלב 4: Apify → הוחלף ב-yt-dlp+whisper pipeline/' \"e:/Claude/docs/current-phase.md\")",
       "Bash(sed -i 's/- \\\\[ \\\\] שלב 5: Apify לתמלולי יוטיוב/- [~] שלב 5: Apify → הוחלף/' \"e:/Claude/docs/current-phase.md\")",
-      "Bash(sed -i 's/- \\\\[ \\\\] שלב 6: בדיקת pipeline/- [x] שלב 6: pipeline yt-dlp+whisper נבנה/' \"e:/Claude/docs/current-phase.md\")"
+      "Bash(sed -i 's/- \\\\[ \\\\] שלב 6: בדיקת pipeline/- [x] שלב 6: pipeline yt-dlp+whisper נבנה/' \"e:/Claude/docs/current-phase.md\")",
+      "Bash(schtasks /query /tn \"ClaudeMonthlyBackup\" /fo LIST)"
     ]
   }
 }
