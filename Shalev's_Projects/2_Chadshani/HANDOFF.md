@@ -1,13 +1,26 @@
 # Chadshani — HANDOFF
-Last updated: 2026-04-05
+Last updated: 2026-04-04
 
 ## מצב נוכחי
 - האתר פועל ✅ — https://shalevgigi-vks.github.io/Chadshani/
 - Task Scheduler: Chadshani-0645 + Chadshani-1845 רשומים ופועלים
 - GEMINI_API_KEY מוגדר כ-User env var
-- **תקציב אפריל: ₪6.10 / ₪20 (Google AI Studio — המספר הסמכותי)**
+- **תקציב אפריל: ₪6.28 / ₪20 (Google AI Studio — המספר הסמכותי)**
 - עלות ריצה: ~₪0.013 לריצה (flash-lite, בלי thinking)
-- סטטוס: **Active v3.3.13**
+- סטטוס: **Active v4.0.0** 🚀
+
+## v4.0.0 — השקה (2026-04-04)
+- **Liquid Glass design** — Apple-inspired glass cards עם backdrop-filter + gradient
+- **Teal theme** — החלפת indigo ב-teal (#0d9488) בכל האתר
+- **3D tilt fix** — perspective על parent div (לא על backdrop-filter element) — עובד!
+- **Entrance animations** — fadeInUp staggered על כל כרטיס
+- **Dashboard status bar** — שעה / עדכון אחרון / עדכון הבא / מצב בורסה
+- **גיבוי v3.3.13** — index_backup_v3.3.13.html + index_template_backup_v3.3.13.html
+- **ניקיון מלא** — הוסרו: קורסלה (11 תמונות), ORIGINAL backup, v3.3.12 backups, index_maintenance
+- **Microsoft/Copilot** נוסף ל-section_7_ai (7 חברות AI עכשיו) + GNews RSS
+- **תיקון dedup** — threshold 4, seed מ-alert.title בלבד (לא מכל ה-analysis)
+- **תיקון gemini-2.5-pro** — מדלג על thinking_budget=0 (Pro דורש thinking mode)
+- **gemini-2.5-flash-lite** מפתח מפורש ב-_PRICING dict
 
 ## v3.3.x — שדרוגים (2026-04-04/05)
 - **v3.3.7** static Tailwind CSS, font preconnect, icon subset

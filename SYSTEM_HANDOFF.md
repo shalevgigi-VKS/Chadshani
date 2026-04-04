@@ -18,7 +18,7 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | פרויקט | מצב | פרטים |
 |---|---|---|
 | **1_EmotionWheel** | ✅ מושלם | פרויקט הושלם |
-| **2_Chadshani** | 🔨 v3.3.13 live + v4 בפיתוח | https://shalevgigi-vks.github.io/Chadshani/ — v4 3D tilt UNRESOLVED. Builder: e:/tmp/build_v4.py → index_v4_preview.html |
+| **2_Chadshani** | ✅ v4.0.0 live | https://shalevgigi-vks.github.io/Chadshani/ — Liquid Glass, teal, tilt fixed, 7 AI companies |
 | **3_Notifications** | ✅ מושלם | תשתית ntfy.sh פועלת, לא דורש עבודה |
 | **4_RemoteAccess** | ✅ מושלם | AnyDesk מוגדר, HKCU\\Run לUI |
 | **5_StickerBot** | ✅ מושלם | פרויקט הושלם |
