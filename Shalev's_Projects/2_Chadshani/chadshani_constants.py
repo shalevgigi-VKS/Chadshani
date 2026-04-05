@@ -91,6 +91,14 @@ JSON_PROMPT = """
     "whale_activity": "ניתוח מודל — פעילות לוויתנים, on-chain signals (לפחות 2-3 משפטים)",
     "conclusion": "מסקנה ותזה למשקיע — חייב להיות הסבר מפורט ומעמיק"
   },
+  "section_4_bitcoin": {
+    "market_overview": "סקירת שוק BTC מקיפה — לפחות 4-5 משפטים: מגמת מחיר עכשווית, מאיפה הגענו, מה מניע את השוק היום, רמות קריטיות, קטליסטים אחרונים",
+    "etf_flows": "זרימות תעודות סל Bitcoin Spot ETF: BlackRock IBIT, Fidelity FBTC, Grayscale GBTC ואחרים — כמה הגיע/יצא ב-24-48 שעות האחרונות, מגמת הצבירה המוסדית, השפעה על מחיר",
+    "whale_movements": "תנועות לוויתנים on-chain — כמה BTC הועבר בארנקות גדולים (1000+ BTC), לאן (לborrowers, לborrowers, לexchanges), מה הסיגנל שמשדרות הפעולות האלו",
+    "institutional": "פעילות כסף גדול ומוסדיים: MicroStrategy/Strategy, Ark Invest, רכישות ממשלתיות, השקעות קרנות pension — מי קנה/מכר לאחרונה ובאיזה היקף",
+    "key_levels": "ניתוח טכני BTC: תמיכה ראשית, התנגדות קרובה, ATH אחרון, רמת fibonacci מפתח, RSI/MACD, ויעד כיוון אפשרי לשבוע הקרוב",
+    "outlook": "תחזית BTC לטווח הקצר (3-7 ימים): תרחיש בסיס, תרחיש שורי, תרחיש דובי — מה צריך לקרות כדי שכל תרחיש יתממש"
+  },
   "section_5_semis": [
     {"ticker": "NVDA", "note": "..."},
     {"ticker": "TSM",  "note": "..."},

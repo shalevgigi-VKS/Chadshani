@@ -341,8 +341,8 @@
             </div>
                 <!-- Hero Section: Daily Focus -->
                 <section class="relative min-h-[320px] md:min-h-[420px] rounded-[3rem] overflow-hidden group shadow-2xl entrance-anim">
-                    <div class="absolute inset-0 z-0">
-                        <img src="https://images.unsplash.com/photo-1611974717482-95ed00ec019e?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[20s] ease-linear">
+                    <div class="absolute inset-0 z-0 bg-blue-900">
+                        <img src="https://images.unsplash.com/photo-1611974717482-95ed00ec019e?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[20s] ease-linear" onerror="this.style.opacity='0'">
                         <div class="absolute inset-0 bg-blue-900/40 mix-blend-multiply"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
                     </div>
@@ -544,8 +544,69 @@
                                 <div id="cg-volume" class="text-sm font-black text-slate-700 font-headline">--</div>
                             </div>
                         </div>
-                        <div id="crypto-market-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+                        <div id="crypto-market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
                             <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bitcoin Intelligence Hub (section_4_bitcoin) -->
+                <section class="grid grid-cols-1 gap-8" id="btc-hub-section" style="display:none">
+                    <div class="glass-card rounded-[3rem] p-8 md:p-10 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-2 h-full bg-orange-500 blur-[2px]"></div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="material-symbols-outlined text-orange-500 page-h2-icon">currency_bitcoin</span>
+                            <h2 class="page-h2" style="color:#f97316;text-decoration-color:rgba(249,115,22,0.28)">מרכז מודיעין ביטקוין</h2>
+                        </div>
+                        <!-- Market Overview -->
+                        <div class="bg-orange-50/40 rounded-[2rem] p-5 border border-orange-100 mb-6">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="material-symbols-outlined text-orange-500 text-base">show_chart</span>
+                                <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">סקירת שוק BTC</span>
+                            </div>
+                            <p id="btc-market-overview" class="text-sm text-slate-800 leading-relaxed font-bold text-justify"></p>
+                        </div>
+                        <!-- ETF | Whale -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                            <div class="bg-blue-50/50 p-5 rounded-[2rem] border border-blue-100">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-blue-500 text-base">account_tree</span>
+                                    <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">תעודות סל ETF</span>
+                                </div>
+                                <p id="btc-etf-flows" class="text-xs text-slate-700 leading-relaxed font-bold text-justify"></p>
+                            </div>
+                            <div class="bg-purple-50/50 p-5 rounded-[2rem] border border-purple-100">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-purple-500 text-base">hive</span>
+                                    <span class="text-[10px] font-black text-purple-600 uppercase tracking-widest">תנועות לוויתנים</span>
+                                </div>
+                                <p id="btc-whale-movements" class="text-xs text-slate-700 leading-relaxed font-bold text-justify"></p>
+                            </div>
+                        </div>
+                        <!-- Institutional | Key Levels -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                            <div class="bg-emerald-50/50 p-5 rounded-[2rem] border border-emerald-100">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-emerald-500 text-base">public</span>
+                                    <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">כסף גדול ומוסדיים</span>
+                                </div>
+                                <p id="btc-institutional" class="text-xs text-slate-700 leading-relaxed font-bold text-justify"></p>
+                            </div>
+                            <div class="bg-slate-50 p-5 rounded-[2rem] border border-slate-200">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="material-symbols-outlined text-slate-500 text-base">insights</span>
+                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">רמות מפתח טכניות</span>
+                                </div>
+                                <p id="btc-key-levels" class="text-xs text-slate-700 leading-relaxed font-bold text-justify"></p>
+                            </div>
+                        </div>
+                        <!-- Outlook -->
+                        <div class="bg-orange-900/5 rounded-[2rem] p-5 border border-orange-200">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-symbols-outlined text-orange-500 text-base">lightbulb</span>
+                                <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">תחזית קצרת-טווח</span>
+                            </div>
+                            <p id="btc-outlook" class="text-sm text-slate-800 leading-relaxed font-bold text-justify"></p>
                         </div>
                     </div>
                 </section>
@@ -1050,7 +1111,8 @@
                     const fgVal = parseInt(g.value) || 0;
                     drawConic('crypto-fng-indicator', fgVal+'/100', fgVal, gColor(fgVal, false));
                     document.getElementById('crypto-fng-label').textContent = g.label;
-                    renderCryptoExtra(fgVal, cb);
+                    renderCryptoExtra(fgVal, cb, g.description);
+                    renderBitcoin(d.section_4_bitcoin);
                     // B1: Dynamic conclusion badges
                     const badgesEl = document.getElementById('crypto-conclusion-badges');
                     if (badgesEl) {
@@ -1122,7 +1184,7 @@
                     out+='<div class="ai-grp-hdr"><span style="color:'+grp.color+'">'+grp.name+'</span><div class="ai-grp-line" style="background:'+grp.color+'33"></div></div>';
                     if(grp.equal){
                         // Equal-sized grid — all members same card, no hierarchy
-                        out+='<div class="grid grid-cols-2 lg:grid-cols-3 gap-3">';
+                        out+='<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">';
                         members.forEach(function(a){
                             var cn=a.company||'';var parts=cn.split('/');
                             var baseName=parts[0].trim();
@@ -1332,24 +1394,37 @@
             if(topEl){var top3=sorted.slice(0,3);topEl.innerHTML=top3.map(function(s){var hN=ETF_HE[s.etf]||s.name||s.etf;return '<div class="flex items-center gap-2 glass-card px-3 py-2.5 rounded-2xl"><span class="text-sm font-black text-emerald-600 w-10">'+s.etf+'</span><span class="flex-1 text-sm font-bold text-slate-600 truncate">'+hN+'</span><span class="text-sm font-black text-emerald-600">'+(s.change||'')+'</span></div>';}).join('');}
             if(botEl){var bot3=sorted.slice(-3).reverse();botEl.innerHTML=bot3.map(function(s){var hN=ETF_HE[s.etf]||s.name||s.etf;return '<div class="flex items-center gap-2 glass-card px-3 py-2.5 rounded-2xl"><span class="text-sm font-black text-rose-500 w-10">'+s.etf+'</span><span class="flex-1 text-sm font-bold text-slate-600 truncate">'+hN+'</span><span class="text-sm font-black text-rose-500">'+(s.change||'')+'</span></div>';}).join('');}
         }
-        function renderCryptoExtra(fgVal,cb){
-            var phase,pColor,pIcon,risk,riskColor;
-            if(fgVal<20){phase='\u05e4\u05d7\u05d3 \u05e7\u05d9\u05e6\u05d5\u05e0\u05d9 \u2014 \u05e6\u05d1\u05d9\u05e8\u05ea \u05e9\u05d5\u05e8\u05d9\u05dd';pColor='#dc2626';pIcon='trending_down';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05d2\u05d1\u05d5\u05d4 \u05de\u05d0\u05d5\u05d3';riskColor='#dc2626';}
-            else if(fgVal<40){phase='\u05e4\u05d7\u05d3 \u2014 \u05e9\u05d5\u05e7 \u05d3\u05d5\u05d1\u05d9';pColor='#ea580c';pIcon='trending_down';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05d2\u05d1\u05d5\u05d4';riskColor='#ea580c';}
-            else if(fgVal<60){phase='\u05e0\u05d9\u05d8\u05e8\u05dc\u05d9 \u2014 \u05e6\u05e4\u05d9\u05d9\u05d4';pColor='#ca8a04';pIcon='drag_handle';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05de\u05ea\u05d5\u05df';riskColor='#ca8a04';}
-            else if(fgVal<80){phase='\u05d7\u05de\u05d3\u05e0\u05d5\u05ea \u2014 \u05e9\u05d5\u05e7 \u05e9\u05d5\u05e8\u05d9';pColor='#16a34a';pIcon='trending_up';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05e0\u05de\u05d5\u05da';riskColor='#16a34a';}
-            else{phase='\u05d7\u05de\u05d3\u05e0\u05d5\u05ea \u05e7\u05d9\u05e6\u05d5\u05e0\u05d9\u05ea \u2014 \u05e9\u05d5\u05e7 \u05d7\u05dd';pColor='#7c3aed';pIcon='local_fire_department';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05de\u05ea\u05d5\u05df';riskColor='#7c3aed';}
+        function renderBitcoin(btc){
+            var sec=document.getElementById('btc-hub-section');
+            if(!btc||!sec)return;
+            var fields=['market-overview','etf-flows','whale-movements','institutional','key-levels','outlook'];
+            var keys=['market_overview','etf_flows','whale_movements','institutional','key_levels','outlook'];
+            keys.forEach(function(k,i){
+                var el=document.getElementById('btc-'+fields[i]);
+                if(el&&btc[k])el.textContent=btc[k];
+            });
+            sec.style.display='block';
+        }
+        function renderCryptoExtra(fgVal,cb,fgDesc){
+            var phase,pColor,pIcon,risk,riskColor,riskDesc;
+            if(fgVal<20){phase='\u05e4\u05d7\u05d3 \u05e7\u05d9\u05e6\u05d5\u05e0\u05d9 \u2014 \u05e6\u05d1\u05d9\u05e8\u05ea \u05e9\u05d5\u05e8\u05d9\u05dd';pColor='#dc2626';pIcon='trending_down';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05d2\u05d1\u05d5\u05d4 \u05de\u05d0\u05d5\u05d3';riskColor='#dc2626';riskDesc='\u05e4\u05d7\u05d3 \u05e7\u05d9\u05e6\u05d5\u05e0\u05d9 \u05e0\u05d9\u05ea\u05df \u05dc\u05e0\u05e6\u05dc\u05ea \u05d4\u05d6\u05d3\u05de\u05e0\u05d5\u05d9\u05d5\u05ea \u05dc\u05d8\u05d5\u05d5\u05d7 \u05d1\u05d9\u05e0\u05d5\u05e0\u05d9 — \u05e8\u05e6\u05d5\u05d9 \u05dc\u05d4\u05d9\u05d6\u05d4\u05e8 \u05de\u05d7\u05e9\u05d9\u05e4\u05d4 \u05dc\u05e0\u05e4\u05d9\u05dc\u05d5\u05ea \u05e0\u05d5\u05e1\u05e4\u05d5\u05ea. \u05d0\u05e1\u05d8\u05e8\u05d8\u05d2\u05d9\u05d9\u05ea DCA \u05d0\u05d5 \u05d4\u05de\u05ea\u05e0\u05d4 \u05dc\u05d0\u05d9\u05e9\u05d5\u05e8 \u05de\u05d2\u05de\u05d4.';}
+            else if(fgVal<40){phase='\u05e4\u05d7\u05d3 \u2014 \u05e9\u05d5\u05e7 \u05d3\u05d5\u05d1\u05d9';pColor='#ea580c';pIcon='trending_down';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05d2\u05d1\u05d5\u05d4';riskColor='#ea580c';riskDesc='\u05e1\u05e0\u05d8\u05d9\u05de\u05e0\u05d8 \u05d3\u05d5\u05d1\u05d9 \u05d0\u05da \u05dc\u05d0 \u05e7\u05d9\u05e6\u05d5\u05e0\u05d9 — \u05e0\u05d3\u05e8\u05e9\u05ea \u05d6\u05d4\u05d9\u05e8\u05d5\u05ea. \u05d4\u05e8\u05d5\u05d1\u05d4 \u05de\u05d4\u05de\u05e9\u05e7\u05d9\u05e2\u05d9\u05dd \u05e2\u05d3\u05d9\u05d9\u05df \u05dc\u05d0 \u05e7\u05e0\u05d5 — \u05d4\u05de\u05ea\u05e0\u05d4 \u05dc\u05d0\u05d9\u05e9\u05d5\u05e8 \u05d8\u05e8\u05e0\u05d3 \u05dc\u05e4\u05e0\u05d9 \u05e4\u05e2\u05d5\u05dc\u05d4.';}
+            else if(fgVal<60){phase='\u05e0\u05d9\u05d8\u05e8\u05dc\u05d9 \u2014 \u05e6\u05e4\u05d9\u05d9\u05d4';pColor='#ca8a04';pIcon='drag_handle';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05de\u05ea\u05d5\u05df';riskColor='#ca8a04';riskDesc='\u05e9\u05d5\u05e7 \u05d1\u05e9\u05d9\u05dc\u05d5\u05d1\u05d9 \u05d1\u05d9\u05df \u05e7\u05d5\u05e0\u05d9\u05dd \u05dc\u05de\u05d5\u05db\u05e8\u05d9\u05dd. \u05d4\u05e1\u05d9\u05db\u05d5\u05df \u05de\u05d0\u05d5\u05d6\u05df — \u05d0\u05e4\u05e9\u05e8 \u05dc\u05e9\u05de\u05d5\u05e8 \u05e2\u05de\u05d3\u05d5\u05ea \u05e7\u05d9\u05d9\u05de\u05d5\u05ea \u05d5\u05dc\u05d1\u05e6\u05e2 \u05e8\u05db\u05d9\u05e9\u05d5\u05ea \u05de\u05d3\u05d5\u05d3\u05d2\u05d5\u05ea \u05d1\u05d3\u05e8\u05d9\u05e9\u05d9\u05d5\u05ea.';}
+            else if(fgVal<80){phase='\u05d7\u05de\u05d3\u05e0\u05d5\u05ea \u2014 \u05e9\u05d5\u05e7 \u05e9\u05d5\u05e8\u05d9';pColor='#16a34a';pIcon='trending_up';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05e0\u05de\u05d5\u05da';riskColor='#16a34a';riskDesc='\u05de\u05d5\u05de\u05e0\u05d8\u05d5\u05dd \u05d7\u05d9\u05d5\u05d1\u05d9 \u05d1\u05e9\u05d5\u05e7 — \u05d4\u05e1\u05d9\u05db\u05d5\u05df \u05de\u05e0\u05d5\u05d4\u05dc. \u05e0\u05d9\u05ea\u05df \u05dc\u05d4\u05e9\u05d0\u05d9\u05e8 \u05e2\u05dd \u05e2\u05de\u05d3\u05d5\u05ea \u05e7\u05d9\u05d9\u05de\u05d5\u05ea \u05e2\u05dd \u05e1\u05d8\u05d5\u05e4 \u05d4\u05d2\u05e0\u05ea\u05d9 \u05e8\u05e9\u05d5\u05de. \u05e9\u05d9\u05dd \u05dc\u05d1 \u05dc\u05e1\u05d9\u05db\u05d5\u05df \u05d4\u05d9\u05e4\u05d5\u05da.';}
+            else{phase='\u05d7\u05de\u05d3\u05e0\u05d5\u05ea \u05e7\u05d9\u05e6\u05d5\u05e0\u05d9\u05ea \u2014 \u05e9\u05d5\u05e7 \u05d7\u05dd';pColor='#7c3aed';pIcon='local_fire_department';risk='\u05e1\u05d9\u05db\u05d5\u05df \u05de\u05ea\u05d5\u05df';riskColor='#7c3aed';riskDesc='\u05d0\u05d5\u05e4\u05d5\u05e8\u05d9\u05d4 \u05e7\u05d9\u05e6\u05d5\u05e0\u05d9\u05ea — \u05e1\u05db\u05e0\u05ea \u05ea\u05d9\u05e7\u05d5\u05df \u05d2\u05d1\u05d5\u05d4\u05d4. \u05d1\u05e9\u05dc\u05d1 \u05d6\u05d4 \u05de\u05e7\u05d5\u05d1\u05dc \u05dc\u05e6\u05de\u05e6\u05dd \u05e8\u05d5\u05d5\u05d7\u05d9\u05dd \u05d5\u05dc\u05d4\u05e7\u05d8\u05d9\u05df \u05e4\u05d5\u05d6\u05d9\u05e6\u05d9\u05d4. \u05dc\u05d0 \u05dc\u05e8\u05d3\u05d5\u05e3 \u05d0\u05d7\u05e8\u05d9 \u05e2\u05dc\u05d9\u05d9\u05d5\u05ea.';}
             var signals=[
-                {icon:pIcon,label:'\u05e4\u05d0\u05d6\u05ea \u05e9\u05d5\u05e7',val:phase,c:pColor,bc:'rgba('+hexToRgb(pColor)+',0.12)'},
-                {icon:'shield',label:'\u05e8\u05de\u05ea \u05e1\u05d9\u05db\u05d5\u05df',val:risk,c:riskColor,bc:'rgba('+hexToRgb(riskColor)+',0.1)'},
-                {icon:'waves',label:'\u05db\u05e1\u05e3 \u05d7\u05db\u05dd',val:(cb&&cb.smart_money?cb.smart_money.slice(0,80)+'...':'\u05d0\u05d9\u05df \u05e0\u05ea\u05d5\u05e0\u05d9\u05dd'),c:'#0d9488',bc:'rgba(13,148,136,0.08)'}
+                {icon:pIcon,label:'\u05e4\u05d0\u05d6\u05ea \u05e9\u05d5\u05e7',val:phase,desc:fgDesc||'',c:pColor,bc:'rgba('+hexToRgb(pColor)+',0.12)'},
+                {icon:'shield',label:'\u05e8\u05de\u05ea \u05e1\u05d9\u05db\u05d5\u05df',val:risk,desc:riskDesc,c:riskColor,bc:'rgba('+hexToRgb(riskColor)+',0.1)'},
+                {icon:'waves',label:'\u05db\u05e1\u05e3 \u05d7\u05db\u05dd',val:(cb&&cb.smart_money?cb.smart_money.slice(0,100)+'...':'\u05d0\u05d9\u05df \u05e0\u05ea\u05d5\u05e0\u05d9\u05dd'),desc:'',c:'#0d9488',bc:'rgba(13,148,136,0.08)'}
             ];
             var sgEl=document.getElementById('crypto-signals-grid');
             if(sgEl){sgEl.innerHTML=signals.map(function(s){
                 return '<div class="glass-card rounded-[2rem] p-5 border flex flex-col gap-3 text-right" dir="rtl" style="background:'+s.bc+';border-color:'+s.bc+'">'+
                     '<div class="flex items-center gap-2"><div style="width:10px;height:10px;border-radius:50%;background:'+s.c+';flex-shrink:0;margin-left:4px"></div>'+
                     '<span class="text-xs font-black text-slate-500 uppercase tracking-wider">'+s.label+'</span></div>'+
-                    '<p class="text-sm font-bold text-slate-700 leading-relaxed">'+s.val+'</p></div>';
+                    '<p class="text-sm font-bold text-slate-700 leading-relaxed">'+s.val+'</p>'+
+                    (s.desc?'<p class="text-xs text-slate-500 leading-relaxed font-bold border-t border-slate-100 pt-2 mt-1">'+s.desc+'</p>':'')+
+                    '</div>';
             }).join('');}
             // Cycle bar
             var barEl=document.getElementById('crypto-cycle-bar');

@@ -88,6 +88,8 @@ jobs:
               if k not in d.get("markets", {}): errors.append(f"missing market: {k}")
           if len(d.get("section_2_news", [])) < 4: errors.append("section_2_news < 4 items")
           if len(d.get("section_7_ai",   [])) < 4: errors.append("section_7_ai < 4 items")
+          btc = d.get("section_4_bitcoin", {})
+          if not btc.get("market_overview"): errors.append("section_4_bitcoin.market_overview missing")
           if errors:
               msg = " | ".join(errors)
               data = json.dumps({"topic":"CloudeCode","title":"חדשני — ולידציה נכשלה ⚠️","message":msg}).encode("utf-8")
