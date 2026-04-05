@@ -1,12 +1,7 @@
-name: Chadshani — Deploy Only
+name: Chadshani — Deploy Only (DISABLED — replaced by chadshani-update.yml)
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - "Shalev's_Projects/2_Chadshani/**"
-      - ".github/workflows/chadshani-deploy-only.yml"
+  # push trigger removed 2026-04-05 — chadshani-update.yml handles generate+deploy
 
 permissions:
   contents: read

@@ -1,0 +1,165 @@
+name: Chadshani — Update + Deploy
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '45 3 * * *'   # 06:45 שעון ישראל קיץ (UTC+3, מרץ–אוקטובר)
+    - cron: '45 15 * * *'  # 18:45 שעון ישראל קיץ (UTC+3)
+    # חורף (נוב–פבר, UTC+2): יזוז ל-07:45/19:45 — סטייה של שעה, מקובל
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: chadshani-update
+  cancel-in-progress: true
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install google-genai yfinance json-repair
+
+      - name: Generate data
+        id: generate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        working-directory: "Shalev's_Projects/2_Chadshani"
+        run: |
+          set +e
+          python generate_json.py
+          EXIT=$?
+          echo "exit_code=$EXIT" >> $GITHUB_OUTPUT
+          exit 0
+
+      - name: Handle skip (Gemini unavailable)
+        if: steps.generate.outputs.exit_code == '2'
+        run: |
+          python3 -c "
+          import urllib.request, json
+          data = json.dumps({'topic':'CloudeCode','title':'חדשני — דולג \u23ed','message':'Gemini \u05dc\u05d0 \u05d6\u05de\u05d9\u05df \u2014 \u05e0\u05e1\u05d4 \u05d1\u05e2\u05d3\u05db\u05d5\u05df \u05d4\u05d1\u05d0'}).encode('utf-8')
+          urllib.request.urlopen(urllib.request.Request('https://ntfy.sh',data=data,headers={'Content-Type':'application/json; charset=utf-8'}),timeout=10)
+          "
+
+      - name: Abort on generation error
+        if: steps.generate.outputs.exit_code != '0' && steps.generate.outputs.exit_code != '2'
+        run: |
+          python3 -c "
+          import urllib.request, json
+          data = json.dumps({'topic':'CloudeCode','title':'חדשני — שגיאה \u26a0\ufe0f','message':'generate_json.py failed \u2014 \u05d1\u05d3\u05d5\u05e7 GitHub Actions logs'}).encode('utf-8')
+          urllib.request.urlopen(urllib.request.Request('https://ntfy.sh',data=data,headers={'Content-Type':'application/json; charset=utf-8'}),timeout=10)
+          "
+          exit 1
+
+      - name: Validate generated data
+        if: steps.generate.outputs.exit_code == '0'
+        working-directory: "Shalev's_Projects/2_Chadshani"
+        run: |
+          python3 - <<'PYEOF'
+          import json, sys, urllib.request
+          PLACEHOLDERS = ["...", "[עדכון", "placeholder", "N/A", "אין מידע"]
+          def is_ph(s):
+              return not s or any(p in str(s) for p in PLACEHOLDERS)
+          with open("data/latest.json", encoding="utf-8") as f:
+              d = json.load(f)
+          errors = []
+          if not d.get("generated_at"): errors.append("missing generated_at")
+          s1 = d.get("section_1_situation", {})
+          if is_ph(s1.get("headline")): errors.append("headline empty/placeholder")
+          if is_ph(s1.get("alert", {}).get("value")): errors.append("alert.value empty")
+          for k in ["sp500", "nasdaq", "vix"]:
+              if k not in d.get("markets", {}): errors.append(f"missing market: {k}")
+          if len(d.get("section_2_news", [])) < 4: errors.append("section_2_news < 4 items")
+          if len(d.get("section_7_ai",   [])) < 4: errors.append("section_7_ai < 4 items")
+          if errors:
+              msg = " | ".join(errors)
+              data = json.dumps({"topic":"CloudeCode","title":"חדשני — ולידציה נכשלה ⚠️","message":msg}).encode("utf-8")
+              urllib.request.urlopen(urllib.request.Request("https://ntfy.sh",data=data,headers={"Content-Type":"application/json; charset=utf-8"}),timeout=10)
+              print(f"VALIDATION FAILED: {msg}"); sys.exit(1)
+          print(f"[VALID] OK — {d['generated_at']}")
+          PYEOF
+
+      - name: Commit data back to repo
+        if: steps.generate.outputs.exit_code == '0'
+        run: |
+          git config user.name "Chadshani Bot"
+          git config user.email "chadshani-bot@users.noreply.github.com"
+          git pull --rebase origin master
+          git add "Shalev's_Projects/2_Chadshani/data/latest.json"
+          git add "Shalev's_Projects/2_Chadshani/data/cost_log.json"
+          git diff --staged --quiet && echo "[SKIP] nothing to commit" || \
+            git commit -m "update $(date -u '+%Y-%m-%d %H:%M')" && git push
+
+      - name: Inject INLINE_DATA + OG meta into index.html
+        if: steps.generate.outputs.exit_code == '0'
+        run: |
+          python3 - <<'PYEOF'
+          import json, re
+          base = "Shalev's_Projects/2_Chadshani"
+          with open(f"{base}/data/latest.json", encoding="utf-8") as f:
+              data = json.load(f)
+          headline = data.get("section_1_situation", {}).get("headline", "")
+          desc     = headline[:200]
+          og_title = f"חדשני v4.0 | {headline[:80]}"
+          with open(f"{base}/index.html", encoding="utf-8") as f:
+              html = f.read()
+          html = re.sub(r'(<meta property="og:description" content=")[^"]*(")', f'\\g<1>{desc}\\2', html)
+          html = re.sub(r'(<meta property="og:title" content=")[^"]*(")',        f'\\g<1>{og_title}\\2', html)
+          html = re.sub(r'(<meta name="twitter:title" content=")[^"]*(")',       f'\\g<1>{og_title}\\2', html)
+          html = re.sub(r'(<meta name="twitter:description" content=")[^"]*(")', f'\\g<1>{desc}\\2', html)
+          json_compact = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
+          html = re.sub(
+              r'window\.__INLINE_DATA__\s*=\s*(?:\{.*?\}|null)\s*;',
+              f'window.__INLINE_DATA__={json_compact};',
+              html, flags=re.DOTALL
+          )
+          with open(f"{base}/index.html", "w", encoding="utf-8") as f:
+              f.write(html)
+          print(f"[INJECT] {og_title[:60]} | {data.get('generated_at')}")
+          PYEOF
+
+      - name: Upload Pages artifact
+        if: steps.generate.outputs.exit_code == '0'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "Shalev's_Projects/2_Chadshani"
+
+      - name: Deploy to GitHub Pages
+        if: steps.generate.outputs.exit_code == '0'
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Send success notification
+        if: steps.generate.outputs.exit_code == '0'
+        run: |
+          python3 - <<'PYEOF'
+          import json, urllib.request, datetime, os
+          log_path = "Shalev's_Projects/2_Chadshani/data/cost_log.json"
+          monthly = 0.0
+          if os.path.exists(log_path):
+              with open(log_path, encoding="utf-8") as f:
+                  log = json.load(f)
+              month = datetime.datetime.utcnow().strftime("%Y-%m")
+              monthly = sum(r.get("cost_ils", 0) for r in log.get("runs", []) if r.get("ts","").startswith(month))
+          msg  = f"₪{monthly:.2f} / ₪20"
+          data = json.dumps({"topic":"CloudeCode","title":"חדשני — עודכן ✅","message":msg,"priority":5}).encode("utf-8")
+          urllib.request.urlopen(urllib.request.Request("https://ntfy.sh",data=data,headers={"Content-Type":"application/json; charset=utf-8"}),timeout=10)
+          print(f"[NOTIFY] {msg}")
+          PYEOF
