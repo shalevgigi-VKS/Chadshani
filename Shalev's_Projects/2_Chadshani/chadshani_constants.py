@@ -117,20 +117,20 @@ JSON_PROMPT = """
     {"ticker": "SNOW",  "note": "..."}
   ],
   "section_7_ai": [
-    {"company": "Anthropic",               "product": "חדשות החברה",            "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Anthropic/Claude",        "product": "Claude 3.7 Sonnet",      "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Anthropic/Claude Cowork", "product": "Claude for Teams",       "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Anthropic/Claude Code",   "product": "Claude Code CLI",        "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "OpenAI",                  "product": "חדשות החברה",            "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "OpenAI/ChatGPT",          "product": "ChatGPT",                "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "OpenAI/Codex",            "product": "Codex CLI",              "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Google",                  "product": "חדשות החברה",            "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Google/Gemini",           "product": "Gemini 2.5",             "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Google/AI Studio",        "product": "AI Studio & NotebookLM", "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "xAI/Grok",               "product": "Grok 3",                 "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Meta/Llama",              "product": "Llama 4",                "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Perplexity",              "product": "Perplexity AI",          "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
-    {"company": "Microsoft/Copilot",       "product": "Copilot",                "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]"], "last_known_update": "DD/MM/YYYY", "status": "GA"}
+    {"company": "Anthropic",               "product": "חדשות החברה",            "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Anthropic/Claude",        "product": "Claude 3.7 Sonnet",      "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Anthropic/Claude Cowork", "product": "Claude for Teams",       "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Anthropic/Claude Code",   "product": "Claude Code CLI",        "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "OpenAI",                  "product": "חדשות החברה",            "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "OpenAI/ChatGPT",          "product": "ChatGPT",                "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "OpenAI/Codex",            "product": "Codex CLI",              "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Google",                  "product": "חדשות החברה",            "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Google/Gemini",           "product": "Gemini 2.5",             "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Google/AI Studio",        "product": "AI Studio & NotebookLM", "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "xAI/Grok",               "product": "Grok 3",                 "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Meta/Llama",              "product": "Llama 4",                "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Perplexity",              "product": "Perplexity AI",          "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"},
+    {"company": "Microsoft/Copilot",       "product": "Copilot",                "updates": ["[עדכון 1]","[עדכון 2]","[עדכון 3]","[עדכון 4]","[עדכון 5]","[עדכון 6]","[עדכון 7]","[עדכון 8]","[עדכון 9]","[עדכון 10]"], "last_known_update": "DD/MM/YYYY", "status": "GA"}
   ],
   "section_8_conclusion": {
     "thesis": "תזת ההשקעה הדומיננטית — פסקה מנותחת",
@@ -161,7 +161,7 @@ JSON_PROMPT = """
 כללים קריטיים — מדיניות "אפס תוכן דל" (v3.2.13):
 - **חל איסור מוחלט** על שימוש בביטוי "אין חדשות חדשות", "מידע לא זמין", "לא חלו שינויים" או "Placeholder".
 - **עושר במידע (MUST)**: כל פסקה חייבת להיות מפורטת (לפחות 4-5 משפטים), מקצועית ומעמיקה.
-- **section_7_ai**: מכיל 14 ערכים — כל חברה גדולה (Anthropic/OpenAI/Google) מקבלת ערך חדשות חברה (company="X", ללא slash) + ערכים נפרדים לכל מוצר (company="X/מוצר"). חברות קטנות: ערך אחד עם slash. שדה `updates` הוא **מערך** של בדיוק 5 נקודות בעברית לכל ערך.
+- **section_7_ai**: מכיל 14 ערכים — כל חברה גדולה (Anthropic/OpenAI/Google) מקבלת ערך חדשות חברה (company="X", ללא slash) + ערכים נפרדים לכל מוצר (company="X/מוצר"). חברות קטנות: ערך אחד עם slash. שדה `updates` הוא **מערך** של בדיוק 10 נקודות בעברית לכל ערך.
 - **alert.value**: חייב להיות שונה לחלוטין מ-alert.title. השתמש ב-'קריטי' / 'גבוה' / 'בינוני'.
 - **איסור כפילויות**: נושא שהופיע ב-"התרעה קריטית" אסור שיופיע שוב בחדשות המיקרו.
 - gauges zones — F&G: extreme_fear(0-24)/fear(25-44)/neutral(45-54)/greed(55-74)/extreme_greed(75-100). VIX: low(<15)/medium(15-20)/high(20-30)/extreme(>30).
