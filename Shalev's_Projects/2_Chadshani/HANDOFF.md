@@ -143,6 +143,23 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 - כשה-cap יתמלא — כנס לאיסטודיו, העלה, ועדכן `BUDGET_ILS` בקוד
 - ב-1 לחודש: הטראקר המקומי מתאפס אוטומטית (סכום לפי חודש בלבד)
 
+## 2026-04-05 — שדרוגים נוספים (session 3)
+
+### OG title fix (commits d34a326 / 814862e)
+- og:title + twitter:title עברו לסטטי "חדשני v4.0" (לא דינמי עם headline מצורף)
+- chadshani-update.yml: הוסר inject של OG title/description — רק INLINE_DATA מוזרק עכשיו
+- CHADSHANI_LOGO_v4.png הועלה לגיט (היה חסר → OG preview הציג ללא לוגו)
+- index_template.html + index.html עודכנו
+
+### section_7_ai — 10 updates per tool (commit 91f2ede)
+- chadshani_constants.py: כל 14 כניסות AI שונו מ-5 ל-10 פריטים ב-`updates` array
+- prompt instruction עודכן: "בדיוק 10 נקודות" (היה 5)
+
+### Crypto deep analysis (commit f778df5)
+- section_4_crypto notes: שונה מ-"..." להוראה מפורשת: ניתוח עמוק 3 משפטים לכל מטבע
+- fear_greed_crypto: נוסף `description` field לסכמת JSON — 2-3 משפטים על מה מניע את סנטימנט הקריפטו
+- index_template.html: אלמנט חדש `crypto-fng-description` מוצג מתחת לגאוג' F&G כשיש תיאור
+
 ## מה הושלם
 - [x] תיקון 7 כללים קריטיים (rule 1-7 ב-feedback_chadshani_schedule_and_data.md)
 - [x] הסרת merge_with_previous
@@ -152,7 +169,7 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 - [x] json_repair לתיקון JSON שבור של Gemini
 - [x] Gemini fallback chain + no-stale-deploy rule
 - [x] v4.0.0 השקה: Liquid Glass, teal, 3D tilt, entrance animations, status bar
-- [x] section_7_ai עיצוב מחדש: 14 per-product cards עם 5 updates כל אחד
+- [x] section_7_ai עיצוב מחדש: 14 per-product cards עם 5 updates כל אחד → **עודכן ל-10 updates (session 3)**
 - [x] Microsoft נוסף ל-GROUPS["others"] (באג תוקן)
 - [x] +4 RSS feeds חדשים (Claude Code, ChatGPT, Codex, AI Studio)
 - [x] ביצועים מובייל: fonts non-render-blocking + lazy load
@@ -163,6 +180,9 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 - [x] **chadshani-2.yml** (ישן, 68 ריצות) — DISABLED ✅ (זה היה מקור התראת ה-7:00 AM)
 - [x] **exit 128 bug תוקן** — `git pull --rebase --autostash` במקום `--rebase` בלבד (6979b17)
 - [x] **pipeline ידני אומת** — Run 23994040544, 2m16s, כל שלבים עברו ✅
+- [x] **OG title סטטי** — "חדשני v4.0" ללא headline דינמי; CHADSHANI_LOGO_v4.png בגיט (d34a326 / 814862e)
+- [x] **section_7_ai: 10 updates per tool** — כל 14 כניסות שונו מ-5 ל-10 (91f2ede)
+- [x] **Crypto deep analysis** — notes מפורשות + fear_greed description field + UI element (f778df5)
 
 ## מה נשאר
 - [ ] WebP conversion לתמונות פרופיל (SHALEV.PNG 2.7MB → target < 200KB)
@@ -186,6 +206,9 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 | perspective על parent div (לא backdrop element) | Chrome: backdrop-filter creates stacking context — perspective על אותו element לא עובד |
 | git pull --rebase --autostash | generate_json.py משאיר שינויים לא מ-staged (latest.json, cost_log.json) — autostash פותר exit 128 |
 | chadshani-2.yml disabled | ישן, 68 ריצות — זה היה מקור ההתראות הלא-צפויות ב-7:00 AM |
+| OG title סטטי "חדשני v4.0" | headline דינמי גרם לכותרת ארוכה ומשתנה ב-WhatsApp/iMessage — סטטי נראה מקצועי ועקבי |
+| section_7_ai: 10 updates (מ-5) | 5 נקודות היה שטחי מדי; 10 נקודות נותן עומק וכיסוי ראוי לכל מוצר AI |
+| fear_greed description field | "פחד" / "חמדנות" בשתי מילים ללא הסבר — חסר ערך. 2-3 משפטים מסבירים מה מניע את הסנטימנט | |
 
 ## כיצד להמשיך בסשן חדש
 
