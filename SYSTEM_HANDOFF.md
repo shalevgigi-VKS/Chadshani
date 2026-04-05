@@ -1,5 +1,5 @@
 # SYSTEM HANDOFF — תמונת מצב כוללת
-Last updated: 2026-04-05 (session — Chadshani cloud migration complete)
+Last updated: 2026-04-05 (session 2 — Chadshani pipeline fix + old workflow disabled)
 
 ---
 
@@ -18,7 +18,7 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | פרויקט | מצב | פרטים |
 |---|---|---|
 | **1_EmotionWheel** | ✅ מושלם | פרויקט הושלם |
-| **2_Chadshani** | ✅ v4.0.0 — ענן | https://shalevgigi-vks.github.io/Chadshani/ — GitHub Actions cron + Cloudflare Worker Telegram. אפס תלות במחשב מקומי |
+| **2_Chadshani** | ✅ v4.0.0 — ענן | https://shalevgigi-vks.github.io/Chadshani/ — pipeline מאומת. exit 128 תוקן. chadshani-2.yml ישן מבוטל. cron יירה מחר 06:45 |
 | **3_Notifications** | ✅ מושלם | תשתית ntfy.sh פועלת, לא דורש עבודה |
 | **4_RemoteAccess** | ✅ מושלם | AnyDesk מוגדר, HKCU\\Run לUI |
 | **5_StickerBot** | ✅ מושלם | פרויקט הושלם |

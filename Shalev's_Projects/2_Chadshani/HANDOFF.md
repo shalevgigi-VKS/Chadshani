@@ -8,9 +8,10 @@ Last updated: 2026-04-05
 - Cloudflare Worker: https://chadshani-telegram.shalev-gigi.workers.dev — Telegram webhook פעיל
 - GEMINI_API_KEY: GitHub Secrets
 - TELEGRAM_BOT_TOKEN + GITHUB_PAT + GITHUB_REPO + WORKFLOW_FILE: CF Worker Secrets
-- **תקציב אפריל: ~₪6.28 / ₪20 (Google AI Studio — המספר הסמכותי)**
+- **תקציב אפריל: ~₪7.45 / ₪20 (Google AI Studio — המספר הסמכותי, נכון ל-2026-04-05)**
 - עלות ריצה: ~₪0.013 לריצה (flash-lite, בלי thinking)
 - סטטוס: **Active v4.0.0 — Cloud**
+- **chadshani-2.yml** (ישן, AUTO UPDATE DATA+DEPLOY) — DISABLED ✅ (68 ריצות, בוטל 2026-04-05)
 
 ## ארכיטקטורה סופית
 ```
@@ -53,12 +54,17 @@ Last updated: 2026-04-05
 ### Git Commits (cloud migration)
 - `914717f` — feat(chadshani): cloud migration — GitHub Actions cron + Cloudflare Worker
 - `749a87e` — feat(chadshani): add wrangler.toml for Cloudflare Worker
+- `6979b17` — fix(chadshani): git pull --rebase --autostash (exit 128 on unstaged latest.json/cost_log.json)
 
 ### אימות סופי
 - ✅ GitHub Actions ריצה ראשונה: completed/success (2026-04-05T03:15:12Z)
 - ✅ Telegram webhook: URL נכון, אין שגיאות
 - ✅ GEMINI_API_KEY ב-GitHub Secrets
 - ✅ 5 משימות Task Scheduler נמחקו
+- ✅ chadshani-2.yml (ישן) — DISABLED
+- ✅ exit 128 bug תוקן: `git pull --rebase --autostash` (commit 6979b17)
+- ✅ ריצת cron ידנית לאחר תיקון: Run ID 23994040544, עבר בהצלחה (2m16s), כל שלבים ✅
+- ℹ️ cron 06:45 IST לא ירה היום — workflow הועלה פחות מ-30 דקות לפני הזמן; יירה מחר אוטומטית
 
 ## v4.0.0 — השקה (2026-04-04)
 - **Liquid Glass design** — Apple-inspired glass cards עם backdrop-filter + gradient
@@ -154,6 +160,9 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 - [x] Cloud migration: GitHub Actions cron + Cloudflare Worker Telegram
 - [x] Task Scheduler ניקוי: 5 משימות נמחקו
 - [x] Telegram polling → Cloudflare Worker webhook
+- [x] **chadshani-2.yml** (ישן, 68 ריצות) — DISABLED ✅ (זה היה מקור התראת ה-7:00 AM)
+- [x] **exit 128 bug תוקן** — `git pull --rebase --autostash` במקום `--rebase` בלבד (6979b17)
+- [x] **pipeline ידני אומת** — Run 23994040544, 2m16s, כל שלבים עברו ✅
 
 ## מה נשאר
 - [ ] WebP conversion לתמונות פרופיל (SHALEV.PNG 2.7MB → target < 200KB)
@@ -175,6 +184,8 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 | others grid: grid-cols-2 lg:grid-cols-3 | 4 כרטיסים, 2 בשורה במובייל, 3 בדסקטופ |
 | fonts preload/onload (לא render-blocking) | FCP שיפור משמעותי במובייל |
 | perspective על parent div (לא backdrop element) | Chrome: backdrop-filter creates stacking context — perspective על אותו element לא עובד |
+| git pull --rebase --autostash | generate_json.py משאיר שינויים לא מ-staged (latest.json, cost_log.json) — autostash פותר exit 128 |
+| chadshani-2.yml disabled | ישן, 68 ריצות — זה היה מקור ההתראות הלא-צפויות ב-7:00 AM |
 
 ## כיצד להמשיך בסשן חדש
 
