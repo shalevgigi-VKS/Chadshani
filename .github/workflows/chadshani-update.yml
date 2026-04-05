@@ -107,7 +107,7 @@ jobs:
           git diff --staged --quiet && echo "[SKIP] nothing to commit" || \
             git commit -m "update $(date -u '+%Y-%m-%d %H:%M')" && git push
 
-      - name: Inject INLINE_DATA + OG meta into index.html
+      - name: Inject INLINE_DATA into index.html
         if: steps.generate.outputs.exit_code == '0'
         run: |
           python3 - <<'PYEOF'
@@ -115,15 +115,8 @@ jobs:
           base = "Shalev's_Projects/2_Chadshani"
           with open(f"{base}/data/latest.json", encoding="utf-8") as f:
               data = json.load(f)
-          headline = data.get("section_1_situation", {}).get("headline", "")
-          desc     = headline[:200]
-          og_title = f"חדשני v4.0 | {headline[:80]}"
           with open(f"{base}/index.html", encoding="utf-8") as f:
               html = f.read()
-          html = re.sub(r'(<meta property="og:description" content=")[^"]*(")', f'\\g<1>{desc}\\2', html)
-          html = re.sub(r'(<meta property="og:title" content=")[^"]*(")',        f'\\g<1>{og_title}\\2', html)
-          html = re.sub(r'(<meta name="twitter:title" content=")[^"]*(")',       f'\\g<1>{og_title}\\2', html)
-          html = re.sub(r'(<meta name="twitter:description" content=")[^"]*(")', f'\\g<1>{desc}\\2', html)
           json_compact = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
           html = re.sub(
               r'window\.__INLINE_DATA__\s*=\s*(?:\{.*?\}|null)\s*;',
@@ -132,7 +125,7 @@ jobs:
           )
           with open(f"{base}/index.html", "w", encoding="utf-8") as f:
               f.write(html)
-          print(f"[INJECT] {og_title[:60]} | {data.get('generated_at')}")
+          print(f"[INJECT] INLINE_DATA updated: {data.get('generated_at')}")
           PYEOF
 
       - name: Upload Pages artifact
