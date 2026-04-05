@@ -597,6 +597,7 @@
                             <div id="crypto-fng-indicator"></div>
                             <p id="crypto-fng-label" class="text-sm text-purple-700 font-black italic mt-1"></p>
                             <p class="text-[9px] text-slate-400 font-bold">(0 = פחד קיצוני ← → 100 = אופוריה)</p>
+                            <p id="crypto-fng-description" class="text-xs text-slate-600 font-semibold leading-relaxed text-justify mt-1 hidden"></p>
                         </div>
                         <div class="border-t border-slate-200"></div>
                         <!-- Tactical conclusion -->
@@ -1050,6 +1051,8 @@
                     const fgVal = parseInt(g.value) || 0;
                     drawConic('crypto-fng-indicator', fgVal+'/100', fgVal, gColor(fgVal, false));
                     document.getElementById('crypto-fng-label').textContent = g.label;
+                    const fngDescEl = document.getElementById('crypto-fng-description');
+                    if (fngDescEl && g.description) { fngDescEl.textContent = g.description; fngDescEl.classList.remove('hidden'); }
                     renderCryptoExtra(fgVal, cb);
                     // B1: Dynamic conclusion badges
                     const badgesEl = document.getElementById('crypto-conclusion-badges');

@@ -49,7 +49,7 @@ JSON_PROMPT = """
     "gauges": {
       "vix": {"zone": "low/medium/high/extreme", "label": "תיאור מצב VIX"},
       "fear_greed_stock": {"label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"},
-      "fear_greed_crypto": {"label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed"}
+      "fear_greed_crypto": {"label": "שם המצב בעברית", "zone": "extreme_fear/fear/neutral/greed/extreme_greed", "description": "הסבר מעמיק של 2-3 משפטים: מה מניע את הסנטימנט הנוכחי בשוק הקריפטו, גורמים עיקריים ומשמעות למשקיע"}
     }
   },
   "section_2_news": [
@@ -76,14 +76,14 @@ JSON_PROMPT = """
     {"etf": "XLC",  "name": "תקשורת",        "flow_direction": "in/out/neutral", "note": "..."}
   ],
   "section_4_crypto": [
-    {"ticker": "BTC",  "note": "..."},
-    {"ticker": "ETH",  "note": "..."},
-    {"ticker": "SOL",  "note": "..."},
-    {"ticker": "LINK", "note": "..."},
-    {"ticker": "XRP",  "note": "..."},
-    {"ticker": "ADA",  "note": "..."},
-    {"ticker": "TAO",  "note": "..."},
-    {"ticker": "KAS",  "note": "..."}
+    {"ticker": "BTC",  "note": "ניתוח מעמיק של מגמת המחיר, סנטימנט, גורמים עיקריים ומשמעות למשקיע — לפחות 3 משפטים מלאים"},
+    {"ticker": "ETH",  "note": "ניתוח מעמיק — לפחות 3 משפטים"},
+    {"ticker": "SOL",  "note": "ניתוח מעמיק — לפחות 3 משפטים"},
+    {"ticker": "LINK", "note": "ניתוח מעמיק — לפחות 3 משפטים"},
+    {"ticker": "XRP",  "note": "ניתוח מעמיק — לפחות 3 משפטים"},
+    {"ticker": "ADA",  "note": "ניתוח מעמיק — לפחות 3 משפטים"},
+    {"ticker": "TAO",  "note": "ניתוח מעמיק — לפחות 3 משפטים"},
+    {"ticker": "KAS",  "note": "ניתוח מעמיק — לפחות 3 משפטים"}
   ],
   "section_4_crypto_brief": {
     "daily_narrative": "סיפור היום בקריפטו — לפחות 3-4 משפטים",
