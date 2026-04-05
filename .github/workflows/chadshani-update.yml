@@ -101,7 +101,7 @@ jobs:
         run: |
           git config user.name "Chadshani Bot"
           git config user.email "chadshani-bot@users.noreply.github.com"
-          git pull --rebase origin master
+          git pull --rebase --autostash origin master
           git add "Shalev's_Projects/2_Chadshani/data/latest.json"
           git add "Shalev's_Projects/2_Chadshani/data/cost_log.json"
           git diff --staged --quiet && echo "[SKIP] nothing to commit" || \
