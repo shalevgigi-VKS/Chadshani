@@ -5,7 +5,7 @@
 
 project: 2_Chadshani
 status: evolution
-last_updated: 2026-04-05
+last_updated: 2026-04-05 (cloud migration)
 
 ---
 
@@ -20,12 +20,12 @@ dream_state:
   design: premium visual — 3D tilt + spotlight on cards working on all devices
 
 current_state:
-  uptime: good — Task Scheduler 06:45 + 18:45, Telegram bot at logon
+  uptime: EXCELLENT — GitHub Actions cron 06:45+18:45 Israel, zero local dependency. First run success 2026-04-05T03:15:12Z
   cost: ~₪6.28 / ₪20 (April 2026), ~₪0.013/run
   content_freshness: RSS feeds updated each run, MAX_NEWS_AGE_DAYS=2
   performance: Google Fonts now non-render-blocking; profile images lazy-loaded
   ai_coverage: 14 per-product entries (Anthropic×4, OpenAI×3, Google×3, Others×4)
-  on_demand: Telegram bot live (newsdesgSG_bot), tested, connected
+  on_demand: Cloudflare Worker Telegram webhook live — "עדכן" → workflow_dispatch → GitHub Actions
   reliability: exit 2 guard active, json_repair active, Gemini fallback chain active
   design: v4.0.0 Liquid Glass + teal theme live; 3D tilt confirmed working on cards
 
@@ -34,7 +34,7 @@ gaps:
   - SHALEV.PNG still 2.7MB — should be converted to WebP for further mobile perf gain
   - OG image caching: CHADSHANI_LOGO_v4.png deployed but users may see stale cache
   - section_7_ai "Others" grid: only 4 entries — could expand to 6+ products over time
-  - No error alerting if Telegram bot crashes between restarts
+  - 3 old Task Scheduler tasks (chadshani-0600/1200/2030) cannot be deleted without admin — harmless but untidy
 
 evolution_suggestions:
   # To be filled by gap-analyzer
@@ -50,8 +50,11 @@ upgrade_queue:
   - item: profile image WebP conversion (performance)
     priority: MEDIUM
     status: pending
-  - item: Telegram bot crash watchdog
-    priority: MEDIUM
+  - item: cloud migration — GitHub Actions + Cloudflare Worker
+    priority: HIGH
+    status: COMPLETED 2026-04-05 — zero local dependency achieved
+  - item: expand Others: Mistral, Cohere, Stability AI
+    priority: LOW
     status: pending
 
 next_gap_review: 2026-04-12

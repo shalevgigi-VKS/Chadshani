@@ -3,13 +3,62 @@ Last updated: 2026-04-05
 
 ## מצב נוכחי
 - האתר פועל ✅ — https://shalevgigi-vks.github.io/Chadshani/
-- Task Scheduler: Chadshani-0645 + Chadshani-1845 + ChadshaniTelegramBot רשומים ופועלים
-- GEMINI_API_KEY מוגדר כ-User env var
-- TELEGRAM_BOT_TOKEN + TG_CHAT_ID מוגדרים כ-User env vars
+- **ארכיטקטורה: ענן מלא** — אין תלות במחשב מקומי
+- GitHub Actions: cron 03:45 + 15:45 UTC (= 06:45 + 18:45 Israel)
+- Cloudflare Worker: https://chadshani-telegram.shalev-gigi.workers.dev — Telegram webhook פעיל
+- GEMINI_API_KEY: GitHub Secrets
+- TELEGRAM_BOT_TOKEN + GITHUB_PAT + GITHUB_REPO + WORKFLOW_FILE: CF Worker Secrets
 - **תקציב אפריל: ~₪6.28 / ₪20 (Google AI Studio — המספר הסמכותי)**
 - עלות ריצה: ~₪0.013 לריצה (flash-lite, בלי thinking)
-- סטטוס: **Active v4.0.0**
-- בוט טלגרם: newsdesgSG_bot פועל (PID 20688), Chat ID: -1003840479051
+- סטטוס: **Active v4.0.0 — Cloud**
+
+## ארכיטקטורה סופית
+```
+06:45 / 18:45 (ישראל) → GitHub Actions cron → Gemini → deploy GitHub Pages ✅
+"תעדכן אותי" → Telegram → Cloudflare Worker → GitHub workflow_dispatch → GitHub Actions ✅
+מחשב: לא נדרש לשום דבר ✅
+```
+
+## Cloud Migration (2026-04-05)
+
+### GitHub Actions — chadshani-update.yml (חדש)
+- קובץ: `.github/workflows/chadshani-update.yml`
+- cron: `45 3,15 * * *` (UTC) = 06:45 + 18:45 ישראל
+- Pipeline: checkout → pip install → generate_json.py → validate → git commit (latest.json + cost_log.json) → inject INLINE_DATA → deploy GitHub Pages → ntfy
+- exit 2 = דולג ⏭ (Gemini failed), exit 1 = שגיאה ⚠️, exit 0 = עודכן ✅
+
+### chadshani-deploy-only.yml — push trigger הוסר
+- נשאר workflow_dispatch בלבד (ידני)
+- הוחלף על-ידי chadshani-update.yml לכל דבר אוטומטי
+
+### Cloudflare Worker
+- Worker name: chadshani-telegram
+- URL: https://chadshani-telegram.shalev-gigi.workers.dev
+- קובץ מקור: `Shalev's_Projects/2_Chadshani/chadshani_cloudflare_worker.js`
+- wrangler.toml: `Shalev's_Projects/2_Chadshani/wrangler.toml`
+- triggers: "עדכן" / "תעדכן" / "update" / "עדכון"
+- שולח GitHub workflow_dispatch → מפעיל chadshani-update.yml
+- עונה "מעדכן... ⏳" מיד, ntfy יגיע בסיום
+
+### Task Scheduler — ניקוי
+- נמחקו: Chadshani-0645, Chadshani-1845, chadshani-watchdog-0800, chadshani-watchdog-2000, ChadshaniTelegramBot
+- נשארו (לא ניתן למחוק ללא admin — לא מסוכנות, מצביעות לנתיב ישן שלא קיים):
+  - chadshani-0600, chadshani-1200, chadshani-2030 → כשלות בשקט
+
+### Telegram Bot Migration
+- chadshani_telegram_bot.py + start_telegram_bot.bat: נשמרים כ-backup בגיט — לא רצים
+- Webhook הועבר ל-Worker (polling הופסק)
+- Bot: newsdesgSG_bot, Chat ID: -1003840479051
+
+### Git Commits (cloud migration)
+- `914717f` — feat(chadshani): cloud migration — GitHub Actions cron + Cloudflare Worker
+- `749a87e` — feat(chadshani): add wrangler.toml for Cloudflare Worker
+
+### אימות סופי
+- ✅ GitHub Actions ריצה ראשונה: completed/success (2026-04-05T03:15:12Z)
+- ✅ Telegram webhook: URL נכון, אין שגיאות
+- ✅ GEMINI_API_KEY ב-GitHub Secrets
+- ✅ 5 משימות Task Scheduler נמחקו
 
 ## v4.0.0 — השקה (2026-04-04)
 - **Liquid Glass design** — Apple-inspired glass cards עם backdrop-filter + gradient
@@ -20,11 +69,11 @@ Last updated: 2026-04-05
 - **גיבוי v3.3.13** — index_backup_v3.3.13.html + index_template_backup_v3.3.13.html
 - **ניקיון מלא** — הוסרו: קורסלה (11 תמונות), ORIGINAL backup, v3.3.12 backups, index_maintenance
 - **Microsoft/Copilot** נוסף ל-section_7_ai + GNews RSS
-- **תיקון dedup** — threshold 4, seed מ-alert.title בלבד (לא מכל ה-analysis)
+- **תיקון dedup** — threshold 4, seed מ-alert.title בלבד
 - **תיקון gemini-2.5-pro** — מדלג על thinking_budget=0 (Pro דורש thinking mode)
 - **gemini-2.5-flash-lite** מפתח מפורש ב-_PRICING dict
 
-## 2026-04-05 — שדרוגים
+## 2026-04-05 — שדרוגים (לפני cloud migration)
 
 ### section_7_ai — עיצוב מחדש לכרטיסים פר-מוצר
 - 7 כניסות חברה → **14 כניסות פר-מוצר**
@@ -43,14 +92,6 @@ Last updated: 2026-04-05
 
 ### תיקון Scroll-to-top
 - iOS Safari: עכשיו מגדיר window + documentElement + body scrollTop ביחד
-- Refresh: כבר מכריח macro page בטעינה
-
-### בוט טלגרם — newsdesgSG_bot
-- קובץ: `chadshani_telegram_bot.py` — מדגם Telegram, מפעיל chadshani_auto.py על "תעדכן"/"עדכן"/"update"
-- Wrapper: `start_telegram_bot.bat` עם env vars בתוכו
-- Task Scheduler: `ChadshaniTelegramBot` רשום, רץ בלוגאון (pythonw, ללא קונסול)
-- 409 backoff: 35s
-- **TELEGRAM_BOT_TOKEN נשאר מקומי בלבד** — אסור לכתוב בקוד .py
 
 ## v3.3.x — שדרוגים (2026-04-04/05)
 - **v3.3.7** static Tailwind CSS, font preconnect, icon subset
@@ -66,9 +107,10 @@ Last updated: 2026-04-05
 2. `merge_with_previous` הוסרה לחלוטין — אין זיוף נתונים
 3. Gemini Flash-lite max 3 → Flash max 2 → Pro max 1 — לא לשנות את הספירות
 4. validate לפני deploy תמיד
-5. cron trigger בוטל משרתי GitHub — עדכונים מהמחשב בלבד
-6. **notification אחת בלבד — רק אחרי `verify_deployment()` הצליח**
-7. **TELEGRAM_BOT_TOKEN מקומי בלבד** — bat file, לא hardcoded ב-.py
+5. **notification אחת בלבד — רק אחרי `verify_deployment()` הצליח**
+6. **GEMINI_API_KEY: GitHub Secrets בלבד**
+7. **TELEGRAM_BOT_TOKEN + GITHUB_PAT: CF Worker Secrets בלבד**
+8. בחורף (נוב-פבר): cron shifts UTC+2 → 04:45 + 16:45 UTC — נורמלי
 
 ## ארכיטקטורת Gemini
 ```
@@ -99,7 +141,7 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 - [x] תיקון 7 כללים קריטיים (rule 1-7 ב-feedback_chadshani_schedule_and_data.md)
 - [x] הסרת merge_with_previous
 - [x] Quality Control Skill: `~/.claude/skills/active/chadshani_quality_control.md`
-- [x] cron הוסר מ-GitHub Actions
+- [x] cron הוסר מ-GitHub Actions (ישן)
 - [x] סינון חדשות: MAX_NEWS_AGE_DAYS=7
 - [x] json_repair לתיקון JSON שבור של Gemini
 - [x] Gemini fallback chain + no-stale-deploy rule
@@ -109,11 +151,13 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 - [x] +4 RSS feeds חדשים (Claude Code, ChatGPT, Codex, AI Studio)
 - [x] ביצועים מובייל: fonts non-render-blocking + lazy load
 - [x] Scroll-to-top iOS Safari fix
-- [x] Telegram bot: newsdesgSG_bot, Task Scheduler, tested
+- [x] Cloud migration: GitHub Actions cron + Cloudflare Worker Telegram
+- [x] Task Scheduler ניקוי: 5 משימות נמחקו
+- [x] Telegram polling → Cloudflare Worker webhook
 
 ## מה נשאר
 - [ ] WebP conversion לתמונות פרופיל (SHALEV.PNG 2.7MB → target < 200KB)
-- [ ] Telegram bot crash watchdog (כרגע: רק Task Scheduler logon)
+- [ ] 3 משימות ישנות (chadshani-0600/1200/2030) — לא ניתן למחוק ללא admin, לא מסוכנות
 - [ ] 확인 3D tilt + spotlight על small cards בכל גדלי מסך
 - [ ] הרחבת Others: Mistral, Cohere, Stability AI
 
@@ -121,34 +165,41 @@ exit 2 → deploy מבוטל (לא fallback לנתונים ישנים)
 
 | החלטה | סיבה |
 |-------|------|
-| TELEGRAM_BOT_TOKEN בלבד ב-bat file | אבטחה — לא hardcoded ב-.py שעולה ל-git |
+| Cloud migration — GitHub Actions + CF Worker | אפס תלות במחשב מקומי — uptime 100% ללא פעולת משתמש |
+| GEMINI_API_KEY → GitHub Secrets | הדרך הבטוחה לגיט; Actions יש לו גישה ישירה |
+| TELEGRAM_BOT_TOKEN → CF Worker Secrets | לא עולה לגיט בשום צורה |
+| GITHUB_PAT → CF Worker Secrets | workflow_dispatch צריך PAT; לא עולה לגיט |
+| polling bot נשמר כ-backup בגיט | שיחזור אפשרי אם Worker ייפול |
+| cron 03:45 + 15:45 UTC | = 06:45 + 18:45 ישראל קיץ (UTC+3); DST shifts 1h in winter |
 | updates_count 10→5 פר מוצר | תוכן ממוקד יותר, פחות עומס Gemini |
 | others grid: grid-cols-2 lg:grid-cols-3 | 4 כרטיסים, 2 בשורה במובייל, 3 בדסקטופ |
 | fonts preload/onload (לא render-blocking) | FCP שיפור משמעותי במובייל |
-| 409 backoff: 35s | Telegram API: מחכה לסגירת connections ישנות |
 | perspective על parent div (לא backdrop element) | Chrome: backdrop-filter creates stacking context — perspective על אותו element לא עובד |
 
 ## כיצד להמשיך בסשן חדש
 
 1. קרא קובץ זה
 2. בדוק תקציב: `cat "e:/Claude/Shalev's_Projects/2_Chadshani/data/cost_log.json"`
-3. בוט: אם לא רץ — double-click `start_telegram_bot.bat`
+3. לעדכון ידני: GitHub Actions → chadshani-update.yml → Run workflow (או שלח "עדכן" לבוט)
 4. לשינוי CSS: ערוך index_template.html → rebuild CSS → sync index.html
-5. לבדיקת ריצה ידנית: `python chadshani_auto.py` ממסוף חיצוני (לא מתוך Claude Code)
+5. לבדיקת generate_json.py מקומית: הגדר GEMINI_API_KEY כ-env var ואז הרץ
 
 ## קבצים רלוונטיים
 
 ```
-chadshani_auto.py          — אוטומציה ראשית (generate→validate→deploy→notify)
-chadshani_generator.py     — Gemini API calls + RSS fetching
-chadshani_processing.py    — data processing + validation
-chadshani_constants.py     — schema, RSS feeds, pricing, GROUPS definition
-chadshani_telegram_bot.py  — Telegram polling bot (triggers auto.py on demand)
-start_telegram_bot.bat     — wrapper לבוט עם env vars
-index_template.html        — מקור האמת לעיצוב
-index.html                 — עותק סינכרוני מ-template (מה שנפרס)
-data/latest.json           — נתוני הריצה האחרונה
-data/cost_log.json         — tracking תקציב Gemini
-assets/CHADSHANI_LOGO_v4.png — לוגו OG
-assets/SHALEV2.png         — תמונת פרופיל (1.8MB — lazy loaded)
+.github/workflows/chadshani-update.yml        — GitHub Actions pipeline (ראשי)
+.github/workflows/chadshani-deploy-only.yml   — manual deploy only (workflow_dispatch)
+chadshani_generator.py                         — Gemini API calls + RSS fetching
+chadshani_processing.py                        — data processing + validation
+chadshani_constants.py                         — schema, RSS feeds, pricing, GROUPS definition
+chadshani_cloudflare_worker.js                 — Cloudflare Worker source (Telegram → GitHub)
+wrangler.toml                                  — CF Worker deployment config
+chadshani_telegram_bot.py                      — backup: polling bot (לא פעיל)
+start_telegram_bot.bat                         — backup: wrapper לבוט (לא פעיל)
+index_template.html                            — מקור האמת לעיצוב
+index.html                                     — עותק סינכרוני מ-template (מה שנפרס)
+data/latest.json                               — נתוני הריצה האחרונה
+data/cost_log.json                             — tracking תקציב Gemini
+assets/CHADSHANI_LOGO_v4.png                   — לוגו OG
+assets/SHALEV2.png                             — תמונת פרופיל (1.8MB — lazy loaded)
 ```

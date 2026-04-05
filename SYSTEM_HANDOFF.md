@@ -1,5 +1,5 @@
 # SYSTEM HANDOFF — תמונת מצב כוללת
-Last updated: 2026-04-04 (session 4 — TmunoteAI project 10 built)
+Last updated: 2026-04-05 (session — Chadshani cloud migration complete)
 
 ---
 
@@ -18,7 +18,7 @@ Claude Code workspace לניהול פרויקטים אישיים, עם:
 | פרויקט | מצב | פרטים |
 |---|---|---|
 | **1_EmotionWheel** | ✅ מושלם | פרויקט הושלם |
-| **2_Chadshani** | ✅ v4.0.0 live | https://shalevgigi-vks.github.io/Chadshani/ — 14 AI product cards, Telegram bot live (newsdesgSG_bot), mobile perf fixed |
+| **2_Chadshani** | ✅ v4.0.0 — ענן | https://shalevgigi-vks.github.io/Chadshani/ — GitHub Actions cron + Cloudflare Worker Telegram. אפס תלות במחשב מקומי |
 | **3_Notifications** | ✅ מושלם | תשתית ntfy.sh פועלת, לא דורש עבודה |
 | **4_RemoteAccess** | ✅ מושלם | AnyDesk מוגדר, HKCU\\Run לUI |
 | **5_StickerBot** | ✅ מושלם | פרויקט הושלם |
